@@ -1,9 +1,9 @@
 # Build stage
-FROM node:24-alpine AS build
+FROM node:24.14.0-alpine AS build
 WORKDIR /app
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@10 --activate
+RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 
 # Install dependencies first (cacheable layer)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
