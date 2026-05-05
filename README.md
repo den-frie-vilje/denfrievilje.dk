@@ -97,11 +97,11 @@ The site can be served from a rootless Nginx container:
 # Build the image
 docker build -t denfrievilje .
 
-# Run on port 8080
-docker run -p 8080:8080 denfrievilje
+# Run on port 7777
+docker run -p 7777:7777 denfrievilje
 ```
 
-The Dockerfile uses a multi-stage build: Node.js for `pnpm build`, then copies the static output into `nginxinc/nginx-unprivileged` (runs as non-root on port 8080).
+The Dockerfile uses a multi-stage build: Node.js for `pnpm build`, then copies the static output into `nginxinc/nginx-unprivileged` (runs as non-root on port 7777).
 
 ## CI/CD
 
@@ -109,7 +109,6 @@ GitHub Actions workflows in `.github/workflows/`:
 
 | Workflow     | Trigger               | What it does                      |
 | ------------ | --------------------- | --------------------------------- |
-| `ci.yml`     | Push / PR to `main`   | Install, lint, type-check, build  |
 | `docker.yml` | Push to `main` / tags | Build & push Docker image to GHCR |
 
 ## Tech Stack

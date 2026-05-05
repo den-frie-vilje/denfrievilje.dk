@@ -205,7 +205,7 @@ Minimal: copyright + GitHub and LinkedIn links. Centered on small screens, row l
 ## Docker & Deployment
 
 - Static output (`build/`) is served by a rootless Nginx container (`nginxinc/nginx-unprivileged:alpine`)
-- Container listens on port **8080** (non-root; no ports below 1024)
+- Container listens on port **7777** (non-root; no ports below 1024)
 - Multi-stage Dockerfile: Node.js stage runs `pnpm install && pnpm build`, Nginx stage copies the `build/` output
 - Custom `nginx.conf` for SPA fallback, gzip, cache headers, and security headers
 - `.dockerignore` excludes `node_modules`, `.svelte-kit`, etc. to keep the build context small
@@ -214,16 +214,15 @@ Minimal: copyright + GitHub and LinkedIn links. Centered on small screens, row l
 
 ```sh
 docker build -t denfrievilje .
-docker run -p 8080:8080 denfrievilje
+docker run -p 7777:7777 denfrievilje
 ```
 
 ## CI/CD (GitHub Actions)
 
-Two workflows in `.github/workflows/`:
+One workflow in `.github/workflows/`:
 
 | File         | Triggers                             | Steps                                                         |
 | ------------ | ------------------------------------ | ------------------------------------------------------------- |
-| `ci.yml`     | Push / PR to `main`                  | Install → Lint → Type-check → Build                           |
 | `docker.yml` | Push to `main` / version tags (`v*`) | Build & push Docker image to GitHub Container Registry (GHCR) |
 
 The Docker workflow tags images as `latest` (on main) and the Git tag (on version tags).
