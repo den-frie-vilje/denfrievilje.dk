@@ -1,0 +1,47 @@
+# Trigger: push to `main` (developer-driven; staging → main promotion via PR).
+#
+# Per the migration decisions (skip reviewer gate, skip content-only fast-path —
+# this site has no Sveltia editor), production deploys go straight from `main`
+# push to build + cosign sign. The cryptographic gate is the cosign keyless
+# signature itself, which the NAS-side agent verifies before deploying — see
+# nas-sites/docs/PULL-DEPLOY-MODEL.md §Security model.
+#
+# Build + push + Sigstore Cosign sign happens in the reusable workflow in
+# den-frie-vilje/nas-sites. CI does NOT call the NAS — the NAS-side pull-only
+# agent verifies the signature and deploys on its own schedule (within
+# ~5 min of the push).
+
+name: Deploy to production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      multiarch:
+        description: 'Also build linux/arm64 (slow — adds ~3min QEMU emulation). Default amd64-only matches the NAS.'
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main
+    with:
+      environment: production
+      dockerfile: deploy/Dockerfile
+      image-name: ghcr.io/den-frie-vilje/denfrievilje
+      platforms: ${{ inputs.multiarch && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+      # Same build args as staging EXCEPT PUBLIC_SHOW_PALETTE_TOGGLE=false
+      # so the floating bureau/artist toggle is hidden in production —
+      # production palettes are hostname-driven only (denfrievilje.dk →
+      # bureau, ole.kristensen.name → artist).
+      build-args: |
+        VITE_MODE=production
+        PUBLIC_SHOW_PALETTE_TOGGLE=false
+        PUBLIC_GIT_SHA=${{ github.sha }}
+        PUBLIC_BUILD_TIME=${{ github.event.head_commit.timestamp }}
+      # Origin URL (not CF-fronted apex) so the verify poll bypasses
+      # Cloudflare cache. The reusable workflow's default verify-pattern
+      # is the first 8 chars of github.sha, which app.html embeds in
+      # <meta name="x-build-sha">.
+      verify-url: https://denfrievilje-dk.prod.denfrievilje.dk/

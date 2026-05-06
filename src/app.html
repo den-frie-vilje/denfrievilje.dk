@@ -4,6 +4,13 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- Build provenance — populated by deploy/Dockerfile build args via
+		     SvelteKit's app.html env interpolation. Empty string in dev. The
+		     post-deploy verify step in build-and-sign.yml polls for the
+		     first 8 chars of x-build-sha to confirm the agent rolled out
+		     this exact commit. -->
+		<meta name="x-build-sha" content="%sveltekit.env.PUBLIC_GIT_SHA%" />
+		<meta name="x-build-time" content="%sveltekit.env.PUBLIC_BUILD_TIME%" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
