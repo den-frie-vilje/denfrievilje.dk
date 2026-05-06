@@ -14,8 +14,10 @@
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
 
-	// Shuffle hero images client-side so each visit shows a different starting image
-	const heroImages = [...data.heroImages].sort(() => Math.random() - 0.5);
+	// Shuffle hero images client-side so each visit shows a different starting
+	// image. $derived.by re-runs if `data` changes (client-side navigation),
+	// satisfying svelte-check's state_referenced_locally rule.
+	const heroImages = $derived.by(() => [...data.heroImages].sort(() => Math.random() - 0.5));
 </script>
 
 <SEO />

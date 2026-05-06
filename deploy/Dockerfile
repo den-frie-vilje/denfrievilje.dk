@@ -52,17 +52,23 @@ COPY . .
 # re-export them so `pnpm build` sees them as PUBLIC_*-prefixed vars that
 # SvelteKit forwards to the client via $env/static/public.
 #
-# PUBLIC_SITE_HOST / PUBLIC_DOMAIN_MODE are NOT set here — `pnpm build` runs
-# build:artist and build:bureau which inline their own values per build, so
-# each output tree is self-consistent (canonical URL, og:url, sitemap host,
-# JSON-LD url, etc. all match the build's target identity).
+# PUBLIC_SITE_HOST / PUBLIC_DOMAIN_MODE default to the bureau identity here
+# so the `pnpm check` step (which runs before `pnpm build`) sees a valid
+# value for the `$env/static/public` imports in src/lib/site.ts. The
+# per-mode build scripts (`pnpm build:artist`, `pnpm build:bureau`) override
+# both via inline env at invocation, so each output tree still bakes in its
+# own canonical URL, og:url, sitemap host, and JSON-LD url.
 ARG VITE_MODE=production
 ARG PUBLIC_GIT_SHA=
 ARG PUBLIC_BUILD_TIME=
 ARG PUBLIC_SHOW_PALETTE_TOGGLE=false
+ARG PUBLIC_SITE_HOST=denfrievilje.dk
+ARG PUBLIC_DOMAIN_MODE=bureau
 ENV PUBLIC_GIT_SHA=$PUBLIC_GIT_SHA
 ENV PUBLIC_BUILD_TIME=$PUBLIC_BUILD_TIME
 ENV PUBLIC_SHOW_PALETTE_TOGGLE=$PUBLIC_SHOW_PALETTE_TOGGLE
+ENV PUBLIC_SITE_HOST=$PUBLIC_SITE_HOST
+ENV PUBLIC_DOMAIN_MODE=$PUBLIC_DOMAIN_MODE
 
 # Type check first — faster to fail here than in the (slower) Vite build.
 # `pnpm build` produces two trees:
