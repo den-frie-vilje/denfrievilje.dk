@@ -1,0 +1,46 @@
+# Trigger: push to the `staging` branch (developer-driven; no editor
+# auto-commits — this site has no Sveltia/admin) or manual workflow_dispatch.
+#
+# Build + push + Sigstore Cosign sign happens in the reusable workflow in
+# den-frie-vilje/nas-sites. CI does NOT call the NAS — the NAS-side pull-only
+# agent verifies the signature and deploys on its own schedule (within
+# ~5 min of the push).
+
+name: Deploy to staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+    inputs:
+      multiarch:
+        description: 'Also build linux/arm64 (slow — adds ~3min QEMU emulation). Default amd64-only matches the NAS. Tick for M-series Mac local debugging.'
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main
+    with:
+      environment: staging
+      dockerfile: deploy/Dockerfile
+      image-name: ghcr.io/den-frie-vilje/denfrievilje
+      platforms: ${{ inputs.multiarch && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+      # Vite bakes these into the client bundle / app.html at build time.
+      # PUBLIC_GIT_SHA also doubles as the verify-pattern source — the
+      # post-sign poll greps the rendered <meta name="x-build-sha"> for
+      # the new SHA.
+      #
+      # PUBLIC_SHOW_PALETTE_TOGGLE=true exposes the floating bureau/artist
+      # toggle on staging only; production builds default it to false so
+      # the toggle is invisible to end users.
+      build-args: |
+        VITE_MODE=staging
+        PUBLIC_SHOW_PALETTE_TOGGLE=true
+        PUBLIC_GIT_SHA=${{ github.sha }}
+        PUBLIC_BUILD_TIME=${{ github.event.head_commit.timestamp }}
+      # Origin URL (not CF apex) so the verify poll bypasses any CDN
+      # caching. The reusable workflow's default verify-pattern is the
+      # first 8 chars of github.sha, which app.html now embeds in
+      # <meta name="x-build-sha">.
+      verify-url: https://denfrievilje-dk.stage.denfrievilje.dk/

@@ -1,0 +1,3 @@
+dependencies:
+  nodejs.org: ^25
+  pnpm.io: ^10
