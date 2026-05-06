@@ -202,30 +202,36 @@ Minimal: copyright + GitHub and LinkedIn links. Centered on small screens, row l
 
 - Writing style for work descriptions: Direct, Scandinavian, artist-driven tone. Avoid business jargon; focus on personal, technical, and collaborative aspects. Use clear, unembellished language reflecting the artist's perspective.
 
-## Docker & Deployment
+## Deployment (nas-sites pull-deploy)
 
-- Static output (`build/`) is served by a rootless Nginx container (`nginxinc/nginx-unprivileged:alpine`)
-- Container listens on port **7777** (non-root; no ports below 1024)
-- Multi-stage Dockerfile: Node.js stage runs `pnpm install && pnpm build`, Nginx stage copies the `build/` output
-- Custom `nginx.conf` for SPA fallback, gzip, cache headers, and security headers
-- `.dockerignore` excludes `node_modules`, `.svelte-kit`, etc. to keep the build context small
+The site is deployed under the [`den-frie-vilje/nas-sites`](https://github.com/den-frie-vilje/nas-sites) pull-deploy pattern. CI builds + Sigstore-cosign-signs the image; the NAS-side agent on Woody reconciles every ~5 min.
 
-### Docker commands
+- **Container**: rootless `nginxinc/nginx-unprivileged:alpine` listening on port 8080 (no ports below 1024 for non-root)
+- **Build**: pkgx-backed multi-stage build via `deploy/Dockerfile`; Node + pnpm versions sourced from `pkgx.yml` via `eval "$(pkgx dev --shellcode)" && dev on` — single source of truth, no inline pins
+- **Front door**: per-site Caddy in the same compose project, listening on a per-(site,env) loopback port (denfrievilje uses 18082 staging / 18083 prod). DSM Web Station vhosts terminate TLS and proxy to the loopback port.
+- **Apex routing**: a single image serves both `denfrievilje.dk` and `ole.kristensen.name` — JS palette-switches by hostname client-side. `deploy/Caddyfile.production` handles per-domain www→apex 301; no cross-apex redirect.
+- **Cloudflare**: both apexes orange-clouded; the NAS agent purges both CF zones after each prod deploy via `CF_ZONE_IDS` plural in `sites.d/<domain>.production.env`.
+
+### Local debugging
 
 ```sh
-docker build -t denfrievilje .
-docker run -p 7777:7777 denfrievilje
+pkgx pnpm build
+docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --build
+# → http://localhost:8080
 ```
+
+For per-site URL pattern, GitHub OAuth setup (n/a here — no editor), DSM Web Station vhost layout, and troubleshooting, see [DEPLOY.md](../DEPLOY.md).
 
 ## CI/CD (GitHub Actions)
 
-One workflow in `.github/workflows/`:
+Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main`](https://github.com/den-frie-vilje/nas-sites/blob/main/.github/workflows/build-and-sign.yml).
 
-| File         | Triggers                             | Steps                                                         |
-| ------------ | ------------------------------------ | ------------------------------------------------------------- |
-| `docker.yml` | Push to `main` / version tags (`v*`) | Build & push Docker image to GitHub Container Registry (GHCR) |
+| File                                       | Triggers           | Steps                                                                   |
+| ------------------------------------------ | ------------------ | ----------------------------------------------------------------------- |
+| `.github/workflows/deploy-staging.yml`     | Push to `staging`  | Build → cosign-sign → push to GHCR; agent reconciles staging container  |
+| `.github/workflows/deploy-production.yml`  | Push to `main`     | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles prod |
 
-The Docker workflow tags images as `latest` (on main) and the Git tag (on version tags).
+No reviewer gate — the cryptographic gate is the cosign keyless signature itself, verified by the NAS agent before deploy.
 
 ## Documentation
 
