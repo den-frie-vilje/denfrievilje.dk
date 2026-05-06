@@ -68,24 +68,35 @@ See [docs/agent-knowledge.md](docs/agent-knowledge.md) for the full design syste
 - `extractYear()` helper is currently duplicated in 3 route files — follow existing pattern until centralized
 - The `build/` directory is committed for deployment — rebuild after content/code changes
 
-## Docker
+## Deployment (nas-sites pull-deploy)
 
-Rootless Nginx container for static serving:
+The site runs as a Docker container on Synology DSM under the [`den-frie-vilje/nas-sites`](https://github.com/den-frie-vilje/nas-sites) pull-deploy pattern. Per-site overlay in [DEPLOY.md](DEPLOY.md).
+
+`deploy/` artifacts in this repo:
+
+- `deploy/Dockerfile` — multi-stage: pkgx-backed builder reading `pkgx.yml` for Node + pnpm versions → rootless `nginxinc/nginx-unprivileged:alpine` (port 8080).
+- `deploy/nginx.conf` — port 8080, trailing-slash directory-index lookup, SPA fallback to `/200.html`.
+- `deploy/Caddyfile.{staging,production}` — staging is single-host; production handles **both** apexes (`denfrievilje.dk` + `ole.kristensen.name`) with per-domain www→apex 301.
+- `deploy/compose.{staging,production,local}.yml` — caddy + site, image refs `ghcr.io/den-frie-vilje/denfrievilje:{staging,production}-latest`.
+
+Local debugging:
 
 ```sh
-docker build -t denfrievilje .
-docker run -p 7777:7777 denfrievilje
+pkgx pnpm build
+docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --build
+# → http://localhost:8080
 ```
-
-- Multi-stage build: Node.js → `pnpm build` → `nginxinc/nginx-unprivileged:alpine` (port 7777)
-- `nginx.conf` handles SPA fallback, gzip, cache headers, security headers
-- `.dockerignore` keeps the build context lean
 
 ## CI/CD (GitHub Actions)
 
-| Workflow | File                           | Triggers                                          |
-| -------- | ------------------------------ | ------------------------------------------------- |
-| Docker   | `.github/workflows/docker.yml` | Push to `main` / `v*` tags — build & push to GHCR |
+Both workflows are thin callers of `den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main`.
+
+| Workflow              | File                                       | Triggers                                              |
+| --------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| Deploy to staging     | `.github/workflows/deploy-staging.yml`     | Push to `staging` — build, cosign-sign, push to GHCR  |
+| Deploy to production  | `.github/workflows/deploy-production.yml`  | Push to `main` — same flow, no reviewer gate          |
+
+The NAS-side agent on Woody reconciles every ~5 min: pulls, cosign-verifies, `docker compose up -d --wait`, optionally purges Cloudflare cache (multi-zone, both apexes).
 
 ## Svelte MCP Tools
 

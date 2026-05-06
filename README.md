@@ -89,27 +89,30 @@ The "Gallery Neon" design system uses:
 
 See [docs/design-decisions.md](docs/design-decisions.md) for rationale and [docs/agent-knowledge.md](docs/agent-knowledge.md) for the full reference.
 
-## Docker
+## Deployment
 
-The site can be served from a rootless Nginx container:
+The site runs as a Docker container on Synology DSM (NAS host: Woody) under the [`den-frie-vilje/nas-sites`](https://github.com/den-frie-vilje/nas-sites) pull-deploy pattern. CI builds + Sigstore-cosign-signs the image; the NAS-side agent pulls, verifies the signature, and reconciles every ~5 min.
+
+See [DEPLOY.md](DEPLOY.md) for the full per-site overlay (URL pattern, GitHub workflows, dual-apex specifics, troubleshooting).
+
+For local-stack debugging:
 
 ```sh
-# Build the image
-docker build -t denfrievilje .
-
-# Run on port 7777
-docker run -p 7777:7777 denfrievilje
+pkgx pnpm build
+docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --build
+# → http://localhost:8080
 ```
-
-The Dockerfile uses a multi-stage build: Node.js for `pnpm build`, then copies the static output into `nginxinc/nginx-unprivileged` (runs as non-root on port 7777).
 
 ## CI/CD
 
 GitHub Actions workflows in `.github/workflows/`:
 
-| Workflow     | Trigger               | What it does                      |
-| ------------ | --------------------- | --------------------------------- |
-| `docker.yml` | Push to `main` / tags | Build & push Docker image to GHCR |
+| Workflow                  | Trigger             | What it does                                                                          |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
+| `deploy-staging.yml`      | Push to `staging`   | Build → cosign-sign → push to GHCR; agent reconciles staging container within ~5 min  |
+| `deploy-production.yml`   | Push to `main`      | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles production       |
+
+Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main`](https://github.com/den-frie-vilje/nas-sites/blob/main/.github/workflows/build-and-sign.yml). No reviewer gate — the cryptographic gate is the cosign keyless signature itself, verified by the NAS agent before deploy.
 
 ## Tech Stack
 
