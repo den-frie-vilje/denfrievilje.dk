@@ -1,0 +1,26 @@
+# Front-door reverse proxy for staging (denfrievilje-dk.stage.denfrievilje.dk).
+#
+# DSM Web Station proxies the staging hostname to 127.0.0.1:${CADDY_PORT}
+# on this host. Caddy listens on :80 inside the container, reverse-proxies
+# to the site container on :8080.
+#
+# Staging hosts ONE origin — the .stage.denfrievilje.dk subdomain. Both
+# apexes (denfrievilje.dk + ole.kristensen.name) are tested via the same
+# staging URL; the site's JS palette toggle (PUBLIC_SHOW_PALETTE_TOGGLE=true
+# at build time for staging only) lets editors flip between bureau/artist
+# palettes without two staging hostnames.
+
+{
+    admin off
+    auto_https off
+}
+
+:80 {
+    reverse_proxy site:8080
+    encode gzip zstd
+
+    log {
+        output stdout
+        format json
+    }
+}

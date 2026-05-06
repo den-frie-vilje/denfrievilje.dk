@@ -1,0 +1,60 @@
+# Staging stack — denfrievilje-dk.stage.denfrievilje.dk.
+#
+# Brought up + reconciled by the nas-sites pull-only deploy agent on its
+# next fire after a `staging` branch push (see nas-sites
+# /docs/PULL-DEPLOY-MODEL.md). Composition:
+#   caddy   (front-door — reverse proxy to site)
+#   site    (static site, pulled from GHCR — built from this repo with
+#            PUBLIC_SHOW_PALETTE_TOGGLE=true so the dev floating toggle
+#            stays exposed in staging)
+#
+# Joins the `nas-deploy` external network (shared across sites). Per-site
+# `internal` network keeps service names like `site` scoped per-project
+# and prevents cross-site DNS collisions on the shared network.
+#
+# No OAuth proxy: the site has no editor UI. No env-only secrets either —
+# only CADDY_PORT in the per-stack env file.
+
+name: denfrievilje-dk-staging
+
+networks:
+  nas-deploy:
+    external: true
+  internal:
+
+services:
+  caddy:
+    image: caddy:2-alpine@sha256:834468128c7696cec0ceea6172f7d692daf645ae51983ca76e39da54a97c570d
+    restart: unless-stopped
+    networks: [nas-deploy, internal]
+    ports:
+      # Loopback only — DSM reverse-proxies the staging hostname to this
+      # port on 127.0.0.1. Port comes from staging.env.
+      - "127.0.0.1:${CADDY_PORT:-18082}:80"
+    volumes:
+      - ./Caddyfile.staging:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      site:
+        condition: service_started
+
+  site:
+    image: ghcr.io/den-frie-vilje/denfrievilje:staging-latest
+    restart: unless-stopped
+    networks: [internal]
+    pull_policy: always
+    # No host ports published — only reachable via caddy. Healthcheck lets
+    # `docker compose up -d --wait` block the agent's deploy until the new
+    # container is actually serving — which is the signal to fire the
+    # CF cache purge that follows in the agent.
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  caddy_data:
+  caddy_config:

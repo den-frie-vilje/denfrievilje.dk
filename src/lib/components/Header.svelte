@@ -1,8 +1,14 @@
 <script lang="ts">
+	import { PUBLIC_SHOW_PALETTE_TOGGLE } from '$env/static/public';
+
 	let { bureau = false, onToggleDomain }: { bureau?: boolean; onToggleDomain?: (mode: 'artist' | 'bureau') => void } = $props();
 	let menuOpen = $state(false);
 	let navLogoOpacity = $state(1);
-	const DEV = import.meta.env.DEV;
+	// Show the floating bureau/artist toggle in dev (always) or in any
+	// build whose Dockerfile passed PUBLIC_SHOW_PALETTE_TOGGLE=true (staging).
+	// Read via $env/static/public — Vite's import.meta.env only exposes the
+	// VITE_ prefix by default; SvelteKit's PUBLIC_ scheme lives in $env.
+	const SHOW_TOGGLE = import.meta.env.DEV || PUBLIC_SHOW_PALETTE_TOGGLE === 'true';
 
 	$effect(() => {
 		if (!bureau) {
@@ -67,7 +73,7 @@
 </nav>
 
 <!-- Dev-only domain toggle -->
-{#if DEV && onToggleDomain}
+{#if SHOW_TOGGLE && onToggleDomain}
 <div class="fixed bottom-6 right-6 z-[1000] flex overflow-hidden shadow-[0_4px_24px_oklch(0_0_0/0.2)]">
 	<button
 		class="px-3 py-2 font-heading text-[0.7rem] font-medium uppercase tracking-[0.06em] transition-all duration-300 {bureau ? '' : 'outline outline-2 outline-offset-[-2px] outline-[var(--color-accent)]'}"

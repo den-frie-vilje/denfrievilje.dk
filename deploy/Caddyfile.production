@@ -1,0 +1,57 @@
+# Front-door reverse proxy for production — handles BOTH apexes from the
+# same container.
+#
+# DSM Web Station proxies every production hostname for this site (apex
+# denfrievilje.dk + www, apex ole.kristensen.name + www, and the canonical
+# .prod.denfrievilje.dk origin) to 127.0.0.1:${CADDY_PORT}. Caddy listens
+# on :80 inside the container and reverse-proxies to `site:8080`.
+#
+# Two responsibilities Caddy handles:
+#   1. Per-apex www → apex 301 (no cross-apex redirect — both denfrievilje.dk
+#      and ole.kristensen.name are canonical, just for different palettes;
+#      the site's JS detects hostname client-side and switches the palette
+#      via the bureau body class).
+#   2. (Optionally) the .prod internal hostname → its corresponding apex,
+#      once the public DNS is CNAME-ed and the internal origin shouldn't be
+#      hit directly. Currently commented out — uncomment after DNS lands.
+#
+# Adding a new legacy hostname: add its A-record on the client side, add it
+# as a SAN on the DSM Web Station vhost (so Let's Encrypt can re-issue the
+# multi-SAN cert), then add it to the matcher block below mapping to whichever
+# apex it should redirect to.
+
+{
+    admin off
+    auto_https off
+}
+
+:80 {
+    route {
+        # www → apex (per-domain, no cross-apex redirect)
+        @www_dfv host www.denfrievilje.dk
+        redir @www_dfv https://denfrievilje.dk{uri} 301
+
+        @www_okn host www.ole.kristensen.name
+        redir @www_okn https://ole.kristensen.name{uri} 301
+
+        # Once public DNS is CNAMEd to .prod.denfrievilje.dk, uncomment to
+        # 301 the internal origin to its public counterpart so the .prod
+        # hostname doesn't appear in user-visible URLs.
+        # @prod_dfv host denfrievilje-dk.prod.denfrievilje.dk
+        # redir @prod_dfv https://denfrievilje.dk{uri} 301
+
+        # Default: serve the site for whatever hostname this is. The site
+        # itself reads window.location.hostname client-side and applies the
+        # bureau or artist palette via document.body.classList.
+        handle {
+            reverse_proxy site:8080
+        }
+    }
+
+    encode gzip zstd
+
+    log {
+        output stdout
+        format json
+    }
+}
