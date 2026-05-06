@@ -9,8 +9,12 @@
 	},
 	"scripts": {
 		"images": "node scripts/process-images.js",
-		"dev": "node scripts/process-images.js && vite",
-		"build": "node scripts/process-images.js && vite build",
+		"og": "node scripts/generate-og-images.js",
+		"dev": "node scripts/process-images.js && node scripts/generate-og-images.js && vite",
+		"prebuild": "node scripts/process-images.js && node scripts/generate-og-images.js",
+		"build": "pnpm prebuild && pnpm build:artist && pnpm build:bureau",
+		"build:artist": "BUILD_OUTPUT_DIR=build-artist PUBLIC_SITE_HOST=ole.kristensen.name PUBLIC_DOMAIN_MODE=artist vite build",
+		"build:bureau": "BUILD_OUTPUT_DIR=build-bureau PUBLIC_SITE_HOST=denfrievilje.dk PUBLIC_DOMAIN_MODE=bureau vite build",
 		"preview": "vite preview",
 		"test:e2e": "vitest run --config vitest.config.ts",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -29,6 +33,7 @@
 		"globals": "^17.4.0",
 		"js-yaml": "^4.1.1",
 		"prettier": "^3.0.0",
+		"puppeteer": "^24.43.0",
 		"sharp": "^0.34.5",
 		"sirv": "^2.0.0",
 		"svelte": "^5.0.0",
@@ -42,6 +47,8 @@
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"esbuild",
+			"@puppeteer/browsers",
+			"puppeteer",
 			"sharp",
 			"svelte-preprocess"
 		]

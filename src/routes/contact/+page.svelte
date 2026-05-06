@@ -3,6 +3,7 @@
 	import { getContext } from 'svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -27,10 +28,7 @@
 	);
 </script>
 
-<svelte:head>
-	<title>Contact — {bureau ? 'Den Frie Vilje' : 'Ole Kristensen'}</title>
-	<meta property="og:title" content="Contact" />
-</svelte:head>
+<SEO title="Contact" description="Get in touch — Ole Kristensen / Den Frie Vilje. Copenhagen-based studio for interactive installations, live performances, and design technology." />
 
 <article class="px-[var(--gutter)]" class:page-dark={bureau}>
    <header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">

@@ -6,11 +6,14 @@
 # .prod.denfrievilje.dk origin) to 127.0.0.1:${CADDY_PORT}. Caddy listens
 # on :80 inside the container and reverse-proxies to `site:8080`.
 #
-# Two responsibilities Caddy handles:
+# Identity routing (artist vs bureau) is header-based: DSM Web Station's
+# vhost for ole.kristensen.name (and www. variant, after redirect) sets
+# `X-Site-Mode: artist` on requests it forwards. nginx's map directive
+# picks the matching tree (see deploy/nginx.conf). No header → bureau.
+#
+# Caddy responsibilities here:
 #   1. Per-apex www → apex 301 (no cross-apex redirect — both denfrievilje.dk
-#      and ole.kristensen.name are canonical, just for different palettes;
-#      the site's JS detects hostname client-side and switches the palette
-#      via the bureau body class).
+#      and ole.kristensen.name are canonical, just for different identities).
 #   2. (Optionally) the .prod internal hostname → its corresponding apex,
 #      once the public DNS is CNAME-ed and the internal origin shouldn't be
 #      hit directly. Currently commented out — uncomment after DNS lands.
@@ -40,9 +43,8 @@
         # @prod_dfv host denfrievilje-dk.prod.denfrievilje.dk
         # redir @prod_dfv https://denfrievilje.dk{uri} 301
 
-        # Default: serve the site for whatever hostname this is. The site
-        # itself reads window.location.hostname client-side and applies the
-        # bureau or artist palette via document.body.classList.
+        # Default: forward to nginx, which picks the right tree based on
+        # the X-Site-Mode header set upstream by DSM Web Station.
         handle {
             reverse_proxy site:8080
         }

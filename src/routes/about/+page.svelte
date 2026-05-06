@@ -5,6 +5,7 @@
    import SectionLabel from '$lib/components/SectionLabel.svelte';
    import PageTitle from '$lib/components/PageTitle.svelte';
    import type { ImageSrcSet } from '$lib/components/VoronoiGlass.svelte';
+   import SEO from '$lib/components/SEO.svelte';
 
    let { data }: { data: PageData } = $props();
    const getBureau = getContext<() => boolean>('bureau');
@@ -22,10 +23,7 @@
    ];
 </script>
 
-<svelte:head>
-	<title>About — {bureau ? 'Den Frie Vilje' : 'Ole Kristensen'}</title>
-	<meta property="og:title" content="About" />
-</svelte:head>
+<SEO title="About" description={data.item.meta.teaser} ogType="profile" />
 
 
 <article class="px-[var(--gutter)]">

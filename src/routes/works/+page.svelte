@@ -5,15 +5,17 @@
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
 </script>
 
-<svelte:head>
-	<title>Works — {bureau ? 'Den Frie Vilje' : 'Ole Kristensen'}</title>
-</svelte:head>
+<SEO
+	title="Works"
+	description={data.section?.meta.lead ?? 'Selected works — interactive installations, live performances, and software-driven projects by Ole Kristensen.'}
+/>
 
 <div class="page-light">
 <section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">

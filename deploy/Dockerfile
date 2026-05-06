@@ -32,6 +32,24 @@ WORKDIR /app
 # parses correctly.
 SHELL ["/bin/bash", "-c"]
 
+# Chromium runtime libs — the OG image generator (scripts/generate-og-images.js)
+# launches Puppeteer's headless Chrome at build time to screenshot the SEO
+# render routes. The pkgx base image is glibc-based but doesn't ship the
+# X11/GTK/asound stack Chromium dlopens at startup. Without these the build
+# fails with `libglib-2.0.so.0: cannot open shared object file`.
+#
+# This stays in the builder stage — the runtime nginx image is unchanged.
+# Layer caches until the package list changes; subsequent rebuilds are
+# instant on apt unless the list is edited.
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates fonts-liberation \
+        libasound2 libatk-bridge2.0-0 libatk1.0-0 libcairo2 libcups2 \
+        libdbus-1-3 libdrm2 libexpat1 libgbm1 libglib2.0-0 libgtk-3-0 \
+        libnspr4 libnss3 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 \
+        libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxshmfence1 \
+    && rm -rf /var/lib/apt/lists/*
+
 # pkgx.yml first — `dev on` reads from CWD. Layer caches until the version
 # pins change, which is the right cache key.
 COPY pkgx.yml ./
@@ -51,21 +69,35 @@ COPY . .
 # the built output (otherwise it's gated to dev-mode only). The ENV statements
 # re-export them so `pnpm build` sees them as PUBLIC_*-prefixed vars that
 # SvelteKit forwards to the client via $env/static/public.
+#
+# PUBLIC_SITE_HOST / PUBLIC_DOMAIN_MODE default to the bureau identity here
+# so the `pnpm check` step (which runs before `pnpm build`) sees a valid
+# value for the `$env/static/public` imports in src/lib/site.ts. The
+# per-mode build scripts (`pnpm build:artist`, `pnpm build:bureau`) override
+# both via inline env at invocation, so each output tree still bakes in its
+# own canonical URL, og:url, sitemap host, and JSON-LD url.
 ARG VITE_MODE=production
 ARG PUBLIC_GIT_SHA=
 ARG PUBLIC_BUILD_TIME=
 ARG PUBLIC_SHOW_PALETTE_TOGGLE=false
+ARG PUBLIC_SITE_HOST=denfrievilje.dk
+ARG PUBLIC_DOMAIN_MODE=bureau
 ENV PUBLIC_GIT_SHA=$PUBLIC_GIT_SHA
 ENV PUBLIC_BUILD_TIME=$PUBLIC_BUILD_TIME
 ENV PUBLIC_SHOW_PALETTE_TOGGLE=$PUBLIC_SHOW_PALETTE_TOGGLE
+ENV PUBLIC_SITE_HOST=$PUBLIC_SITE_HOST
+ENV PUBLIC_DOMAIN_MODE=$PUBLIC_DOMAIN_MODE
 
 # Type check first — faster to fail here than in the (slower) Vite build.
-# Output lands in ./build via adapter-static. Same dev-shellcode activation
-# as the install step above (each RUN is a fresh shell).
+# `pnpm build` produces two trees:
+#   build-artist/  — PUBLIC_SITE_HOST=ole.kristensen.name PUBLIC_DOMAIN_MODE=artist
+#   build-bureau/  — PUBLIC_SITE_HOST=denfrievilje.dk     PUBLIC_DOMAIN_MODE=bureau
+# Both trees are copied into the runtime image; nginx picks the right root
+# based on the X-Site-Mode request header (see deploy/nginx.conf).
 RUN eval "$(pkgx dev --shellcode 2>/dev/null)" && dev on && \
     pnpm check
 RUN eval "$(pkgx dev --shellcode 2>/dev/null)" && dev on && \
-    pnpm build -- --mode $VITE_MODE
+    pnpm build
 
 # ----- runtime --------------------------------------------------
 # nginxinc/nginx-unprivileged runs as UID 101 (nginx user), binds to
@@ -85,11 +117,15 @@ RUN rm /etc/nginx/conf.d/default.conf \
     && apk add --no-cache wget
 
 # Site nginx config. Listens on 8080 — update the Caddyfile upstream
-# (and compose healthchecks) if this ever changes.
+# (and compose healthchecks) if this ever changes. Maps X-Site-Mode →
+# /usr/share/nginx/html/{ole-kristensen,den-frie-vilje}.
 COPY --chown=nginx:nginx deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Prerendered SvelteKit output from the builder stage.
-COPY --from=builder --chown=nginx:nginx /app/build/ /usr/share/nginx/html/
+# Prerendered SvelteKit output from the builder stage. Two trees, one per
+# identity. nginx picks the right root from the X-Site-Mode request header
+# set by the upstream proxy (DSM Web Station / Caddy).
+COPY --from=builder --chown=nginx:nginx /app/build-artist/ /usr/share/nginx/html/ole-kristensen/
+COPY --from=builder --chown=nginx:nginx /app/build-bureau/ /usr/share/nginx/html/den-frie-vilje/
 
 # Drop privilege for the runtime — nginx-unprivileged binds :8080 as
 # UID 101, no root needed at runtime.

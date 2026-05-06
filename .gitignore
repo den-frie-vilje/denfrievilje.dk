@@ -12,6 +12,8 @@ yarn.lock
 
 # Build outputs
 build
+build-artist
+build-bureau
 dist
 .svelte-kit
 
@@ -28,6 +30,9 @@ dist
 
 # Generated content images
 static/content
+
+# Generated OG images (regenerated on dev/build via scripts/generate-og-images.js)
+static/og
 
 # Environment
 .env
