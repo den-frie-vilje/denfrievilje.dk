@@ -26,10 +26,10 @@ const config: Config = {
 			relative: false
 		},
 		prerender: {
-			// /sitemap.xml and /robots.txt are +server endpoints not linked
-			// from any page, so the crawler won't reach them on its own —
-			// list them explicitly.
-			entries: ['*', '/sitemap.xml', '/robots.txt'],
+			// /sitemap.xml, /robots.txt, /llms.txt, and /works.xml are
+			// +server endpoints not linked from any page, so the crawler
+			// won't reach them on its own — list them explicitly.
+			entries: ['*', '/sitemap.xml', '/robots.txt', '/llms.txt', '/works.xml'],
 			handleHttpError: ({ path }) => {
 				if (path === '/favicon.png') return;
 				throw new Error(`404 ${path}`);

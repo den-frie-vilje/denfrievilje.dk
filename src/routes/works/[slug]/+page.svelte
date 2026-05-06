@@ -17,16 +17,22 @@
 
 	const pageUrl = $derived(`${SITE_URL}/works/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
-	const ogImage = $derived(`/og/works/${data.slug}.png`);
+	// SEO fields prefer explicit frontmatter overrides, then fall back to the
+	// auto-derived defaults (lead → meta description, generated OG screenshot).
+	const description = $derived(data.item.meta.description ?? data.item.meta.lead);
+	const ogImage = $derived(data.item.meta.ogImage ?? `/og/works/${data.slug}.png`);
+	const seoKeywords = $derived(
+		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
+	);
 	const creativeWork = $derived.by(() => ({
 		'@context': 'https://schema.org',
 		'@type': 'CreativeWork',
 		name: data.item.meta.title || data.slug,
 		url: pageUrl,
-		...(data.item.meta.lead ? { description: data.item.meta.lead } : {}),
+		...(description ? { description } : {}),
 		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
 		...(heroImage ? { image: `${SITE_URL}${heroImage}` } : {}),
-		...(data.item.meta.tags ? { keywords: data.item.meta.tags.join(', ') } : {}),
+		...(seoKeywords ? { keywords: seoKeywords } : {}),
 		creator: { '@type': 'Person', name: 'Ole Kristensen', url: SITE_URL }
 	}));
 	const breadcrumb = $derived.by(() => ({
@@ -47,11 +53,17 @@
 
 <SEO
 	title={data.item.meta.title || data.slug}
-	description={data.item.meta.lead}
+	{description}
 	{ogImage}
 	ogType="article"
 />
 <JsonLd data={[creativeWork, breadcrumb]} />
+
+<svelte:head>
+	{#if heroImage}
+		<link rel="preload" as="image" href={heroImage} fetchpriority="high" />
+	{/if}
+</svelte:head>
 
 <div class="page-light">
 <article class="px-[var(--gutter)]">

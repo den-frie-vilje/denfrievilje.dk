@@ -44,7 +44,7 @@
 				{#each data.items as item (item.slug)}
 					<a href="/consultancies/{item.slug}" class="group grid grid-cols-[3.5rem_1fr_auto] items-center gap-4 border-b border-[var(--color-border)] py-5 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2 md:grid-cols-[5rem_1fr_auto] md:gap-6">
 						{#if item.images.thumb}
-						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} sizes="5rem" class="h-10 w-14 shrink-0 overflow-hidden md:h-14 md:w-20" />
+						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="5rem" class="h-10 w-14 shrink-0 overflow-hidden md:h-14 md:w-20" />
 						{/if}
 						<div>
 							<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{item.meta.title || item.slug}</h3>

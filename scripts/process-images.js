@@ -13,6 +13,10 @@ const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
 const OUTPUT_DIR = path.join(process.cwd(), 'static', 'content');
 const THUMB_SIZES = [480, 960, 1920];
 const THUMB_QUALITY = 75;
+// WebP at quality 80 lands at roughly 30% smaller than mozjpeg quality 75
+// for visually equivalent output. Both formats are emitted so <picture>
+// elements can serve WebP to capable browsers and fall back to JPEG.
+const WEBP_QUALITY = 80;
 const IMAGE_RE = /\.(jpg|jpeg|png|gif|webp)$/i;
 const DOCUMENT_RE = /\.(pdf|svg|doc|docx|txt|rtf|odt|epub)$/i;
 const THUMB_RE = /^(thumb|00\.thumb)\.(jpg|jpeg|png|gif|webp)$/i;
@@ -62,19 +66,35 @@ async function processSection(section) {
 				fs.copyFileSync(srcPath, destPath);
 			}
 
-			// Generate scaled thumbnails at all sizes
+			// Generate scaled thumbnails at all sizes — JPEG (fallback) +
+			// WebP (preferred). Each format is gated independently on
+			// mtime so editing the script can rebuild just one variant.
 			if (THUMB_RE.test(file)) {
 				for (const size of THUMB_SIZES) {
-					const thumbDest = path.join(destDir, `thumb-${size}.jpg`);
-					if (!fs.existsSync(thumbDest) || fs.statSync(thumbDest).mtimeMs < srcStat.mtimeMs) {
+					const jpegDest = path.join(destDir, `thumb-${size}.jpg`);
+					if (!fs.existsSync(jpegDest) || fs.statSync(jpegDest).mtimeMs < srcStat.mtimeMs) {
 						try {
 							await sharp(srcPath)
 								.resize(size, null, { withoutEnlargement: true })
 								.jpeg({ quality: THUMB_QUALITY, mozjpeg: true })
-								.toFile(thumbDest);
+								.toFile(jpegDest);
 						} catch (err) {
 							console.warn(
-								`  ⚠ Failed to generate thumb-${size} for ${section}/${slug}/${file}:`,
+								`  ⚠ Failed to generate thumb-${size}.jpg for ${section}/${slug}/${file}:`,
+								err.message
+							);
+						}
+					}
+					const webpDest = path.join(destDir, `thumb-${size}.webp`);
+					if (!fs.existsSync(webpDest) || fs.statSync(webpDest).mtimeMs < srcStat.mtimeMs) {
+						try {
+							await sharp(srcPath)
+								.resize(size, null, { withoutEnlargement: true })
+								.webp({ quality: WEBP_QUALITY })
+								.toFile(webpDest);
+						} catch (err) {
+							console.warn(
+								`  ⚠ Failed to generate thumb-${size}.webp for ${section}/${slug}/${file}:`,
 								err.message
 							);
 						}

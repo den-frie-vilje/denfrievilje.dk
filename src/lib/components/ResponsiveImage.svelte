@@ -1,9 +1,12 @@
 <script lang="ts">
 	interface Props {
-		/** Low-res fallback URL (shown first) */
+		/** Low-res fallback URL (shown first, JPEG) */
 		src: string;
-		/** Responsive srcset string, e.g. "img-480.jpg 480w, img-960.jpg 960w" */
+		/** Responsive JPEG srcset, e.g. "img-480.jpg 480w, img-960.jpg 960w" */
 		srcset?: string | null;
+		/** Optional WebP srcset for the same sizes — browsers that support WebP
+		 *  pick this; the JPEG <img> remains the universal fallback. */
+		srcsetWebp?: string | null;
 		/** Sizes attribute for srcset resolution selection */
 		sizes?: string;
 		alt?: string;
@@ -16,6 +19,7 @@
 	let {
 		src,
 		srcset = null,
+		srcsetWebp = null,
 		sizes = '100vw',
 		alt = '',
 		class: className = '',
@@ -30,8 +34,10 @@
 	$effect(() => {
 		if (!srcset) return;
 		hiLoaded = false;
-		// Parse the highest resolution URL from the srcset
-		const parts = srcset.split(',').map(s => s.trim());
+		// Parse the highest resolution URL from the JPEG srcset; if the browser
+		// picks WebP via the <source>, this URL is still the canonical fallback
+		// the <img> will request when WebP isn't supported.
+		const parts = srcset.split(',').map((s) => s.trim());
 		const last = parts[parts.length - 1];
 		hiSrc = last.split(/\s+/)[0];
 	});
@@ -42,27 +48,27 @@
 </script>
 
 <div class="responsive-image-clip {className}">
-<div class="responsive-image {innerClass}">
-	<img
-		{src}
-		{alt}
-		{loading}
-		class="responsive-image-lo"
-	/>
-	{#if srcset}
-		<img
-			bind:this={hiEl}
-			src={hiSrc}
-			{srcset}
-			{sizes}
-			{alt}
-			{loading}
-			class="responsive-image-hi"
-			class:loaded={hiLoaded}
-			onload={onHiLoad}
-		/>
-	{/if}
-</div>
+	<div class="responsive-image {innerClass}">
+		<img {src} {alt} {loading} class="responsive-image-lo" />
+		{#if srcset}
+			<picture>
+				{#if srcsetWebp}
+					<source type="image/webp" srcset={srcsetWebp} {sizes} />
+				{/if}
+				<img
+					bind:this={hiEl}
+					src={hiSrc}
+					{srcset}
+					{sizes}
+					{alt}
+					{loading}
+					class="responsive-image-hi"
+					class:loaded={hiLoaded}
+					onload={onHiLoad}
+				/>
+			</picture>
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -79,6 +85,11 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+	}
+	picture {
+		position: absolute;
+		inset: 0;
+		display: block;
 	}
 	.responsive-image-hi {
 		position: absolute;

@@ -18,10 +18,24 @@
 	// image. $derived.by re-runs if `data` changes (client-side navigation),
 	// satisfying svelte-check's state_referenced_locally rule.
 	const heroImages = $derived.by(() => [...data.heroImages].sort(() => Math.random() - 0.5));
+
+	// LCP preload: hint the browser to fetch the first hero image (whichever
+	// the unshuffled order delivers via SSR) before it sees the <img> tag.
+	// imagesrcset lets the browser pick the right size for the viewport.
+	const lcpHero = $derived(data.heroImages[0]);
+	const lcpHeroSrcset = $derived(
+		lcpHero ? lcpHero.sizes.map((s: { width: number; url: string }) => `${s.url} ${s.width}w`).join(', ') : ''
+	);
 </script>
 
 <SEO />
 <JsonLd data={[PERSON_JSONLD, ORGANIZATION_JSONLD]} />
+
+<svelte:head>
+	{#if lcpHeroSrcset}
+		<link rel="preload" as="image" imagesrcset={lcpHeroSrcset} imagesizes="100vw" fetchpriority="high" />
+	{/if}
+</svelte:head>
 
 <Hero images={heroImages} />
 
@@ -45,6 +59,7 @@
 							<ResponsiveImage
 								src={work.images.thumb}
 								srcset={work.images.thumbSrcset}
+								srcsetWebp={work.images.thumbSrcsetWebp}
 								sizes="(min-width: 768px) 60vw, 100vw"
 								alt={work.meta.title}
 								class="mb-4 aspect-[16/10] bg-[var(--color-accent-subtle)]"
@@ -69,6 +84,7 @@
 							<ResponsiveImage
 								src={work.images.thumb}
 								srcset={work.images.thumbSrcset}
+								srcsetWebp={work.images.thumbSrcsetWebp}
 								sizes="(min-width: 768px) 30vw, 100vw"
 								alt={work.meta.title}
 								class="mb-4 aspect-[4/3] bg-[var(--color-accent-subtle)]"
@@ -107,7 +123,7 @@
 			{#each data.consultancies.slice(0, 4) as consultancy (consultancy.slug)}
 				<a href="/consultancies/{consultancy.slug}" class="group grid grid-cols-[1fr_auto] items-center gap-6 border-b border-[var(--color-border)] px-0 py-5 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2 md:grid-cols-[5rem_1fr_auto]">
 					{#if consultancy.images?.thumb}
-					<DuotoneImage src={consultancy.images.thumb} srcset={consultancy.images.thumbSrcset} sizes="5rem" class="hidden h-14 w-20 shrink-0 overflow-hidden md:block" />
+					<DuotoneImage src={consultancy.images.thumb} srcset={consultancy.images.thumbSrcset} srcsetWebp={consultancy.images.thumbSrcsetWebp} sizes="5rem" class="hidden h-14 w-20 shrink-0 overflow-hidden md:block" />
 					{/if}
 					<div>
 						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{consultancy.meta.title}</h3>

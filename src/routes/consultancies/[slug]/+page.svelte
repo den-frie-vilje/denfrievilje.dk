@@ -16,10 +16,16 @@
 
 	const pageUrl = $derived(`${SITE_URL}/consultancies/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
-	const ogImage = $derived(`/og/consultancies/${data.slug}.png`);
+	// SEO fields prefer explicit frontmatter overrides, then fall back to the
+	// auto-derived defaults (lead → client-shaped fallback → generated OG).
 	const description = $derived(
-		data.item.meta.lead ||
+		data.item.meta.description ??
+			data.item.meta.lead ??
 			(data.item.meta.client ? `Design technology for ${data.item.meta.client}.` : undefined)
+	);
+	const ogImage = $derived(data.item.meta.ogImage ?? `/og/consultancies/${data.slug}.png`);
+	const seoKeywords = $derived(
+		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
 	);
 	const creativeWork = $derived.by(() => ({
 		'@context': 'https://schema.org',
@@ -29,6 +35,7 @@
 		...(description ? { description } : {}),
 		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
 		...(heroImage ? { image: `${SITE_URL}${heroImage}` } : {}),
+		...(seoKeywords ? { keywords: seoKeywords } : {}),
 		...(data.item.meta.client
 			? { sourceOrganization: { '@type': 'Organization', name: data.item.meta.client } }
 			: {}),
