@@ -7,18 +7,51 @@
 	import CtaLink from '$lib/components/CtaLink.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import Gallery from '$lib/components/Gallery.svelte';
+	import SEO from '$lib/components/SEO.svelte';
+	import JsonLd from '$lib/components/JsonLd.svelte';
+	import { SITE_URL } from '$lib/site';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
+
+	const pageUrl = $derived(`${SITE_URL}/works/${data.slug}/`);
+	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
+	const ogImage = $derived(`/og/works/${data.slug}.png`);
+	const creativeWork = $derived.by(() => ({
+		'@context': 'https://schema.org',
+		'@type': 'CreativeWork',
+		name: data.item.meta.title || data.slug,
+		url: pageUrl,
+		...(data.item.meta.lead ? { description: data.item.meta.lead } : {}),
+		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
+		...(heroImage ? { image: `${SITE_URL}${heroImage}` } : {}),
+		...(data.item.meta.tags ? { keywords: data.item.meta.tags.join(', ') } : {}),
+		creator: { '@type': 'Person', name: 'Ole Kristensen', url: SITE_URL }
+	}));
+	const breadcrumb = $derived.by(() => ({
+		'@context': 'https://schema.org',
+		'@type': 'BreadcrumbList',
+		itemListElement: [
+			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+			{ '@type': 'ListItem', position: 2, name: 'Works', item: `${SITE_URL}/works/` },
+			{
+				'@type': 'ListItem',
+				position: 3,
+				name: data.item.meta.title || data.slug,
+				item: pageUrl
+			}
+		]
+	}));
 </script>
 
-<svelte:head>
-	<title>{data.item.meta.title || data.slug} — {bureau ? 'Den Frie Vilje' : 'Ole Kristensen'}</title>
-	{#if data.item.meta.title}
-		<meta property="og:title" content={data.item.meta.title} />
-	{/if}
-</svelte:head>
+<SEO
+	title={data.item.meta.title || data.slug}
+	description={data.item.meta.lead}
+	{ogImage}
+	ogType="article"
+/>
+<JsonLd data={[creativeWork, breadcrumb]} />
 
 <div class="page-light">
 <article class="px-[var(--gutter)]">

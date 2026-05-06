@@ -19,7 +19,12 @@
 		/>
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="auto">
+	<!-- Body class comes from PUBLIC_DOMAIN_MODE so the right palette applies
+	     server-side without a hydration flash. `body.bureau` is the actual
+	     selector in app.css; the artist value is harmless (no .artist CSS
+	     exists). The dev/staging palette toggle keeps body.classList in sync
+	     via the $effect in +layout.svelte. -->
+	<body class="%sveltekit.env.PUBLIC_DOMAIN_MODE%" data-sveltekit-preload-data="auto">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

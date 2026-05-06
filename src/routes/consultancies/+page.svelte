@@ -4,15 +4,17 @@
 	import { getContext } from 'svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
 </script>
 
-<svelte:head>
-	<title>Consultancies — {bureau ? 'Den Frie Vilje' : 'Ole Kristensen'}</title>
-</svelte:head>
+<SEO
+	title="Consultancies"
+	description={data.section?.meta.lead ?? 'Design technology consultancies — bespoke software, interactive systems, and creative engineering for cultural and commercial clients.'}
+/>
 
 <div class="page-dark">
 	<section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">

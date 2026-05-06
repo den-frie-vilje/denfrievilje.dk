@@ -4,6 +4,9 @@
 	import CtaLink from '$lib/components/CtaLink.svelte';
 	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
+	import SEO from '$lib/components/SEO.svelte';
+	import JsonLd from '$lib/components/JsonLd.svelte';
+	import { PERSON_JSONLD, ORGANIZATION_JSONLD } from '$lib/site';
 	import type { PageData } from './$types';
 	import { getContext } from 'svelte';
 
@@ -15,10 +18,8 @@
 	const heroImages = [...data.heroImages].sort(() => Math.random() - 0.5);
 </script>
 
-<svelte:head>
-	<title>{bureau ? 'Den Frie Vilje' : 'Ole Kristensen'} — Software Artist & Design Technologist</title>
-	<meta name="description" content="Interactive installations, live performances and design technology." />
-</svelte:head>
+<SEO />
+<JsonLd data={[PERSON_JSONLD, ORGANIZATION_JSONLD]} />
 
 <Hero images={heroImages} />
 

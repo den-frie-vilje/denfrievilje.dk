@@ -51,6 +51,11 @@ COPY . .
 # the built output (otherwise it's gated to dev-mode only). The ENV statements
 # re-export them so `pnpm build` sees them as PUBLIC_*-prefixed vars that
 # SvelteKit forwards to the client via $env/static/public.
+#
+# PUBLIC_SITE_HOST / PUBLIC_DOMAIN_MODE are NOT set here — `pnpm build` runs
+# build:artist and build:bureau which inline their own values per build, so
+# each output tree is self-consistent (canonical URL, og:url, sitemap host,
+# JSON-LD url, etc. all match the build's target identity).
 ARG VITE_MODE=production
 ARG PUBLIC_GIT_SHA=
 ARG PUBLIC_BUILD_TIME=
@@ -60,12 +65,15 @@ ENV PUBLIC_BUILD_TIME=$PUBLIC_BUILD_TIME
 ENV PUBLIC_SHOW_PALETTE_TOGGLE=$PUBLIC_SHOW_PALETTE_TOGGLE
 
 # Type check first — faster to fail here than in the (slower) Vite build.
-# Output lands in ./build via adapter-static. Same dev-shellcode activation
-# as the install step above (each RUN is a fresh shell).
+# `pnpm build` produces two trees:
+#   build-artist/  — PUBLIC_SITE_HOST=ole.kristensen.name PUBLIC_DOMAIN_MODE=artist
+#   build-bureau/  — PUBLIC_SITE_HOST=denfrievilje.dk     PUBLIC_DOMAIN_MODE=bureau
+# Both trees are copied into the runtime image; nginx picks the right root
+# based on the X-Site-Mode request header (see deploy/nginx.conf).
 RUN eval "$(pkgx dev --shellcode 2>/dev/null)" && dev on && \
     pnpm check
 RUN eval "$(pkgx dev --shellcode 2>/dev/null)" && dev on && \
-    pnpm build -- --mode $VITE_MODE
+    pnpm build
 
 # ----- runtime --------------------------------------------------
 # nginxinc/nginx-unprivileged runs as UID 101 (nginx user), binds to
@@ -85,11 +93,15 @@ RUN rm /etc/nginx/conf.d/default.conf \
     && apk add --no-cache wget
 
 # Site nginx config. Listens on 8080 — update the Caddyfile upstream
-# (and compose healthchecks) if this ever changes.
+# (and compose healthchecks) if this ever changes. Maps X-Site-Mode →
+# /usr/share/nginx/html/{ole-kristensen,den-frie-vilje}.
 COPY --chown=nginx:nginx deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Prerendered SvelteKit output from the builder stage.
-COPY --from=builder --chown=nginx:nginx /app/build/ /usr/share/nginx/html/
+# Prerendered SvelteKit output from the builder stage. Two trees, one per
+# identity. nginx picks the right root from the X-Site-Mode request header
+# set by the upstream proxy (DSM Web Station / Caddy).
+COPY --from=builder --chown=nginx:nginx /app/build-artist/ /usr/share/nginx/html/ole-kristensen/
+COPY --from=builder --chown=nginx:nginx /app/build-bureau/ /usr/share/nginx/html/den-frie-vilje/
 
 # Drop privilege for the runtime — nginx-unprivileged binds :8080 as
 # UID 101, no root needed at runtime.
