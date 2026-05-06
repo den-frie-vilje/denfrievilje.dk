@@ -1,0 +1,46 @@
+# Local-dev override for debugging the deploy stack on a laptop.
+#
+# Usage (from repo root):
+#   pkgx pnpm build
+#   docker compose \
+#     -f deploy/compose.staging.yml \
+#     -f deploy/compose.local.yml \
+#     up --build
+#
+# Then open http://localhost:8080.
+#
+# What this override does vs compose.staging.yml:
+#   • `site` builds locally from deploy/Dockerfile (the `image:` tag from
+#     the staging file still matches the built tag, so Docker won't try
+#     to pull anything from GHCR — the local build wins).
+#   • Port binds to 0.0.0.0:8080 so the laptop can reach it.
+#   • `restart: "no"` so Ctrl-C actually kills everything.
+#   • `nas-deploy` network is created locally, not external.
+
+name: denfrievilje-dk-local
+
+networks:
+  nas-deploy:
+    external: false
+
+services:
+  caddy:
+    # `!override` replaces the parent file's ports list instead of merging
+    # it — without this, compose concatenates and the second bind collides
+    # with the first ("address already in use"). Needs Compose 2.24+.
+    ports: !override
+      - "8080:80"
+    restart: "no"
+
+  site:
+    # Build locally. The `image:` tag from compose.staging.yml is what the
+    # local build is tagged as, so the staging-yml's `pull_policy: always`
+    # is overridden here to prevent Docker from trying to pull from GHCR.
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      args:
+        VITE_MODE: staging
+        PUBLIC_SHOW_PALETTE_TOGGLE: "true"
+    pull_policy: build
+    restart: "no"

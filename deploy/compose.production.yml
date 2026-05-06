@@ -1,0 +1,60 @@
+# Production stack — denfrievilje.dk + ole.kristensen.name.
+#
+# Brought up + reconciled by the nas-sites pull-only deploy agent on its
+# next fire after a `main` branch push (see nas-sites
+# /docs/PULL-DEPLOY-MODEL.md). Composition:
+#   caddy   (front-door — per-apex www→apex 301, reverse proxy to site)
+#   site    (static site, pulled from GHCR — built with
+#            PUBLIC_SHOW_PALETTE_TOGGLE=false; the toggle is staging-only)
+#
+# Single image, two apexes. The site's JS detects window.location.hostname
+# and applies the bureau or artist palette via document.body.classList,
+# so one container serves both denfrievilje.dk and ole.kristensen.name.
+#
+# DSM Web Station's production vhost has all four public hostnames
+# (denfrievilje.dk, www.denfrievilje.dk, ole.kristensen.name,
+# www.ole.kristensen.name) plus the canonical .prod.denfrievilje.dk origin
+# as SANs, all proxying to 127.0.0.1:${CADDY_PORT}. Caddy then serves or
+# 301s based on Host (see Caddyfile.production).
+
+name: denfrievilje-dk-production
+
+networks:
+  nas-deploy:
+    external: true
+  internal:
+
+services:
+  caddy:
+    image: caddy:2-alpine@sha256:834468128c7696cec0ceea6172f7d692daf645ae51983ca76e39da54a97c570d
+    restart: unless-stopped
+    networks: [nas-deploy, internal]
+    ports:
+      # Loopback only — DSM reverse-proxies all production hostnames for
+      # this site to this port on 127.0.0.1. Port from production.env.
+      - "127.0.0.1:${CADDY_PORT:-18083}:80"
+    volumes:
+      - ./Caddyfile.production:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - site
+
+  site:
+    image: ghcr.io/den-frie-vilje/denfrievilje:production-latest
+    restart: unless-stopped
+    networks: [internal]
+    pull_policy: always
+    # See compose.staging.yml for healthcheck rationale — `up -d --wait`
+    # blocks on this so the agent's CF cache purge fires only after the
+    # new container is actually serving traffic.
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  caddy_data:
+  caddy_config:

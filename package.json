@@ -4,8 +4,8 @@
 	"description": "Den Frie Vilje Website",
 	"type": "module",
 	"engines": {
-		"node": "~24.14.0",
-		"pnpm": "~10.30.3"
+		"node": "~25",
+		"pnpm": "~10"
 	},
 	"scripts": {
 		"images": "node scripts/process-images.js",
@@ -13,8 +13,8 @@
 		"build": "node scripts/process-images.js && vite build",
 		"preview": "vite preview",
 		"test:e2e": "vitest run --config vitest.config.ts",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write ."
 	},
@@ -24,7 +24,6 @@
 		"@sveltejs/mcp": "^0.1.20",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
 		"@tailwindcss/vite": "^4.2.1",
-		"@types/three": "^0.183.1",
 		"eslint": "^9.0.0",
 		"eslint-plugin-svelte": "^3.15.0",
 		"globals": "^17.4.0",
@@ -50,7 +49,6 @@
 	"dependencies": {
 		"@types/js-yaml": "^4.0.9",
 		"@types/node": "^25.3.3",
-		"marked": "^17.0.3",
-		"three": "^0.183.2"
+		"marked": "^17.0.3"
 	}
 }
