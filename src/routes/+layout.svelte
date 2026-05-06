@@ -43,20 +43,22 @@
 	});
 
 	function handleToggleDomain(mode: 'artist' | 'bureau') {
-		bureau = mode === 'bureau';
+		const isBureau = mode === 'bureau';
+		// Apply the body class synchronously *before* flipping state so the
+		// re-rendered Hero / VoronoiGlass / Header read the right
+		// CSS-variable values via getComputedStyle on mount. A $effect would
+		// run after the DOM patch, leaving children with the previous palette
+		// cached for one frame. The hero's canvas only resolves --color-accent
+		// at mount time, so a stale read paints the wrong accent until the
+		// next toggle.
+		if (typeof document !== 'undefined') {
+			document.body.classList.toggle('bureau', isBureau);
+		}
+		bureau = isBureau;
 		if (SHOW_TOGGLE) {
 			localStorage.setItem('dev-domain-mode', mode);
 		}
 	}
-
-	// Body class is rendered server-side from PUBLIC_DOMAIN_MODE in app.html
-	// so the correct palette applies without a hydration flash. This effect
-	// only does work when the dev/staging toggle flips bureau at runtime.
-	$effect(() => {
-		if (typeof document !== 'undefined') {
-			document.body.classList.toggle('bureau', bureau);
-		}
-	});
 </script>
 
 {#if isOgRoute}
