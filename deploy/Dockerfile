@@ -32,6 +32,24 @@ WORKDIR /app
 # parses correctly.
 SHELL ["/bin/bash", "-c"]
 
+# Chromium runtime libs — the OG image generator (scripts/generate-og-images.js)
+# launches Puppeteer's headless Chrome at build time to screenshot the SEO
+# render routes. The pkgx base image is glibc-based but doesn't ship the
+# X11/GTK/asound stack Chromium dlopens at startup. Without these the build
+# fails with `libglib-2.0.so.0: cannot open shared object file`.
+#
+# This stays in the builder stage — the runtime nginx image is unchanged.
+# Layer caches until the package list changes; subsequent rebuilds are
+# instant on apt unless the list is edited.
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates fonts-liberation \
+        libasound2 libatk-bridge2.0-0 libatk1.0-0 libcairo2 libcups2 \
+        libdbus-1-3 libdrm2 libexpat1 libgbm1 libglib2.0-0 libgtk-3-0 \
+        libnspr4 libnss3 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 \
+        libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxshmfence1 \
+    && rm -rf /var/lib/apt/lists/*
+
 # pkgx.yml first — `dev on` reads from CWD. Layer caches until the version
 # pins change, which is the right cache key.
 COPY pkgx.yml ./
