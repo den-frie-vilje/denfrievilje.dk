@@ -16,6 +16,15 @@ export interface ContentMeta {
 	technologies?: string[];
 	appearances?: Array<{ date: string; occasion: string; place: string; url: string }>;
 	videos?: Array<{ id: string; title: string }>;
+
+	// Optional SEO overrides — page-specific values that beat the auto-derived
+	// defaults (which fall back to title/lead/first-gallery-image). Set in the
+	// content's frontmatter when the on-page lead reads weirdly out of context,
+	// or when the auto-picked OG hero crop is awkward at 1200×630.
+	description?: string;
+	ogImage?: string;
+	keywords?: string[];
+
 	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
@@ -24,8 +33,10 @@ export interface ContentImages {
 	gallery: string[];
 	/** Scaled thumbnail URL (thumb-480.jpg), or null */
 	thumb: string | null;
-	/** srcset string for all available thumb sizes */
+	/** JPEG srcset string for all available thumb sizes (universal fallback) */
 	thumbSrcset: string | null;
+	/** WebP srcset string for the same sizes (preferred when supported) */
+	thumbSrcsetWebp: string | null;
 }
 
 export interface Content {
@@ -81,18 +92,41 @@ function resolveImages(section: string, slug: string, folder: string): ContentIm
 	const thumbPath = path.join(process.cwd(), 'static', 'content', section, slug, 'thumb-480.jpg');
 	const thumb = fs.existsSync(thumbPath) ? `${publicBase}/thumb-480.jpg` : null;
 
-	// Build srcset from available thumb sizes
+	// Build per-format srcsets from available thumb sizes. Both JPEG and WebP
+	// are emitted by scripts/process-images.js; the consumer (ResponsiveImage,
+	// DuotoneImage) wraps them in <picture> with a WebP <source> and a JPEG
+	// <img> fallback.
 	const thumbSizes = [480, 960, 1920];
-	const srcsetParts: string[] = [];
+	const jpegParts: string[] = [];
+	const webpParts: string[] = [];
 	for (const size of thumbSizes) {
-		const p = path.join(process.cwd(), 'static', 'content', section, slug, `thumb-${size}.jpg`);
-		if (fs.existsSync(p)) {
-			srcsetParts.push(`${publicBase}/thumb-${size}.jpg ${size}w`);
+		const jpegOnDisk = path.join(
+			process.cwd(),
+			'static',
+			'content',
+			section,
+			slug,
+			`thumb-${size}.jpg`
+		);
+		if (fs.existsSync(jpegOnDisk)) {
+			jpegParts.push(`${publicBase}/thumb-${size}.jpg ${size}w`);
+		}
+		const webpOnDisk = path.join(
+			process.cwd(),
+			'static',
+			'content',
+			section,
+			slug,
+			`thumb-${size}.webp`
+		);
+		if (fs.existsSync(webpOnDisk)) {
+			webpParts.push(`${publicBase}/thumb-${size}.webp ${size}w`);
 		}
 	}
-	const thumbSrcset = srcsetParts.length > 0 ? srcsetParts.join(', ') : null;
+	const thumbSrcset = jpegParts.length > 0 ? jpegParts.join(', ') : null;
+	const thumbSrcsetWebp = webpParts.length > 0 ? webpParts.join(', ') : null;
 
-	return { gallery, thumb, thumbSrcset };
+	return { gallery, thumb, thumbSrcset, thumbSrcsetWebp };
 }
 
 /**
@@ -161,7 +195,7 @@ export async function getContent(section: string, slug: string): Promise<Content
 			meta,
 			html,
 			slug: extractSlug(section),
-			images: { gallery: [], thumb: null, thumbSrcset: null }
+			images: { gallery: [], thumb: null, thumbSrcset: null, thumbSrcsetWebp: null }
 		};
 	}
 

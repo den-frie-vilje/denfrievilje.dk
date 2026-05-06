@@ -28,7 +28,12 @@
 	);
 </script>
 
-<SEO title="Contact" description="Get in touch — Ole Kristensen / Den Frie Vilje. Copenhagen-based studio for interactive installations, live performances, and design technology." />
+<SEO
+	title="Contact"
+	description={data.item.meta.description ??
+		'Get in touch — Ole Kristensen / Den Frie Vilje. Copenhagen-based studio for interactive installations, live performances, and design technology.'}
+	ogImage={data.item.meta.ogImage}
+/>
 
 <article class="px-[var(--gutter)]" class:page-dark={bureau}>
    <header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">

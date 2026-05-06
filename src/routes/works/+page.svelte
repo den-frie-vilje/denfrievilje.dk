@@ -48,6 +48,7 @@
 								<ResponsiveImage
 									src={item.images.thumb}
 									srcset={item.images.thumbSrcset}
+									srcsetWebp={item.images.thumbSrcsetWebp}
 									sizes="100vw"
 									alt={item.meta.title || item.slug}
 									class="mb-3 aspect-[4/3] bg-[var(--color-accent-subtle)]"
@@ -82,6 +83,7 @@
 								<ResponsiveImage
 									src={item.images.thumb}
 									srcset={item.images.thumbSrcset}
+									srcsetWebp={item.images.thumbSrcsetWebp}
 									sizes="16rem"
 									alt={item.meta.title || item.slug}
 									class="aspect-square bg-[var(--color-accent-subtle)]"

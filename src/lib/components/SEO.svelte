@@ -65,4 +65,6 @@
 	<meta name="twitter:title" content={resolvedTitle} />
 	<meta name="twitter:description" content={resolvedDescription} />
 	<meta name="twitter:image" content={resolvedOgImage} />
+
+	<link rel="alternate" type="application/atom+xml" href="{SITE_URL}/works.xml" title="Works" />
 </svelte:head>

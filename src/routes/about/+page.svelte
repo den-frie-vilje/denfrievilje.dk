@@ -23,7 +23,12 @@
    ];
 </script>
 
-<SEO title="About" description={data.item.meta.teaser} ogType="profile" />
+<SEO
+	title="About"
+	description={data.item.meta.description ?? data.item.meta.teaser}
+	ogImage={data.item.meta.ogImage}
+	ogType="profile"
+/>
 
 
 <article class="px-[var(--gutter)]">

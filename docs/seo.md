@@ -20,16 +20,16 @@ Per-build outputs are gitignored (`build-artist/`, `build-bureau/`).
 
 ### What's correctly different per origin
 
-| | `ole.kristensen.name` | `denfrievilje.dk` |
-|---|---|---|
-| `<title>` | `… — Ole Kristensen` | `… — Den Frie Vilje` |
-| `<meta name="description">` | artist copy | bureau copy |
-| `<link rel="canonical">` | `https://ole.kristensen.name/...` | `https://denfrievilje.dk/...` |
-| `og:url`, `og:site_name`, `og:locale` | artist | bureau |
-| Default `og:image` | `/og/default-ole-kristensen.png` | `/og/default-den-frie-vilje.png` |
-| `/sitemap.xml` URLs | artist host | bureau host |
-| `/robots.txt` `Sitemap:` line | artist host | bureau host |
-| `<body class>` | `artist` | `bureau` (drives palette switch in `app.css`) |
+|                                       | `ole.kristensen.name`             | `denfrievilje.dk`                             |
+| ------------------------------------- | --------------------------------- | --------------------------------------------- |
+| `<title>`                             | `… — Ole Kristensen`              | `… — Den Frie Vilje`                          |
+| `<meta name="description">`           | artist copy                       | bureau copy                                   |
+| `<link rel="canonical">`              | `https://ole.kristensen.name/...` | `https://denfrievilje.dk/...`                 |
+| `og:url`, `og:site_name`, `og:locale` | artist                            | bureau                                        |
+| Default `og:image`                    | `/og/default-ole-kristensen.png`  | `/og/default-den-frie-vilje.png`              |
+| `/sitemap.xml` URLs                   | artist host                       | bureau host                                   |
+| `/robots.txt` `Sitemap:` line         | artist host                       | bureau host                                   |
+| `<body class>`                        | `artist`                          | `bureau` (drives palette switch in `app.css`) |
 
 Per-page OG (works/consultancies) is shared across both origins — the visual style there is content-type, not origin.
 
@@ -85,7 +85,7 @@ OG images are rendered as **Svelte components**, not as inline HTML strings in t
 3. The root layout detects `_og/*` URLs and skips Header/Footer/palette toggle, so the screenshot captures only the OG layout.
 4. [`scripts/generate-og-images.js`](../scripts/generate-og-images.js) launches Puppeteer, reuses an existing dev server on `:5173` if one is running, otherwise spins up Vite in-process, then visits each `/_og/...` URL and screenshots `.og-root > *` at 1200×630.
 
-Outputs land in `static/og/` (gitignored) and are referenced as `/og/default-artist.png`, `/og/default-bureau.png`, `/og/works/<slug>.png`, `/og/consultancies/<slug>.png`. The `<SEO>` default-OG resolution is identity-aware: artist mode → `/og/default-artist.png`, bureau mode → `/og/default-bureau.png`.
+Outputs land in `static/og/` (gitignored) and are referenced as `/og/default-ole-kristensen.png`, `/og/default-den-frie-vilje.png`, `/og/works/<slug>.png`, `/og/consultancies/<slug>.png` — brand-slug filenames so public asset URLs never expose the internal artist/bureau labels. The `<SEO>` default-OG resolution is identity-aware.
 
 The script uses mtime-based incremental rebuilds keyed on `(content mtime, OG component mtime)`, so editing `ArtistOG.svelte` invalidates all artist outputs without needing a manual flag. Pass `--force` to bypass the cache.
 
@@ -98,9 +98,39 @@ A previous iteration of `generate-og-images.js` shipped ~150 lines of inline HTM
 
 Driving SvelteKit routes with Puppeteer keeps the layouts in normal `.svelte` files with normal Svelte/Tailwind tooling, and makes the script a thin orchestrator instead of the source of truth for visual design.
 
+## Per-page frontmatter SEO overrides
+
+The `ContentMeta` type in [`src/lib/content.ts`](../src/lib/content.ts) accepts three optional fields a content author can set in any work / consultancy / page's YAML frontmatter:
+
+- `description` — overrides the auto-derived `<meta description>` and `og:description`. Use when the on-page `lead` reads weirdly out of context, or when there's no `lead` at all.
+- `ogImage` — overrides the auto-generated per-page OG screenshot. Root-relative path or absolute URL. Use when the gallery's first image crops badly at 1200×630.
+- `keywords` — extends `tags` for the JSON-LD `keywords` field. Use to add topic words not visible on-page.
+
+All three fall back gracefully to the existing auto-derivation, so old content keeps working unchanged.
+
+## llms.txt
+
+[`src/routes/llms.txt/+server.ts`](../src/routes/llms.txt/+server.ts) emits a soft-standard markdown file at `/llms.txt` (per [llmstxt.org](https://llmstxt.org)) that tells LLM crawlers what the site is and lists key pages. Per-host like `/sitemap.xml` and `/robots.txt`. Helps with AI Overviews / answer-box citations.
+
+## Atom feed
+
+[`src/routes/works.xml/+server.ts`](../src/routes/works.xml/+server.ts) emits an Atom feed of works (newest first) so feed readers and aggregators (Are.na, NetNewsWire, RSS-Bridge) auto-fetch. Discovered via `<link rel="alternate" type="application/atom+xml">` in `SEO.svelte`.
+
+## Image formats
+
+[`scripts/process-images.js`](../scripts/process-images.js) emits both JPEG and WebP variants for every thumbnail size (480 / 960 / 1920). [`ResponsiveImage`](../src/lib/components/ResponsiveImage.svelte) and [`DuotoneImage`](../src/lib/components/DuotoneImage.svelte) wrap the JPEG `<img>` in a `<picture>` element with a `<source type="image/webp">`, so capable browsers fetch the WebP and the rest fall back to JPEG. Typical 25–35% bandwidth savings on the listings.
+
+Hero / VoronoiGlass paint to a `<canvas>` via `new Image()`, which doesn't benefit from `<picture>` semantics — those stay JPEG. The LCP cost is mitigated by preload (see below).
+
+## LCP preload
+
+The first hero image on the homepage and the first gallery image on `/works/[slug]/` are emitted as `<link rel="preload" as="image" fetchpriority="high">` in `<svelte:head>`. The browser starts fetching the image before it sees the `<img>` tag, typically shaving 200–500 ms off Largest Contentful Paint.
+
+The homepage uses `imagesrcset` so the browser still picks the right size for the viewport.
+
 ## What's not done (yet)
 
-- `llms.txt` for AI crawlers — opportunistic, easy to add later.
-- Per-page OG generation for `/about`, `/contact`, listing pages — currently those use the identity defaults.
+- WebP/AVIF for the canvas-painted Hero (would need feature detection + format choice in JS).
+- WebP/thumbnails for full-size gallery images (currently served as raw originals).
 - Lighthouse / Core Web Vitals tuning beyond what SvelteKit + adapter-static give for free.
 - Validation of the generated JSON-LD against schema.org's tester (https://validator.schema.org).
