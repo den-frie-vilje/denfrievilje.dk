@@ -25,7 +25,55 @@ export interface ContentMeta {
 	ogImage?: string;
 	keywords?: string[];
 
+	// Optional rich Person profile — single source of truth for schema.org
+	// Person JSON-LD across home + about pages. Live in src/content/about/
+	// because that's where the identity is documented; src/lib/person.ts
+	// turns this shape into the JSON-LD payload.
+	person?: PersonMeta;
+
 	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+export interface PersonMeta {
+	givenName?: string;
+	familyName?: string;
+	birthYear?: number | string;
+	birthPlace?: string;
+	nationality?: string;
+	image?: string;
+	jobTitle?: string[];
+	worksFor?: Array<{ name: string; role?: string; url?: string; since?: string | number }>;
+	pastEmployer?: Array<{
+		name: string;
+		role?: string;
+		url?: string;
+		from?: string | number;
+		to?: string | number;
+	}>;
+	alumniOf?: Array<{
+		name: string;
+		department?: string;
+		qualification?: string;
+		from?: string | number;
+		to?: string | number;
+	}>;
+	affiliation?: Array<{ name: string; role?: string; url?: string }>;
+	pastAffiliation?: Array<{
+		name: string;
+		role?: string;
+		url?: string;
+		from?: string | number;
+		to?: string | number;
+	}>;
+	memberOf?: Array<{ name: string; url?: string }>;
+	awards?: Array<{
+		title: string;
+		organization?: string;
+		year?: string | number;
+		forWork?: string;
+	}>;
+	knowsAbout?: string[];
+	knowsLanguage?: string[];
 }
 
 export interface ContentImages {

@@ -27,9 +27,46 @@
 	const seoKeywords = $derived(
 		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
 	);
+
+	// Reuse the same isoDate parser shape as works/[slug]; consultancies rarely
+	// have appearances, so only VideoObject is wired here.
+	const MONTH_TO_NUM: Record<string, number> = {
+		jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7,
+		aug: 8, sep: 9, oct: 10, nov: 11, dec: 12, january: 1, february: 2, march: 3,
+		april: 4, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12
+	};
+	function isoDate(input?: string): string | null {
+		if (!input) return null;
+		const yearMatch = input.match(/(\d{4})/);
+		if (!yearMatch) return null;
+		const year = yearMatch[1];
+		const monthMatch = input.toLowerCase().match(/[a-z]{3,}/);
+		const month = monthMatch ? MONTH_TO_NUM[monthMatch[0]] : null;
+		const mm = month ? String(month).padStart(2, '0') : '01';
+		return `${year}-${mm}-01`;
+	}
+
+	const videoObjects = $derived.by(() => {
+		const videos = data.item.meta.videos;
+		if (!videos?.length) return [] as Record<string, unknown>[];
+		const upload = isoDate(data.item.meta.date);
+		return videos.map((v: { id: string; title: string }) => ({
+			'@context': 'https://schema.org',
+			'@type': 'VideoObject',
+			name: v.title || (data.item.meta.title ?? data.slug),
+			description: data.item.meta.lead || v.title || '',
+			contentUrl: `https://vimeo.com/${v.id}`,
+			embedUrl: `https://player.vimeo.com/video/${v.id}`,
+			thumbnailUrl: `https://vumbnail.com/${v.id}.jpg`,
+			...(upload ? { uploadDate: upload } : {}),
+			isPartOf: { '@type': 'CreativeWork', name: data.item.meta.title || data.slug, url: pageUrl }
+		}));
+	});
+
 	const creativeWork = $derived.by(() => ({
 		'@context': 'https://schema.org',
 		'@type': 'CreativeWork',
+		'@id': pageUrl,
 		name: data.item.meta.title || data.slug,
 		url: pageUrl,
 		...(description ? { description } : {}),
@@ -50,6 +87,8 @@
 			{ '@type': 'ListItem', position: 3, name: data.item.meta.title || data.slug, item: pageUrl }
 		]
 	}));
+
+	const jsonLd = $derived([creativeWork, breadcrumb, ...videoObjects]);
 </script>
 
 <SEO
@@ -58,7 +97,7 @@
 	{ogImage}
 	ogType="article"
 />
-<JsonLd data={[creativeWork, breadcrumb]} />
+<JsonLd data={jsonLd} />
 
 <div class="page-dark">
 	<article class="px-[var(--gutter)]">

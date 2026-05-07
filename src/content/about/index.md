@@ -2,6 +2,92 @@
 title: Hello
 lead: <p class="lead">I am a visual artist. I write software and build electronics.<br />I work with interactive installations, visual art and mad science. <br/>I work in academic research and teach in art schools.<br />I am based in Copenhagen, Denmark.</p>
 teaser: "Ole Kristensen is a visual artist, programmer and scenographer \u2014 developing and appropriating new technology, creating works with software at the core."
+person:
+  givenName: Ole
+  familyName: Kristensen
+  birthYear: 1978
+  birthPlace: Ringsted, Denmark
+  nationality: DK
+  image: /content/about/ole-kristensen.jpg
+  jobTitle:
+    - Software Artist
+    - Design Technologist
+    - Senior Full-Stack Developer
+  worksFor:
+    - name: Den Frie Vilje
+      role: Senior Software Developer / Founder
+      url: https://denfrievilje.dk
+      since: 2018
+  pastEmployer:
+    - name: DR \u2014 Danish Broadcasting Corporation
+      role: Design Technologist (consultant)
+      url: https://www.dr.dk
+      from: 2017-09
+      to: 2026-02
+    - name: TV 2 Danmark
+      role: Design Technologist (consultant)
+      url: https://tv2.dk
+      from: 2022-10
+      to: 2025-06
+  alumniOf:
+    - name: Roskilde University
+      department: Computer Science and Communications
+      qualification: Bachelor of Interactive Media
+      from: 1997
+      to: 2000
+    - name: Chalmers University of Technology
+      department: Master of Art and Technology
+      qualification: Guest studies
+      from: 2003
+      to: 2004
+  pastAffiliation:
+    - name: Recoil Performance Group
+      role: Software Artist / Scenographer
+      url: http://recoil-performance.org/
+    - name: Polar and Space, Danish Technical University
+      role: Artistic Consultant
+      url: https://www.dtu.dk
+    - name: Click Festival
+      role: Advisor
+      url: https://clickfestival.dk
+  memberOf:
+    - name: Uafh\u00e6ngige Scenekunstnere
+  awards:
+    - title: Reumert \u2014 Dance Performance of the Year
+      organization: National Danish Theatre Awards
+      year: 2012
+      forWork: Living Room
+    - title: Reumert \u2014 Dance Performance of the Year
+      organization: National Danish Theatre Awards
+      year: 2010
+      forWork: Frost
+    - title: Two-year work scholarship
+      organization: Danish Arts Council
+      year: 2014
+    - title: Initiative Price
+      organization: Society for the Beautification of Copenhagen
+      year: 2006
+      forWork: Christiania's Own Development Plan
+  knowsAbout:
+    - Full-stack engineering
+    - Front-end engineering
+    - UI/UX
+    - Design
+    - Software art
+    - Interactive installations
+    - Stage scenography
+    - Motion branding
+    - Broadcast television
+    - Lighting control
+    - Generative AI
+    - Physical computing
+    - Cloud Native / Kubernetes
+    - Museum interactives
+    - Arctic / cross-cultural fieldwork
+  knowsLanguage:
+    - Danish \u2014 native
+    - English \u2014 full professional
+    - Dutch \u2014 working
 ---
 
 Ole Kristensen is a visual artist, programmer and scenographer. At the intersection of art and science he develops and appropriates new technology, creating works with software at the core.

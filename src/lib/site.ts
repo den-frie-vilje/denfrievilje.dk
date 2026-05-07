@@ -33,19 +33,21 @@ export const SITE_DESCRIPTION_BUREAU =
 export const SITE_OG_ARTIST = '/og/default-ole-kristensen.png';
 export const SITE_OG_BUREAU = '/og/default-den-frie-vilje.png';
 
-// Person + Organization JSON-LD shared across pages.
-export const PERSON_JSONLD = {
-	'@context': 'https://schema.org',
-	'@type': 'Person',
-	name: 'Ole Kristensen',
-	url: SITE_URL,
-	jobTitle: SITE_TAGLINE,
-	address: {
-		'@type': 'PostalAddress',
-		addressLocality: 'Copenhagen',
-		addressCountry: 'DK'
-	},
-	sameAs: ['https://github.com/olekristensen', 'https://www.linkedin.com/in/olefab']
+// Person identity defaults the buildPersonJsonLd helper falls back to when
+// the about-page frontmatter doesn't override them. The rich Person profile
+// (jobTitle, worksFor, awards, alumniOf, etc.) lives in the frontmatter at
+// src/content/about/index.md — single source of truth — and is built into
+// JSON-LD by src/lib/person.ts. Both home and about emit the same Person
+// (matching @id) so Google understands they describe the same entity.
+export const PERSON_NAME = 'Ole Kristensen';
+export const PERSON_SAME_AS = [
+	'https://github.com/olekristensen',
+	'https://www.linkedin.com/in/olefab'
+];
+export const PERSON_ADDRESS = {
+	'@type': 'PostalAddress',
+	addressLocality: 'Copenhagen',
+	addressCountry: 'DK'
 };
 
 export const ORGANIZATION_JSONLD = {

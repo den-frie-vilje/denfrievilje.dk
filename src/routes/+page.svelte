@@ -6,7 +6,14 @@
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
-	import { PERSON_JSONLD, ORGANIZATION_JSONLD } from '$lib/site';
+	import {
+		ORGANIZATION_JSONLD,
+		PERSON_ADDRESS,
+		PERSON_NAME,
+		PERSON_SAME_AS,
+		SITE_URL
+	} from '$lib/site';
+	import { buildPersonJsonLd } from '$lib/person';
 	import type { PageData } from './$types';
 	import { getContext } from 'svelte';
 
@@ -26,10 +33,63 @@
 	const lcpHeroSrcset = $derived(
 		lcpHero ? lcpHero.sizes.map((s: { width: number; url: string }) => `${s.url} ${s.width}w`).join(', ') : ''
 	);
+
+	// ItemList JSON-LD — names which works / consultancies the homepage is
+	// featuring and in which order. Each ListItem references the canonical
+	// detail URL, where Google indexes the actual <img> tags + the work's
+	// own CreativeWork JSON-LD. Eligible for carousel rich results.
+	const featuredWorksList = $derived.by(() => ({
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		name: 'Selected works',
+		numberOfItems: data.featured.length,
+		itemListElement: data.featured.map((w, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			item: {
+				'@type': 'CreativeWork',
+				name: w.meta.title || w.slug,
+				url: `${SITE_URL}/works/${w.slug}/`
+			}
+		}))
+	}));
+	const personJsonLd = $derived(
+		buildPersonJsonLd(data.aboutSection?.meta.person, {
+			siteUrl: SITE_URL,
+			name: PERSON_NAME,
+			sameAs: PERSON_SAME_AS,
+			address: PERSON_ADDRESS
+		})
+	);
+	const consultanciesList = $derived.by(() => {
+		const items = data.consultancies.slice(0, 4);
+		return {
+			'@context': 'https://schema.org',
+			'@type': 'ItemList',
+			name: 'Consultancies',
+			numberOfItems: items.length,
+			itemListElement: items.map((c, i) => ({
+				'@type': 'ListItem',
+				position: i + 1,
+				item: {
+					'@type': 'CreativeWork',
+					name: c.meta.title || c.slug,
+					url: `${SITE_URL}/consultancies/${c.slug}/`
+				}
+			}))
+		};
+	});
 </script>
 
 <SEO />
-<JsonLd data={[PERSON_JSONLD, ORGANIZATION_JSONLD]} />
+<JsonLd
+	data={[
+		...(personJsonLd ? [personJsonLd] : []),
+		ORGANIZATION_JSONLD,
+		featuredWorksList,
+		consultanciesList
+	]}
+/>
 
 <svelte:head>
 	{#if lcpHeroSrcset}
