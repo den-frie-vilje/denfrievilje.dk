@@ -55,6 +55,7 @@ export function buildCreativeWorkItemList(
 	opts: { name: string; baseUrl: string; descending?: boolean }
 ) {
 	const list: Record<string, unknown> = {
+		'@context': 'https://schema.org',
 		'@type': 'ItemList',
 		name: opts.name,
 		numberOfItems: items.length,
