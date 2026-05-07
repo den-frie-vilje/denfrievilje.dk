@@ -5,16 +5,40 @@
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
 	import SEO from '$lib/components/SEO.svelte';
+	import JsonLd from '$lib/components/JsonLd.svelte';
+	import { SITE_URL } from '$lib/site';
+	import { buildBreadcrumb, buildCreativeWorkItemList } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
+
+	const pageUrl = `${SITE_URL}/consultancies/`;
+	const collectionPage = $derived.by(() => ({
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		'@id': pageUrl,
+		url: pageUrl,
+		name: 'Design Technology',
+		description:
+			data.section?.meta.lead ??
+			'Design technology consultancies — bespoke software, interactive systems, and creative engineering for cultural and commercial clients.',
+		mainEntity: buildCreativeWorkItemList(
+			data.items.map((c) => ({ slug: c.slug, name: c.meta.title || c.slug })),
+			{ name: 'Consultancies', baseUrl: `${SITE_URL}/consultancies`, descending: true }
+		)
+	}));
+	const breadcrumb = buildBreadcrumb([
+		{ name: 'Home', url: `${SITE_URL}/` },
+		{ name: 'Consultancies', url: pageUrl }
+	]);
 </script>
 
 <SEO
 	title="Consultancies"
 	description={data.section?.meta.lead ?? 'Design technology consultancies — bespoke software, interactive systems, and creative engineering for cultural and commercial clients.'}
 />
+<JsonLd data={[collectionPage, breadcrumb]} />
 
 <div class="page-dark">
 	<section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">

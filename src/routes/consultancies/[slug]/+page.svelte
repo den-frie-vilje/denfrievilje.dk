@@ -10,7 +10,7 @@
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
 	import { isoDate } from '$lib/dates';
-	import { PERSON_REF, buildVideoObject } from '$lib/schema-helpers';
+	import { PERSON_REF, buildBreadcrumb, buildVideoObject } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -59,15 +59,13 @@
 			: {}),
 		creator: PERSON_REF
 	}));
-	const breadcrumb = $derived.by(() => ({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Consultancies', item: `${SITE_URL}/consultancies/` },
-			{ '@type': 'ListItem', position: 3, name: workName, item: pageUrl }
-		]
-	}));
+	const breadcrumb = $derived(
+		buildBreadcrumb([
+			{ name: 'Home', url: `${SITE_URL}/` },
+			{ name: 'Consultancies', url: `${SITE_URL}/consultancies/` },
+			{ name: workName, url: pageUrl }
+		])
+	);
 
 	const jsonLd = $derived([creativeWork, breadcrumb, ...videoObjects]);
 </script>

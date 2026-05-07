@@ -17,6 +17,7 @@
 		SITE_URL
 	} from '$lib/site';
 	import { buildPersonJsonLd } from '$lib/person';
+	import { buildCreativeWorkItemList } from '$lib/schema-helpers';
 	import type { PageData } from './$types';
 	import { getContext } from 'svelte';
 
@@ -41,21 +42,12 @@
 	// featuring and in which order. Each ListItem references the canonical
 	// detail URL, where Google indexes the actual <img> tags + the work's
 	// own CreativeWork JSON-LD. Eligible for carousel rich results.
-	const featuredWorksList = $derived.by(() => ({
-		'@context': 'https://schema.org',
-		'@type': 'ItemList',
-		name: 'Selected works',
-		numberOfItems: data.featured.length,
-		itemListElement: data.featured.map((w, i) => ({
-			'@type': 'ListItem',
-			position: i + 1,
-			item: {
-				'@type': 'CreativeWork',
-				name: w.meta.title || w.slug,
-				url: `${SITE_URL}/works/${w.slug}/`
-			}
-		}))
-	}));
+	const featuredWorksList = $derived(
+		buildCreativeWorkItemList(
+			data.featured.map((w) => ({ slug: w.slug, name: w.meta.title || w.slug })),
+			{ name: 'Selected works', baseUrl: `${SITE_URL}/works`, descending: true }
+		)
+	);
 	const personJsonLd = $derived(
 		buildPersonJsonLd(data.aboutSection?.meta.person, {
 			personUrl: PERSON_URL,
@@ -66,24 +58,12 @@
 			address: PERSON_ADDRESS
 		})
 	);
-	const consultanciesList = $derived.by(() => {
-		const items = data.consultancies.slice(0, 4);
-		return {
-			'@context': 'https://schema.org',
-			'@type': 'ItemList',
-			name: 'Consultancies',
-			numberOfItems: items.length,
-			itemListElement: items.map((c, i) => ({
-				'@type': 'ListItem',
-				position: i + 1,
-				item: {
-					'@type': 'CreativeWork',
-					name: c.meta.title || c.slug,
-					url: `${SITE_URL}/consultancies/${c.slug}/`
-				}
-			}))
-		};
-	});
+	const consultanciesList = $derived(
+		buildCreativeWorkItemList(
+			data.consultancies.slice(0, 4).map((c) => ({ slug: c.slug, name: c.meta.title || c.slug })),
+			{ name: 'Consultancies', baseUrl: `${SITE_URL}/consultancies`, descending: true }
+		)
+	);
 </script>
 
 <SEO />

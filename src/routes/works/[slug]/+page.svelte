@@ -11,7 +11,12 @@
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
 	import { isoDate } from '$lib/dates';
-	import { PERSON_REF, buildVideoObject } from '$lib/schema-helpers';
+	import {
+		PERSON_REF,
+		buildBreadcrumb,
+		buildVideoObject,
+		creativeWorkRef
+	} from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -59,12 +64,7 @@
 				eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
 				location: { '@type': 'Place', name: a.place },
 				...(a.url ? { url: a.url } : {}),
-				workPerformed: {
-					'@type': 'CreativeWork',
-					'@id': pageUrl,
-					name: workName,
-					url: pageUrl
-				}
+				workPerformed: creativeWorkRef({ id: pageUrl, name: workName, url: pageUrl })
 			});
 		}
 		return out;
@@ -82,15 +82,13 @@
 		...(seoKeywords ? { keywords: seoKeywords } : {}),
 		creator: PERSON_REF
 	}));
-	const breadcrumb = $derived.by(() => ({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Works', item: `${SITE_URL}/works/` },
-			{ '@type': 'ListItem', position: 3, name: workName, item: pageUrl }
-		]
-	}));
+	const breadcrumb = $derived(
+		buildBreadcrumb([
+			{ name: 'Home', url: `${SITE_URL}/` },
+			{ name: 'Works', url: `${SITE_URL}/works/` },
+			{ name: workName, url: pageUrl }
+		])
+	);
 
 	const jsonLd = $derived([creativeWork, breadcrumb, ...videoObjects, ...eventObjects]);
 </script>

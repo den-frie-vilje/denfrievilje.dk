@@ -6,16 +6,41 @@
 	import Tag from '$lib/components/Tag.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
 	import SEO from '$lib/components/SEO.svelte';
+	import JsonLd from '$lib/components/JsonLd.svelte';
+	import { SITE_URL } from '$lib/site';
+	import { buildBreadcrumb, buildCreativeWorkItemList } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
 	let bureau = $derived(getBureau ? getBureau() : false);
+
+	const pageUrl = `${SITE_URL}/works/`;
+	const allWorks = $derived(data.grouped.flatMap((g) => g.items));
+	const collectionPage = $derived.by(() => ({
+		'@context': 'https://schema.org',
+		'@type': 'CollectionPage',
+		'@id': pageUrl,
+		url: pageUrl,
+		name: 'Projects & Installations',
+		description:
+			data.section?.meta.lead ??
+			'Interactive installations, live performances and software-driven projects.',
+		mainEntity: buildCreativeWorkItemList(
+			allWorks.map((w) => ({ slug: w.slug, name: w.meta.title || w.slug })),
+			{ name: 'Works', baseUrl: `${SITE_URL}/works`, descending: true }
+		)
+	}));
+	const breadcrumb = buildBreadcrumb([
+		{ name: 'Home', url: `${SITE_URL}/` },
+		{ name: 'Works', url: pageUrl }
+	]);
 </script>
 
 <SEO
 	title="Works"
 	description={data.section?.meta.lead ?? 'Selected works — interactive installations, live performances, and software-driven projects by Ole Kristensen.'}
 />
+<JsonLd data={[collectionPage, breadcrumb]} />
 
 <div class="page-light">
 <section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">
