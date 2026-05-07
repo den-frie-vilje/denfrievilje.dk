@@ -10,6 +10,8 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
+	import { isoDate } from '$lib/dates';
+	import { PERSON_REF, buildVideoObject } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -17,6 +19,7 @@
 
 	const pageUrl = $derived(`${SITE_URL}/works/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
+	const workName = $derived(data.item.meta.title || data.slug);
 	// SEO fields prefer explicit frontmatter overrides, then fall back to the
 	// auto-derived defaults (lead → meta description, generated OG screenshot).
 	const description = $derived(data.item.meta.description ?? data.item.meta.lead);
@@ -25,45 +28,17 @@
 		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
 	);
 
-	// Parse "March 2012" / "Mar 2012" / "2018 — ongoing" → "YYYY-MM-DD".
-	// Used by both VideoObject.uploadDate (work date) and Event.startDate
-	// (appearance date). Returns null when no year can be extracted.
-	const MONTH_TO_NUM: Record<string, number> = {
-		jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7,
-		aug: 8, sep: 9, oct: 10, nov: 11, dec: 12, january: 1, february: 2, march: 3,
-		april: 4, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12
-	};
-	function isoDate(input?: string): string | null {
-		if (!input) return null;
-		const yearMatch = input.match(/(\d{4})/);
-		if (!yearMatch) return null;
-		const year = yearMatch[1];
-		const monthMatch = input.toLowerCase().match(/[a-z]{3,}/);
-		const month = monthMatch ? MONTH_TO_NUM[monthMatch[0]] : null;
-		const mm = month ? String(month).padStart(2, '0') : '01';
-		return `${year}-${mm}-01`;
-	}
-
 	const videoObjects = $derived.by(() => {
 		const videos = data.item.meta.videos;
-		if (!videos?.length) return [];
+		if (!videos?.length) return [] as Record<string, unknown>[];
 		const upload = isoDate(data.item.meta.date);
-		return videos.map((v: { id: string; title: string }) => ({
-			'@context': 'https://schema.org',
-			'@type': 'VideoObject',
-			name: v.title || (data.item.meta.title ?? data.slug),
-			description: data.item.meta.lead || v.title || '',
-			contentUrl: `https://vimeo.com/${v.id}`,
-			embedUrl: `https://player.vimeo.com/video/${v.id}`,
-			thumbnailUrl: `https://vumbnail.com/${v.id}.jpg`,
-			...(upload ? { uploadDate: upload } : {}),
-			isPartOf: {
-				'@type': 'CreativeWork',
-				'@id': pageUrl,
-				name: data.item.meta.title || data.slug,
-				url: pageUrl
-			}
-		}));
+		return videos.map((v: { id: string; title: string }) =>
+			buildVideoObject(
+				v,
+				{ id: pageUrl, name: workName, url: pageUrl },
+				{ uploadDate: upload, description: data.item.meta.lead }
+			)
+		);
 	});
 
 	const eventObjects = $derived.by(() => {
@@ -87,7 +62,7 @@
 				workPerformed: {
 					'@type': 'CreativeWork',
 					'@id': pageUrl,
-					name: data.item.meta.title || data.slug,
+					name: workName,
 					url: pageUrl
 				}
 			});
@@ -99,13 +74,13 @@
 		'@context': 'https://schema.org',
 		'@type': 'CreativeWork',
 		'@id': pageUrl,
-		name: data.item.meta.title || data.slug,
+		name: workName,
 		url: pageUrl,
 		...(description ? { description } : {}),
 		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
 		...(heroImage ? { image: `${SITE_URL}${heroImage}` } : {}),
 		...(seoKeywords ? { keywords: seoKeywords } : {}),
-		creator: { '@type': 'Person', name: 'Ole Kristensen', url: SITE_URL }
+		creator: PERSON_REF
 	}));
 	const breadcrumb = $derived.by(() => ({
 		'@context': 'https://schema.org',
@@ -113,12 +88,7 @@
 		itemListElement: [
 			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
 			{ '@type': 'ListItem', position: 2, name: 'Works', item: `${SITE_URL}/works/` },
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: data.item.meta.title || data.slug,
-				item: pageUrl
-			}
+			{ '@type': 'ListItem', position: 3, name: workName, item: pageUrl }
 		]
 	}));
 
