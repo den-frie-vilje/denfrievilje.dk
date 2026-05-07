@@ -13,7 +13,16 @@ import type { PersonMeta } from './content';
  */
 
 interface BuildOpts {
-	siteUrl: string;
+	/** Canonical Person URL — used for `@id`, `url`, and `image` resolution.
+	 *  Always the artist apex (https://ole.kristensen.name) regardless of
+	 *  which build emits this JSON-LD. */
+	personUrl: string;
+	/** Canonical Organization URL — entries in `worksFor` whose url matches
+	 *  this base get an `@id` reference so the Person-→Organization edge
+	 *  uses the canonical entity identifier. */
+	organizationUrl: string;
+	/** Canonical Organization @id (precomputed for cross-references). */
+	organizationId: string;
 	name: string;
 	sameAs?: string[];
 	address?: Record<string, unknown>;
@@ -21,8 +30,11 @@ interface BuildOpts {
 
 type Org = Record<string, unknown>;
 
-function org(name: string, url?: string): Org {
-	return url ? { '@type': 'Organization', name, url } : { '@type': 'Organization', name };
+function org(name: string, url?: string, idOverride?: string): Org {
+	const out: Org = { '@type': 'Organization', name };
+	if (idOverride) out['@id'] = idOverride;
+	if (url) out.url = url;
+	return out;
 }
 
 function eduOrg(e: NonNullable<PersonMeta['alumniOf']>[number]): Org {
@@ -37,12 +49,22 @@ export function buildPersonJsonLd(
 ): Record<string, unknown> | null {
 	if (!meta) return null;
 
+	// Treat any Org URL that matches the canonical Organization base as the
+	// Den Frie Vilje entity, and emit it with the canonical `@id` so the
+	// Person→Organization edge consolidates across apexes.
+	const orgWithId = (name: string, url?: string): Org => {
+		if (url && url.startsWith(opts.organizationUrl)) {
+			return org(name, url, opts.organizationId);
+		}
+		return org(name, url);
+	};
+
 	const out: Record<string, unknown> = {
 		'@context': 'https://schema.org',
 		'@type': 'Person',
-		'@id': `${opts.siteUrl}/#person`,
+		'@id': `${opts.personUrl}/#person`,
 		name: opts.name,
-		url: opts.siteUrl
+		url: opts.personUrl
 	};
 
 	if (meta.givenName) out.givenName = meta.givenName;
@@ -50,24 +72,23 @@ export function buildPersonJsonLd(
 	if (meta.birthYear) out.birthDate = String(meta.birthYear);
 	if (meta.birthPlace) out.birthPlace = { '@type': 'Place', name: meta.birthPlace };
 	if (meta.nationality) out.nationality = meta.nationality;
-	if (meta.image) out.image = `${opts.siteUrl}${meta.image}`;
+	if (meta.image) out.image = `${opts.personUrl}${meta.image}`;
 	if (meta.jobTitle?.length) out.jobTitle = meta.jobTitle;
 	if (opts.address) out.address = opts.address;
 	if (opts.sameAs?.length) out.sameAs = opts.sameAs;
 
 	const works: Org[] = [];
 	for (const w of meta.worksFor ?? []) {
-		// Current employer — flat Organization. Add jobTitle hint as text if
-		// helpful, but keep the entry as a plain Organization so Google parses
-		// the relationship as "currently works for".
-		works.push(org(w.name, w.url));
+		// Current employer — flat Organization. The orgWithId helper adds the
+		// canonical @id when the url matches the Organization apex.
+		works.push(orgWithId(w.name, w.url));
 	}
 	for (const p of meta.pastEmployer ?? []) {
 		// Past employer — wrap in OrganizationRole so the endDate is
 		// expressible without dropping the relationship.
 		const role: Record<string, unknown> = {
 			'@type': 'OrganizationRole',
-			worksFor: org(p.name, p.url)
+			worksFor: orgWithId(p.name, p.url)
 		};
 		if (p.role) role.roleName = p.role;
 		if (p.from) role.startDate = String(p.from);
@@ -78,12 +99,12 @@ export function buildPersonJsonLd(
 
 	const affs: Org[] = [];
 	for (const a of meta.affiliation ?? []) {
-		affs.push(org(a.name, a.url));
+		affs.push(orgWithId(a.name, a.url));
 	}
 	for (const a of meta.pastAffiliation ?? []) {
 		const role: Record<string, unknown> = {
 			'@type': 'Role',
-			affiliation: org(a.name, a.url)
+			affiliation: orgWithId(a.name, a.url)
 		};
 		if (a.role) role.roleName = a.role;
 		if (a.from) role.startDate = String(a.from);
@@ -92,7 +113,7 @@ export function buildPersonJsonLd(
 	}
 	if (affs.length) out.affiliation = affs;
 
-	if (meta.memberOf?.length) out.memberOf = meta.memberOf.map((m) => org(m.name, m.url));
+	if (meta.memberOf?.length) out.memberOf = meta.memberOf.map((m) => orgWithId(m.name, m.url));
 	if (meta.alumniOf?.length) out.alumniOf = meta.alumniOf.map(eduOrg);
 
 	if (meta.awards?.length) {

@@ -33,6 +33,17 @@ export const SITE_DESCRIPTION_BUREAU =
 export const SITE_OG_ARTIST = '/og/default-ole-kristensen.png';
 export const SITE_OG_BUREAU = '/og/default-den-frie-vilje.png';
 
+// Canonical entity URLs. The Person "Ole Kristensen" lives at one
+// canonical home (ole.kristensen.name); the Organization "Den Frie Vilje"
+// lives at another (denfrievilje.dk). These are real-world entity
+// identities — independent of which apex is currently serving the page.
+// Both builds emit the same `@id` for each entity so Google consolidates
+// signals across origins instead of treating them as duplicates.
+export const PERSON_URL = 'https://ole.kristensen.name';
+export const ORGANIZATION_URL = 'https://denfrievilje.dk';
+export const PERSON_ID = `${PERSON_URL}/#person`;
+export const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
+
 // Person identity defaults the buildPersonJsonLd helper falls back to when
 // the about-page frontmatter doesn't override them. The rich Person profile
 // (jobTitle, worksFor, awards, alumniOf, etc.) lives in the frontmatter at
@@ -53,11 +64,12 @@ export const PERSON_ADDRESS = {
 export const ORGANIZATION_JSONLD = {
 	'@context': 'https://schema.org',
 	'@type': 'Organization',
+	'@id': ORGANIZATION_ID,
 	name: SITE_NAME_BUREAU,
 	legalName: 'Den Frie Vilje ApS',
-	url: SITE_URL,
-	logo: `${SITE_URL}/logo-black.png`,
-	founder: { '@type': 'Person', name: 'Ole Kristensen' },
+	url: ORGANIZATION_URL,
+	logo: `${ORGANIZATION_URL}/logo-black.png`,
+	founder: { '@id': PERSON_ID, '@type': 'Person', name: 'Ole Kristensen' },
 	address: {
 		'@type': 'PostalAddress',
 		streetAddress: 'Kronprinsesse Sofies Vej 21, 2th',

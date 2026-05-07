@@ -7,10 +7,13 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import {
+		ORGANIZATION_ID,
 		ORGANIZATION_JSONLD,
+		ORGANIZATION_URL,
 		PERSON_ADDRESS,
 		PERSON_NAME,
 		PERSON_SAME_AS,
+		PERSON_URL,
 		SITE_URL
 	} from '$lib/site';
 	import { buildPersonJsonLd } from '$lib/person';
@@ -55,7 +58,9 @@
 	}));
 	const personJsonLd = $derived(
 		buildPersonJsonLd(data.aboutSection?.meta.person, {
-			siteUrl: SITE_URL,
+			personUrl: PERSON_URL,
+			organizationUrl: ORGANIZATION_URL,
+			organizationId: ORGANIZATION_ID,
 			name: PERSON_NAME,
 			sameAs: PERSON_SAME_AS,
 			address: PERSON_ADDRESS
