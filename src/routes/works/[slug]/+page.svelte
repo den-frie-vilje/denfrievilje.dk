@@ -57,7 +57,12 @@
 			embedUrl: `https://player.vimeo.com/video/${v.id}`,
 			thumbnailUrl: `https://vumbnail.com/${v.id}.jpg`,
 			...(upload ? { uploadDate: upload } : {}),
-			isPartOf: { '@type': 'CreativeWork', name: data.item.meta.title || data.slug, url: pageUrl }
+			isPartOf: {
+				'@type': 'CreativeWork',
+				'@id': pageUrl,
+				name: data.item.meta.title || data.slug,
+				url: pageUrl
+			}
 		}));
 	});
 
@@ -73,12 +78,15 @@
 				'@type': 'Event',
 				name: a.occasion,
 				startDate: start,
-				eventStatus: 'https://schema.org/EventArchived',
+				// `eventStatus` only takes EventScheduled/Cancelled/Postponed/etc.
+				// per schema.org. Past events that happened normally need no
+				// status — the date alone makes it clear the event is over.
 				eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
 				location: { '@type': 'Place', name: a.place },
 				...(a.url ? { url: a.url } : {}),
 				workPerformed: {
 					'@type': 'CreativeWork',
+					'@id': pageUrl,
 					name: data.item.meta.title || data.slug,
 					url: pageUrl
 				}

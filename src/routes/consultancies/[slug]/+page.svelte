@@ -59,7 +59,12 @@
 			embedUrl: `https://player.vimeo.com/video/${v.id}`,
 			thumbnailUrl: `https://vumbnail.com/${v.id}.jpg`,
 			...(upload ? { uploadDate: upload } : {}),
-			isPartOf: { '@type': 'CreativeWork', name: data.item.meta.title || data.slug, url: pageUrl }
+			isPartOf: {
+				'@type': 'CreativeWork',
+				'@id': pageUrl,
+				name: data.item.meta.title || data.slug,
+				url: pageUrl
+			}
 		}));
 	});
 
