@@ -9,6 +9,8 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
+	import { isoDate } from '$lib/dates';
+	import { PERSON_REF, buildBreadcrumb, buildVideoObject } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -16,6 +18,7 @@
 
 	const pageUrl = $derived(`${SITE_URL}/consultancies/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
+	const workName = $derived(data.item.meta.title || data.slug);
 	// SEO fields prefer explicit frontmatter overrides, then fall back to the
 	// auto-derived defaults (lead → client-shaped fallback → generated OG).
 	const description = $derived(
@@ -27,10 +30,25 @@
 	const seoKeywords = $derived(
 		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
 	);
+
+	const videoObjects = $derived.by(() => {
+		const videos = data.item.meta.videos;
+		if (!videos?.length) return [] as Record<string, unknown>[];
+		const upload = isoDate(data.item.meta.date);
+		return videos.map((v: { id: string; title: string }) =>
+			buildVideoObject(
+				v,
+				{ id: pageUrl, name: workName, url: pageUrl },
+				{ uploadDate: upload, description: data.item.meta.lead }
+			)
+		);
+	});
+
 	const creativeWork = $derived.by(() => ({
 		'@context': 'https://schema.org',
 		'@type': 'CreativeWork',
-		name: data.item.meta.title || data.slug,
+		'@id': pageUrl,
+		name: workName,
 		url: pageUrl,
 		...(description ? { description } : {}),
 		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
@@ -39,17 +57,17 @@
 		...(data.item.meta.client
 			? { sourceOrganization: { '@type': 'Organization', name: data.item.meta.client } }
 			: {}),
-		creator: { '@type': 'Person', name: 'Ole Kristensen', url: SITE_URL }
+		creator: PERSON_REF
 	}));
-	const breadcrumb = $derived.by(() => ({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Consultancies', item: `${SITE_URL}/consultancies/` },
-			{ '@type': 'ListItem', position: 3, name: data.item.meta.title || data.slug, item: pageUrl }
-		]
-	}));
+	const breadcrumb = $derived(
+		buildBreadcrumb([
+			{ name: 'Home', url: `${SITE_URL}/` },
+			{ name: 'Consultancies', url: `${SITE_URL}/consultancies/` },
+			{ name: workName, url: pageUrl }
+		])
+	);
+
+	const jsonLd = $derived([creativeWork, breadcrumb, ...videoObjects]);
 </script>
 
 <SEO
@@ -58,7 +76,7 @@
 	{ogImage}
 	ogType="article"
 />
-<JsonLd data={[creativeWork, breadcrumb]} />
+<JsonLd data={jsonLd} />
 
 <div class="page-dark">
 	<article class="px-[var(--gutter)]">

@@ -6,6 +6,16 @@
    import PageTitle from '$lib/components/PageTitle.svelte';
    import type { ImageSrcSet } from '$lib/components/VoronoiGlass.svelte';
    import SEO from '$lib/components/SEO.svelte';
+   import JsonLd from '$lib/components/JsonLd.svelte';
+   import {
+	   ORGANIZATION_ID,
+	   ORGANIZATION_URL,
+	   PERSON_ADDRESS,
+	   PERSON_NAME,
+	   PERSON_SAME_AS,
+	   PERSON_URL
+   } from '$lib/site';
+   import { buildPersonJsonLd } from '$lib/person';
 
    let { data }: { data: PageData } = $props();
    const getBureau = getContext<() => boolean>('bureau');
@@ -21,6 +31,20 @@
 		   ]
 	   }
    ];
+
+   // Same Person JSON-LD as the homepage emits — same @id so Google links
+   // them as one entity. The frontmatter `person:` block in this file is
+   // the single source of truth.
+   const personJsonLd = $derived(
+	   buildPersonJsonLd(data.item.meta.person, {
+		   personUrl: PERSON_URL,
+		   organizationUrl: ORGANIZATION_URL,
+		   organizationId: ORGANIZATION_ID,
+		   name: PERSON_NAME,
+		   sameAs: PERSON_SAME_AS,
+		   address: PERSON_ADDRESS
+	   })
+   );
 </script>
 
 <SEO
@@ -29,6 +53,9 @@
 	ogImage={data.item.meta.ogImage}
 	ogType="profile"
 />
+{#if personJsonLd}
+	<JsonLd data={personJsonLd} />
+{/if}
 
 
 <article class="px-[var(--gutter)]">

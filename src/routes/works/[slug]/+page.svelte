@@ -10,6 +10,13 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
+	import { isoDate } from '$lib/dates';
+	import {
+		PERSON_REF,
+		buildBreadcrumb,
+		buildVideoObject,
+		creativeWorkRef
+	} from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
 	const getBureau = getContext<() => boolean>('bureau');
@@ -17,6 +24,7 @@
 
 	const pageUrl = $derived(`${SITE_URL}/works/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
+	const workName = $derived(data.item.meta.title || data.slug);
 	// SEO fields prefer explicit frontmatter overrides, then fall back to the
 	// auto-derived defaults (lead → meta description, generated OG screenshot).
 	const description = $derived(data.item.meta.description ?? data.item.meta.lead);
@@ -24,31 +32,65 @@
 	const seoKeywords = $derived(
 		[...(data.item.meta.keywords ?? []), ...(data.item.meta.tags ?? [])].join(', ')
 	);
+
+	const videoObjects = $derived.by(() => {
+		const videos = data.item.meta.videos;
+		if (!videos?.length) return [] as Record<string, unknown>[];
+		const upload = isoDate(data.item.meta.date);
+		return videos.map((v: { id: string; title: string }) =>
+			buildVideoObject(
+				v,
+				{ id: pageUrl, name: workName, url: pageUrl },
+				{ uploadDate: upload, description: data.item.meta.lead }
+			)
+		);
+	});
+
+	const eventObjects = $derived.by(() => {
+		const apps = data.item.meta.appearances;
+		if (!apps?.length) return [] as Record<string, unknown>[];
+		const out: Record<string, unknown>[] = [];
+		for (const a of apps as Array<{ date: string; occasion: string; place: string; url: string }>) {
+			const start = isoDate(a.date);
+			if (!start) continue;
+			out.push({
+				'@context': 'https://schema.org',
+				'@type': 'Event',
+				name: a.occasion,
+				startDate: start,
+				// `eventStatus` only takes EventScheduled/Cancelled/Postponed/etc.
+				// per schema.org. Past events that happened normally need no
+				// status — the date alone makes it clear the event is over.
+				eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+				location: { '@type': 'Place', name: a.place },
+				...(a.url ? { url: a.url } : {}),
+				workPerformed: creativeWorkRef({ id: pageUrl, name: workName, url: pageUrl })
+			});
+		}
+		return out;
+	});
+
 	const creativeWork = $derived.by(() => ({
 		'@context': 'https://schema.org',
 		'@type': 'CreativeWork',
-		name: data.item.meta.title || data.slug,
+		'@id': pageUrl,
+		name: workName,
 		url: pageUrl,
 		...(description ? { description } : {}),
 		...(data.item.meta.date ? { dateCreated: data.item.meta.date } : {}),
 		...(heroImage ? { image: `${SITE_URL}${heroImage}` } : {}),
 		...(seoKeywords ? { keywords: seoKeywords } : {}),
-		creator: { '@type': 'Person', name: 'Ole Kristensen', url: SITE_URL }
+		creator: PERSON_REF
 	}));
-	const breadcrumb = $derived.by(() => ({
-		'@context': 'https://schema.org',
-		'@type': 'BreadcrumbList',
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Works', item: `${SITE_URL}/works/` },
-			{
-				'@type': 'ListItem',
-				position: 3,
-				name: data.item.meta.title || data.slug,
-				item: pageUrl
-			}
-		]
-	}));
+	const breadcrumb = $derived(
+		buildBreadcrumb([
+			{ name: 'Home', url: `${SITE_URL}/` },
+			{ name: 'Works', url: `${SITE_URL}/works/` },
+			{ name: workName, url: pageUrl }
+		])
+	);
+
+	const jsonLd = $derived([creativeWork, breadcrumb, ...videoObjects, ...eventObjects]);
 </script>
 
 <SEO
@@ -57,7 +99,7 @@
 	{ogImage}
 	ogType="article"
 />
-<JsonLd data={[creativeWork, breadcrumb]} />
+<JsonLd data={jsonLd} />
 
 <svelte:head>
 	{#if heroImage}

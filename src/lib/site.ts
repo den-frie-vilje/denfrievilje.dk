@@ -33,34 +33,60 @@ export const SITE_DESCRIPTION_BUREAU =
 export const SITE_OG_ARTIST = '/og/default-ole-kristensen.png';
 export const SITE_OG_BUREAU = '/og/default-den-frie-vilje.png';
 
-// Person + Organization JSON-LD shared across pages.
-export const PERSON_JSONLD = {
-	'@context': 'https://schema.org',
-	'@type': 'Person',
-	name: 'Ole Kristensen',
-	url: SITE_URL,
-	jobTitle: SITE_TAGLINE,
-	address: {
-		'@type': 'PostalAddress',
-		addressLocality: 'Copenhagen',
-		addressCountry: 'DK'
-	},
-	sameAs: ['https://github.com/olekristensen', 'https://www.linkedin.com/in/olefab']
+// Canonical entity URLs. The Person "Ole Kristensen" lives at one
+// canonical home (ole.kristensen.name); the Organization "Den Frie Vilje"
+// lives at another (denfrievilje.dk). These are real-world entity
+// identities — independent of which apex is currently serving the page.
+// Both builds emit the same `@id` for each entity so Google consolidates
+// signals across origins instead of treating them as duplicates.
+export const PERSON_URL = 'https://ole.kristensen.name';
+export const ORGANIZATION_URL = 'https://denfrievilje.dk';
+export const PERSON_ID = `${PERSON_URL}/#person`;
+export const ORGANIZATION_ID = `${ORGANIZATION_URL}/#organization`;
+
+// Person identity defaults the buildPersonJsonLd helper falls back to when
+// the about-page frontmatter doesn't override them. The rich Person profile
+// (jobTitle, worksFor, awards, alumniOf, etc.) lives in the frontmatter at
+// src/content/about/index.md — single source of truth — and is built into
+// JSON-LD by src/lib/person.ts. Both home and about emit the same Person
+// (matching @id) so Google understands they describe the same entity.
+export const PERSON_NAME = 'Ole Kristensen';
+export const PERSON_SAME_AS = [
+	'https://github.com/olekristensen',
+	'https://www.linkedin.com/in/olefab'
+];
+export const PERSON_ADDRESS = {
+	'@type': 'PostalAddress',
+	addressLocality: 'Copenhagen',
+	addressCountry: 'DK'
 };
 
+// Den Frie Vilje is typed as `ProfessionalService` (a sub-type of
+// LocalBusiness, which is a sub-type of Organization) so Google understands
+// it has a physical presence with structured local data and not just a
+// generic web identity. The chain is Organization > LocalBusiness >
+// ProfessionalService — anything currently consuming Organization keeps
+// working since ProfessionalService inherits all its properties.
 export const ORGANIZATION_JSONLD = {
 	'@context': 'https://schema.org',
-	'@type': 'Organization',
+	'@type': 'ProfessionalService',
+	'@id': ORGANIZATION_ID,
 	name: SITE_NAME_BUREAU,
 	legalName: 'Den Frie Vilje ApS',
-	url: SITE_URL,
-	logo: `${SITE_URL}/logo-black.png`,
-	founder: { '@type': 'Person', name: 'Ole Kristensen' },
+	url: ORGANIZATION_URL,
+	logo: `${ORGANIZATION_URL}/logo-black.png`,
+	telephone: '+45 22 56 66 77',
+	founder: { '@id': PERSON_ID, '@type': 'Person', name: 'Ole Kristensen' },
 	address: {
 		'@type': 'PostalAddress',
 		streetAddress: 'Kronprinsesse Sofies Vej 21, 2th',
 		postalCode: '2000',
 		addressLocality: 'Frederiksberg',
 		addressCountry: 'DK'
+	},
+	geo: {
+		'@type': 'GeoCoordinates',
+		latitude: 55.688985,
+		longitude: 12.533446
 	}
 };

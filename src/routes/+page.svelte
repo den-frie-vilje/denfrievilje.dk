@@ -6,7 +6,18 @@
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
-	import { PERSON_JSONLD, ORGANIZATION_JSONLD } from '$lib/site';
+	import {
+		ORGANIZATION_ID,
+		ORGANIZATION_JSONLD,
+		ORGANIZATION_URL,
+		PERSON_ADDRESS,
+		PERSON_NAME,
+		PERSON_SAME_AS,
+		PERSON_URL,
+		SITE_URL
+	} from '$lib/site';
+	import { buildPersonJsonLd } from '$lib/person';
+	import { buildCreativeWorkItemList } from '$lib/schema-helpers';
 	import type { PageData } from './$types';
 	import { getContext } from 'svelte';
 
@@ -26,10 +37,44 @@
 	const lcpHeroSrcset = $derived(
 		lcpHero ? lcpHero.sizes.map((s: { width: number; url: string }) => `${s.url} ${s.width}w`).join(', ') : ''
 	);
+
+	// ItemList JSON-LD — names which works / consultancies the homepage is
+	// featuring and in which order. Each ListItem references the canonical
+	// detail URL, where Google indexes the actual <img> tags + the work's
+	// own CreativeWork JSON-LD. Eligible for carousel rich results.
+	const featuredWorksList = $derived(
+		buildCreativeWorkItemList(
+			data.featured.map((w) => ({ slug: w.slug, name: w.meta.title || w.slug })),
+			{ name: 'Selected works', baseUrl: `${SITE_URL}/works`, descending: true }
+		)
+	);
+	const personJsonLd = $derived(
+		buildPersonJsonLd(data.aboutSection?.meta.person, {
+			personUrl: PERSON_URL,
+			organizationUrl: ORGANIZATION_URL,
+			organizationId: ORGANIZATION_ID,
+			name: PERSON_NAME,
+			sameAs: PERSON_SAME_AS,
+			address: PERSON_ADDRESS
+		})
+	);
+	const consultanciesList = $derived(
+		buildCreativeWorkItemList(
+			data.consultancies.slice(0, 4).map((c) => ({ slug: c.slug, name: c.meta.title || c.slug })),
+			{ name: 'Consultancies', baseUrl: `${SITE_URL}/consultancies`, descending: true }
+		)
+	);
 </script>
 
 <SEO />
-<JsonLd data={[PERSON_JSONLD, ORGANIZATION_JSONLD]} />
+<JsonLd
+	data={[
+		...(personJsonLd ? [personJsonLd] : []),
+		ORGANIZATION_JSONLD,
+		featuredWorksList,
+		consultanciesList
+	]}
+/>
 
 <svelte:head>
 	{#if lcpHeroSrcset}
