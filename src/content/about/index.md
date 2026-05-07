@@ -22,22 +22,26 @@ person:
     - name: DR \u2014 Danish Broadcasting Corporation
       role: Design Technologist (consultant)
       url: https://www.dr.dk
+      wikidata: Q1164334
       from: 2017-09
       to: 2026-02
     - name: TV 2 Danmark
       role: Design Technologist (consultant)
       url: https://tv2.dk
+      wikidata: Q1616154
       from: 2022-10
       to: 2025-06
   alumniOf:
     - name: Roskilde University
       department: Computer Science and Communications
       qualification: Bachelor of Interactive Media
+      wikidata: Q1542386
       from: 1997
       to: 2000
     - name: Chalmers University of Technology
       department: Master of Art and Technology
       qualification: Guest studies
+      wikidata: Q836805
       from: 2003
       to: 2004
   pastAffiliation:

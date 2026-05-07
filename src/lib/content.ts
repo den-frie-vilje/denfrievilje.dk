@@ -34,6 +34,15 @@ export interface ContentMeta {
 	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
+export interface OrgRef {
+	name: string;
+	role?: string;
+	url?: string;
+	/** Wikidata Q-id (e.g. "Q1164334") — emitted as schema.org `sameAs` so
+	 *  Google links the relationship to an established entity record. */
+	wikidata?: string;
+}
+
 export interface PersonMeta {
 	givenName?: string;
 	familyName?: string;
@@ -42,30 +51,19 @@ export interface PersonMeta {
 	nationality?: string;
 	image?: string;
 	jobTitle?: string[];
-	worksFor?: Array<{ name: string; role?: string; url?: string; since?: string | number }>;
-	pastEmployer?: Array<{
-		name: string;
-		role?: string;
-		url?: string;
-		from?: string | number;
-		to?: string | number;
-	}>;
+	worksFor?: Array<OrgRef & { since?: string | number }>;
+	pastEmployer?: Array<OrgRef & { from?: string | number; to?: string | number }>;
 	alumniOf?: Array<{
 		name: string;
 		department?: string;
 		qualification?: string;
 		from?: string | number;
 		to?: string | number;
+		wikidata?: string;
 	}>;
-	affiliation?: Array<{ name: string; role?: string; url?: string }>;
-	pastAffiliation?: Array<{
-		name: string;
-		role?: string;
-		url?: string;
-		from?: string | number;
-		to?: string | number;
-	}>;
-	memberOf?: Array<{ name: string; url?: string }>;
+	affiliation?: Array<OrgRef>;
+	pastAffiliation?: Array<OrgRef & { from?: string | number; to?: string | number }>;
+	memberOf?: Array<{ name: string; url?: string; wikidata?: string }>;
 	awards?: Array<{
 		title: string;
 		organization?: string;

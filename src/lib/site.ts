@@ -61,14 +61,21 @@ export const PERSON_ADDRESS = {
 	addressCountry: 'DK'
 };
 
+// Den Frie Vilje is typed as `ProfessionalService` (a sub-type of
+// LocalBusiness, which is a sub-type of Organization) so Google understands
+// it has a physical presence with structured local data and not just a
+// generic web identity. The chain is Organization > LocalBusiness >
+// ProfessionalService — anything currently consuming Organization keeps
+// working since ProfessionalService inherits all its properties.
 export const ORGANIZATION_JSONLD = {
 	'@context': 'https://schema.org',
-	'@type': 'Organization',
+	'@type': 'ProfessionalService',
 	'@id': ORGANIZATION_ID,
 	name: SITE_NAME_BUREAU,
 	legalName: 'Den Frie Vilje ApS',
 	url: ORGANIZATION_URL,
 	logo: `${ORGANIZATION_URL}/logo-black.png`,
+	telephone: '+45 22 56 66 77',
 	founder: { '@id': PERSON_ID, '@type': 'Person', name: 'Ole Kristensen' },
 	address: {
 		'@type': 'PostalAddress',
@@ -76,5 +83,10 @@ export const ORGANIZATION_JSONLD = {
 		postalCode: '2000',
 		addressLocality: 'Frederiksberg',
 		addressCountry: 'DK'
+	},
+	geo: {
+		'@type': 'GeoCoordinates',
+		latitude: 55.688985,
+		longitude: 12.533446
 	}
 };

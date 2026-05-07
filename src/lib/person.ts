@@ -30,16 +30,24 @@ interface BuildOpts {
 
 type Org = Record<string, unknown>;
 
-function org(name: string, url?: string, idOverride?: string): Org {
+function wikidataUri(q?: string): string | null {
+	return q ? `https://www.wikidata.org/entity/${q}` : null;
+}
+
+function org(name: string, url?: string, wikidata?: string, idOverride?: string): Org {
 	const out: Org = { '@type': 'Organization', name };
 	if (idOverride) out['@id'] = idOverride;
 	if (url) out.url = url;
+	const wd = wikidataUri(wikidata);
+	if (wd) out.sameAs = [wd];
 	return out;
 }
 
 function eduOrg(e: NonNullable<PersonMeta['alumniOf']>[number]): Org {
 	const out: Org = { '@type': 'EducationalOrganization', name: e.name };
 	if (e.department) out.department = e.department;
+	const wd = wikidataUri(e.wikidata);
+	if (wd) out.sameAs = [wd];
 	return out;
 }
 
@@ -52,11 +60,11 @@ export function buildPersonJsonLd(
 	// Treat any Org URL that matches the canonical Organization base as the
 	// Den Frie Vilje entity, and emit it with the canonical `@id` so the
 	// Person→Organization edge consolidates across apexes.
-	const orgWithId = (name: string, url?: string): Org => {
-		if (url && url.startsWith(opts.organizationUrl)) {
-			return org(name, url, opts.organizationId);
+	const orgWithId = (entry: { name: string; url?: string; wikidata?: string }): Org => {
+		if (entry.url && entry.url.startsWith(opts.organizationUrl)) {
+			return org(entry.name, entry.url, entry.wikidata, opts.organizationId);
 		}
-		return org(name, url);
+		return org(entry.name, entry.url, entry.wikidata);
 	};
 
 	const out: Record<string, unknown> = {
@@ -81,14 +89,14 @@ export function buildPersonJsonLd(
 	for (const w of meta.worksFor ?? []) {
 		// Current employer — flat Organization. The orgWithId helper adds the
 		// canonical @id when the url matches the Organization apex.
-		works.push(orgWithId(w.name, w.url));
+		works.push(orgWithId(w));
 	}
 	for (const p of meta.pastEmployer ?? []) {
 		// Past employer — wrap in OrganizationRole so the endDate is
 		// expressible without dropping the relationship.
 		const role: Record<string, unknown> = {
 			'@type': 'OrganizationRole',
-			worksFor: orgWithId(p.name, p.url)
+			worksFor: orgWithId(p)
 		};
 		if (p.role) role.roleName = p.role;
 		if (p.from) role.startDate = String(p.from);
@@ -99,12 +107,12 @@ export function buildPersonJsonLd(
 
 	const affs: Org[] = [];
 	for (const a of meta.affiliation ?? []) {
-		affs.push(orgWithId(a.name, a.url));
+		affs.push(orgWithId(a));
 	}
 	for (const a of meta.pastAffiliation ?? []) {
 		const role: Record<string, unknown> = {
 			'@type': 'Role',
-			affiliation: orgWithId(a.name, a.url)
+			affiliation: orgWithId(a)
 		};
 		if (a.role) role.roleName = a.role;
 		if (a.from) role.startDate = String(a.from);
@@ -113,7 +121,7 @@ export function buildPersonJsonLd(
 	}
 	if (affs.length) out.affiliation = affs;
 
-	if (meta.memberOf?.length) out.memberOf = meta.memberOf.map((m) => orgWithId(m.name, m.url));
+	if (meta.memberOf?.length) out.memberOf = meta.memberOf.map((m) => orgWithId(m));
 	if (meta.alumniOf?.length) out.alumniOf = meta.alumniOf.map(eduOrg);
 
 	if (meta.awards?.length) {
