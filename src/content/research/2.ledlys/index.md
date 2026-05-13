@@ -15,11 +15,15 @@ appearances:
   - date: October 2017
     occasion: DeSForM 2017 — The Experience of Dynamic Lighting
     place: TU Delft
-    url: https://pure.itu.dk/en/publications/the-experience-of-dynamic-lighting
+    url: https://doi.org/10.5772/intechopen.71176
   - date: '2017'
     occasion: Digital Weather (Light at Eye Level)
     place: Vandalorum, Värnamo
     url: ''
+  - date: '2018'
+    occasion: Elforsk Best Research Project — Energy Optimization through Adaptive Lighting Control
+    place: Copenhagen
+    url: https://en.itu.dk/about-itu/press/news-from-itu/2018/itu-researcher-receives-award-for-intelligent-lighting-project
 ---
 
 <!--
@@ -35,7 +39,7 @@ consultant-deck phrasing (no "interdisciplinary", "stakeholder",
 ITU and KADK, 2010 to 2017. Two phases.
 
 - **2010–2014** — the observational-instrument phase. Tessellated cardboard-and-LED cubes built into a wall-sized array, run by adaptive control software written at ITU. Outputs: the *Adaptive Light* and *Pixel Experiments* publications, and the Observational Instrument itself, in use at KADK.
-- **2015–2017** — Elforsk-funded follow-on. The work shifted out of the laboratory and into schools and offices, asking what happens when adaptive lighting is in a place people actually sit in for hours at a time. Outputs: *Light at Eye Level*, the Digital Weather installation at Vandalorum, and the DeSForM 2017 paper *The Experience of Dynamic Lighting*.
+- **2015–2017** — *Energy Optimization through Adaptive Lighting Control* (the Elforsk-funded phase, March 2015 to June 2017). The work moved out of the laboratory into schools and offices, asking what happens when adaptive lighting is in a place people sit in for hours at a time. Outputs: the *Light at Eye Level* report, the Digital Weather installation at Vandalorum, the DeSForM 2017 paper *The Experience of Dynamic Lighting*, and Elforsk's Best Research Project award in 2018.
 
 ## Team
 
@@ -47,13 +51,15 @@ Adaptive control software and interface for the Observational Instrument — ope
 
 ## Publications
 
-Pending placement (decision: co-locate PDFs from NAS, à la Telematisk, or link to the online versions). Current candidates:
+1. Karin Søndergaard & Kjell Yngve Petersen, *An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/exploration_into_integrating_daylig).
+2. Kjell Yngve Petersen, Jesper Kongshaug & Karin Søndergaard, *Adaptivt Lys* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/adaptivtlys_hq).
+3. Christina Augustesen, Kjell Yngve Petersen & Karin Søndergaard, *Pixel Experiments* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/pixel_experiments).
+4. Kjell Yngve Petersen & Ole Kristensen, *[The Experience of Dynamic Lighting](https://doi.org/10.5772/intechopen.71176)*, in *DeSForM 2017 Proceedings* (IntechOpen, 2017). DOI: 10.5772/intechopen.71176.
+5. Kjell Yngve Petersen & Nina Rask, *Light at Eye Level: Energy Savings and Space for Learning, Focus and Concentration* (Elforsk final report, 2018) — [ITU news, 2018](https://en.itu.dk/about-itu/press/news-from-itu/2018/itu-researcher-receives-award-for-intelligent-lighting-project).
 
-1. Søndergaard & Petersen, *An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument* (KADK, c. 2012). [issuu](https://issuu.com/kadk/docs/exploration_into_integrating_daylig)
-2. Petersen, Kongshaug, Søndergaard, *Adaptivt Lys* (KADK, c. 2012). [issuu](https://issuu.com/kadk/docs/adaptivtlys_hq)
-3. Augustesen, Petersen, Søndergaard, *Pixel Experiments* (KADK, c. 2012). [issuu](https://issuu.com/kadk/docs/pixel_experiments)
-4. Petersen & Kristensen, *The Experience of Dynamic Lighting*, DeSForM 2017 proceedings. [pure.itu.dk](https://pure.itu.dk/en/publications/the-experience-of-dynamic-lighting)
-5. Petersen & Rask, *Light at eye level is a means to create energy savings and space for learning, focus and concentration* (Elforsk report, 2018). [orbit.dtu.dk](https://orbit.dtu.dk/en/publications/light-at-eye-level-is-a-means-to-create-energy-savings-and-space-)
+## Video documentation
+
+- *[Daylight Adaptation](https://www.youtube.com/watch?v=iCPGnvG6ChA)* (ITU, December 2014). Twelve lighting designers and architects work through the Observational Instrument under the eye of Petersen and Søndergaard.
 
 ## Outcomes
 
