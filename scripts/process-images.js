@@ -8,6 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
+import { pdf } from 'pdf-to-img';
 
 const CONTENT_DIR = path.join(process.cwd(), 'src', 'content');
 const OUTPUT_DIR = path.join(process.cwd(), 'static', 'content');
@@ -25,6 +26,92 @@ function extractSlug(dirname) {
 	const parts = dirname.split('.');
 	const num = parseInt(parts[0], 10);
 	return isNaN(num) ? dirname : parts.slice(1).join('.');
+}
+
+/**
+ * Render a first-page thumbnail of a PDF at all THUMB_SIZES, in JPEG + WebP.
+ * Output names follow `<basename>-thumb-<size>.<ext>` so they sit next to the
+ * copied PDF in static/content/<section>/<slug>/ and are easy to resolve from
+ * the content layer (see resolvePublications in src/lib/content.ts).
+ *
+ * Gated on mtime so re-running the script is cheap. Renders the first page
+ * at scale 3 once, then downsizes with sharp — much faster than running
+ * pdfjs three times.
+ */
+async function processPdfThumbnails(srcPath, destDir, basename) {
+	const srcStat = fs.statSync(srcPath);
+	const allFresh = THUMB_SIZES.every((size) => {
+		const jpegDest = path.join(destDir, `${basename}-thumb-${size}.jpg`);
+		const webpDest = path.join(destDir, `${basename}-thumb-${size}.webp`);
+		return (
+			fs.existsSync(jpegDest) &&
+			fs.statSync(jpegDest).mtimeMs >= srcStat.mtimeMs &&
+			fs.existsSync(webpDest) &&
+			fs.statSync(webpDest).mtimeMs >= srcStat.mtimeMs
+		);
+	});
+	if (allFresh) return;
+
+	let firstPagePng;
+	try {
+		const document = await pdf(srcPath, { scale: 3 });
+		firstPagePng = await document.getPage(1);
+	} catch (err) {
+		console.warn(`  ⚠ Failed to rasterise PDF ${srcPath}:`, err.message);
+		return;
+	}
+
+	for (const size of THUMB_SIZES) {
+		const jpegDest = path.join(destDir, `${basename}-thumb-${size}.jpg`);
+		if (!fs.existsSync(jpegDest) || fs.statSync(jpegDest).mtimeMs < srcStat.mtimeMs) {
+			try {
+				await sharp(firstPagePng)
+					.flatten({ background: '#ffffff' })
+					.resize(size, null, { withoutEnlargement: true })
+					.jpeg({ quality: THUMB_QUALITY, mozjpeg: true })
+					.toFile(jpegDest);
+			} catch (err) {
+				console.warn(`  ⚠ Failed to write ${jpegDest}:`, err.message);
+			}
+		}
+		const webpDest = path.join(destDir, `${basename}-thumb-${size}.webp`);
+		if (!fs.existsSync(webpDest) || fs.statSync(webpDest).mtimeMs < srcStat.mtimeMs) {
+			try {
+				await sharp(firstPagePng)
+					.flatten({ background: '#ffffff' })
+					.resize(size, null, { withoutEnlargement: true })
+					.webp({ quality: WEBP_QUALITY })
+					.toFile(webpDest);
+			} catch (err) {
+				console.warn(`  ⚠ Failed to write ${webpDest}:`, err.message);
+			}
+		}
+	}
+}
+
+/**
+ * Copy any images sitting in immediate subfolders of the content item's dir
+ * (e.g. `setups/`) into a mirrored subfolder under static/content/.... These
+ * are *inline* assets referenced from the markdown body (![](setups/01.x.jpg))
+ * rather than gallery items, so they don't get thumbnails — only a verbatim
+ * copy gated on mtime.
+ */
+function copySubfolderImages(srcDir, destDir) {
+	for (const name of fs.readdirSync(srcDir)) {
+		const subSrc = path.join(srcDir, name);
+		if (!fs.statSync(subSrc).isDirectory()) continue;
+		const subDest = path.join(destDir, name);
+		fs.mkdirSync(subDest, { recursive: true });
+		for (const f of fs.readdirSync(subSrc)) {
+			if (!IMAGE_RE.test(f) && !DOCUMENT_RE.test(f)) continue;
+			const srcPath = path.join(subSrc, f);
+			const destPath = path.join(subDest, f);
+			const srcStat = fs.statSync(srcPath);
+			if (!fs.existsSync(destPath) || fs.statSync(destPath).mtimeMs < srcStat.mtimeMs) {
+				fs.copyFileSync(srcPath, destPath);
+			}
+		}
+	}
 }
 
 async function processSection(section) {
@@ -46,13 +133,21 @@ async function processSection(section) {
 
 		fs.mkdirSync(destDir, { recursive: true });
 
-		// Copy documents (no thumbnail processing)
+		copySubfolderImages(srcDir, destDir);
+
+		// Copy documents — PDFs additionally get a first-page thumbnail at
+		// all THUMB_SIZES so the publications block on detail pages can show
+		// a preview without shipping the full file.
 		for (const doc of docs) {
 			const srcPath = path.join(srcDir, doc);
 			const destPath = path.join(destDir, doc);
 			const srcStat = fs.statSync(srcPath);
 			if (!fs.existsSync(destPath) || fs.statSync(destPath).mtimeMs < srcStat.mtimeMs) {
 				fs.copyFileSync(srcPath, destPath);
+			}
+			if (/\.pdf$/i.test(doc)) {
+				const basename = doc.replace(/\.pdf$/i, '');
+				await processPdfThumbnails(srcPath, destDir, basename);
 			}
 		}
 
@@ -114,6 +209,7 @@ async function main() {
 
 	await processSection('works');
 	await processSection('consultancies');
+	await processSection('research');
 
 	// Copy about images too
 	const aboutDir = path.join(CONTENT_DIR, 'about');

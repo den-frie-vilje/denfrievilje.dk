@@ -1,7 +1,25 @@
 import fs from 'fs';
 import path from 'path';
-import { marked } from 'marked';
+import { marked, Renderer } from 'marked';
 import yaml from 'js-yaml';
+
+/**
+ * Render markdown body with relative image hrefs (e.g. `setups/01.x.jpg`)
+ * rewritten to the static asset URL for the item — so authors can drop
+ * inline `![](setups/foo.jpg)` into the body without thinking about routes.
+ * Absolute URLs and `http(s):` URLs are passed through untouched.
+ */
+async function renderBody(body: string, section: string, slug: string): Promise<string> {
+	const renderer = new Renderer();
+	const publicBase = `/content/${section}/${slug}`;
+	const baseImage = renderer.image.bind(renderer);
+	renderer.image = ({ href, title, text }) => {
+		const rewritten =
+			href.startsWith('/') || /^https?:\/\//i.test(href) ? href : `${publicBase}/${href}`;
+		return baseImage({ href: rewritten, title, text });
+	};
+	return marked(body, { renderer });
+}
 
 export interface ContentMeta {
 	title?: string;
@@ -16,6 +34,21 @@ export interface ContentMeta {
 	technologies?: string[];
 	appearances?: Array<{ date: string; occasion: string; place: string; url: string }>;
 	videos?: Array<{ id: string; title: string }>;
+
+	// Curated publications co-located with the content folder. Each entry
+	// points at a file in the same content/<section>/<slug>/ directory; the
+	// build-time image script copies the file into static/content/... and
+	// renders a first-page thumbnail. Optional fields drive the badge/byline
+	// rendered alongside the download link on the detail page.
+	publications?: Publication[];
+
+	// Cross-section link: this work / consultancy is an outcome of the
+	// research entry with this slug. The work detail page renders a
+	// "Part of research" link in the sidebar; the research detail page
+	// queries all works with this set and surfaces them below the gallery.
+	// One-to-many: a research project has many works, a work has one
+	// research umbrella (or none).
+	research?: string;
 
 	// Optional SEO overrides — page-specific values that beat the auto-derived
 	// defaults (which fall back to title/lead/first-gallery-image). Set in the
@@ -74,6 +107,22 @@ export interface PersonMeta {
 	knowsLanguage?: string[];
 }
 
+export interface Publication {
+	title: string;
+	file: string;
+	year?: string | number;
+	type?: string;
+	author?: string;
+	language?: string;
+}
+
+export interface ResolvedPublication extends Publication {
+	url: string;
+	thumb: string | null;
+	thumbSrcset: string | null;
+	thumbSrcsetWebp: string | null;
+}
+
 export interface ContentImages {
 	/** Gallery images (excludes thumbs) */
 	gallery: string[];
@@ -90,6 +139,7 @@ export interface Content {
 	html: string;
 	slug: string;
 	images: ContentImages;
+	publications: ResolvedPublication[];
 }
 
 /**
@@ -176,6 +226,44 @@ function resolveImages(section: string, slug: string, folder: string): ContentIm
 }
 
 /**
+ * Resolve frontmatter `publications:` entries to public URLs + thumbnail
+ * srcsets. The actual files (PDFs etc.) are copied from src/content/ into
+ * static/content/ by scripts/process-images.js, which also rasterises the
+ * first page of each PDF to a thumbnail at the same sizes as image thumbs.
+ */
+function resolvePublications(
+	section: string,
+	slug: string,
+	publications: Publication[]
+): ResolvedPublication[] {
+	const publicBase = `/content/${section}/${slug}`;
+	const staticBase = path.join(process.cwd(), 'static', 'content', section, slug);
+	const thumbSizes = [480, 960, 1920];
+
+	return publications.map((pub) => {
+		const base = pub.file.replace(/\.[^.]+$/, '');
+		const jpegParts: string[] = [];
+		const webpParts: string[] = [];
+		for (const size of thumbSizes) {
+			if (fs.existsSync(path.join(staticBase, `${base}-thumb-${size}.jpg`))) {
+				jpegParts.push(`${publicBase}/${base}-thumb-${size}.jpg ${size}w`);
+			}
+			if (fs.existsSync(path.join(staticBase, `${base}-thumb-${size}.webp`))) {
+				webpParts.push(`${publicBase}/${base}-thumb-${size}.webp ${size}w`);
+			}
+		}
+		const thumb480 = path.join(staticBase, `${base}-thumb-480.jpg`);
+		return {
+			...pub,
+			url: `${publicBase}/${pub.file}`,
+			thumb: fs.existsSync(thumb480) ? `${publicBase}/${base}-thumb-480.jpg` : null,
+			thumbSrcset: jpegParts.length > 0 ? jpegParts.join(', ') : null,
+			thumbSrcsetWebp: webpParts.length > 0 ? webpParts.join(', ') : null
+		};
+	});
+}
+
+/**
  * Get all items in a section (works, consultancies, etc.)
  */
 export async function getContentList(section: string): Promise<Content[]> {
@@ -200,14 +288,16 @@ export async function getContentList(section: string): Promise<Content[]> {
 			const slug = extractSlug(item);
 			const content = fs.readFileSync(mdPath, 'utf8');
 			const { meta, body } = parseFrontmatter(content);
-			const html = await marked(body);
+			const html = await renderBody(body, section, slug);
 			const images = resolveImages(section, slug, item);
+			const publications = resolvePublications(section, slug, meta.publications ?? []);
 
 			results.push({
 				meta,
 				html,
 				slug,
-				images
+				images,
+				publications
 			});
 		}
 	}
@@ -235,13 +325,14 @@ export async function getContent(section: string, slug: string): Promise<Content
 
 		const content = fs.readFileSync(mdPath, 'utf8');
 		const { meta, body } = parseFrontmatter(content);
-		const html = await marked(body);
+		const html = await renderBody(body, section, extractSlug(section));
 
 		return {
 			meta,
 			html,
 			slug: extractSlug(section),
-			images: { gallery: [], thumb: null, thumbSrcset: null, thumbSrcsetWebp: null }
+			images: { gallery: [], thumb: null, thumbSrcset: null, thumbSrcsetWebp: null },
+			publications: []
 		};
 	}
 
@@ -264,13 +355,15 @@ export async function getContent(section: string, slug: string): Promise<Content
 
 	const content = fs.readFileSync(mdPath, 'utf8');
 	const { meta, body } = parseFrontmatter(content);
-	const html = await marked(body);
+	const html = await renderBody(body, section, slug);
 	const images = resolveImages(section, slug, folder);
+	const publications = resolvePublications(section, slug, meta.publications ?? []);
 
 	return {
 		meta,
 		html,
 		slug,
-		images
+		images,
+		publications
 	};
 }

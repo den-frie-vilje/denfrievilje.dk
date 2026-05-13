@@ -176,6 +176,37 @@ body:has(.page-light) footer {
 .prose em {
 	font-style: italic;
 }
+/* Inline figures inside the prose body. Used by the research detail page
+   for the 13 telematic-setup schematics — schematic on the left, caption
+   text wrapping on the right at >=480px, stacked otherwise. */
+.prose figure.setup {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+	align-items: start;
+	margin: 1.5em 0;
+	padding-top: 1.5em;
+	border-top: 1px solid var(--color-border);
+}
+.prose figure.setup img {
+	width: 100%;
+	max-width: 200px;
+	height: auto;
+	background: var(--color-accent-subtle);
+	border: 1px solid var(--color-border);
+}
+.prose figure.setup p {
+	margin: 0;
+}
+@media (min-width: 30rem) {
+	.prose figure.setup {
+		grid-template-columns: 160px 1fr;
+		gap: 1.5rem;
+	}
+	.prose figure.setup img {
+		max-width: 160px;
+	}
+}
 
 /* ===== Hover-line underline animation ===== */
 .hover-line {

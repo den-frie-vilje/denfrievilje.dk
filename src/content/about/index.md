@@ -1,6 +1,7 @@
 ---
 title: Hello
-lead: <p class="lead">I am a visual artist. I write software and build electronics.<br />I work with interactive installations, visual art and mad science. <br/>I work in academic research and teach in art schools.<br />I am based in Copenhagen, Denmark.</p>
+label: About
+lead: I am a visual artist. I write software and build electronics. I work with interactive installations, visual art and mad science. I work in academic research and teach in art schools. I am based in Copenhagen, Denmark.
 teaser: "Ole Kristensen is a visual artist, programmer and scenographer \u2014 developing and appropriating new technology, creating works with software at the core."
 person:
   givenName: Ole
