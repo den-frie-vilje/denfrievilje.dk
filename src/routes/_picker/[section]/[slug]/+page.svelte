@@ -8,15 +8,17 @@
 
 	// Local state: which selected items to keep, which source items to add,
 	// and the operator's order for the keeps. The form action consumes both.
-	let keep = $state<string[]>(data.selected.map((s) => s.name));
+	// Initialised empty and populated via $effect.pre so Svelte doesn't flag
+	// the data-derived initialisers as captured-only-once.
+	let keep = $state<string[]>([]);
 	let adds = $state<string[]>([]);
-	let sourceInput = $state(data.source?.path ?? '');
+	let sourceInput = $state('');
 	let busy = $state(false);
 
-	$effect(() => {
-		// Reset local state when the page data changes (after save or source
-		// switch). We re-derive from the server's view so a stale UI never
-		// silently disagrees with the filesystem.
+	$effect.pre(() => {
+		// Re-sync from the server's view on first run AND whenever data
+		// changes (after save or source switch), so a stale UI never silently
+		// disagrees with the filesystem.
 		keep = data.selected.map((s) => s.name);
 		adds = [];
 		sourceInput = data.source?.path ?? '';
@@ -43,11 +45,53 @@
 		keep = next;
 	}
 
+	// Drag-and-drop reorder. `dragFrom` is the source index; `dragOver` is the
+	// hovered target index for visual feedback. We move-insert (not swap), so
+	// dragging from position 1 onto position 5 shifts 2–5 left by one.
+	let dragFrom = $state<number | null>(null);
+	let dragOver = $state<number | null>(null);
+
+	function onDragStart(e: DragEvent, i: number) {
+		dragFrom = i;
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = 'move';
+			// Firefox needs *something* in dataTransfer to start a drag.
+			e.dataTransfer.setData('text/plain', String(i));
+		}
+	}
+
+	function onDragOver(e: DragEvent, i: number) {
+		if (dragFrom === null) return;
+		e.preventDefault();
+		dragOver = i;
+		if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+	}
+
+	function onDrop(e: DragEvent, i: number) {
+		e.preventDefault();
+		if (dragFrom === null || dragFrom === i) {
+			dragFrom = null;
+			dragOver = null;
+			return;
+		}
+		const next = [...keep];
+		const [item] = next.splice(dragFrom, 1);
+		next.splice(i, 0, item);
+		keep = next;
+		dragFrom = null;
+		dragOver = null;
+	}
+
+	function onDragEnd() {
+		dragFrom = null;
+		dragOver = null;
+	}
+
 	function openSource(p: string) {
 		goto(`?source=${encodeURIComponent(p)}`, { keepFocus: true, noScroll: false });
 	}
 
-	function thumbUrl(filePath: string, size = 320) {
+	function thumbUrl(filePath: string, size = 640) {
 		return `/_picker/raw?path=${encodeURIComponent(filePath)}&size=${size}`;
 	}
 </script>
@@ -81,13 +125,21 @@
 	<div class="grid">
 		<section class="selected">
 			<h2>Gallery <span class="count">{keep.length}</span></h2>
-			<p class="hint">Click to remove. Use ← → to reorder. Re-numbered on save.</p>
+			<p class="hint">Drag to reorder, or use ← →. Click to remove. Re-numbered on save.</p>
 			<ul class="thumbs">
 				{#each keep as name, i (name)}
 					{@const item = data.selected.find((s) => s.name === name)}
-					<li>
+					<li
+						draggable="true"
+						class:dragging={dragFrom === i}
+						class:drag-over={dragOver === i && dragFrom !== i}
+						ondragstart={(e) => onDragStart(e, i)}
+						ondragover={(e) => onDragOver(e, i)}
+						ondrop={(e) => onDrop(e, i)}
+						ondragend={onDragEnd}
+					>
 						<button class="thumb" type="button" onclick={() => toggleKeep(name)} title="Remove">
-							{#if item}<img src={item.url} alt={name} loading="lazy" />{/if}
+							{#if item}<img src={item.url} alt={name} loading="lazy" draggable="false" />{/if}
 							<span class="meta">{name}</span>
 						</button>
 						<div class="reorder">
@@ -141,7 +193,7 @@
 								onclick={() => toggleAdd(abs)}
 								title={isAdded ? 'Click to un-stage' : 'Click to add'}
 							>
-								<img src={thumbUrl(abs, 320)} alt={img.name} loading="lazy" />
+								<img src={thumbUrl(abs)} alt={img.name} loading="lazy" />
 								<span class="meta">{img.name}{isAdded ? ' ✓' : ''}</span>
 							</button>
 						</li>
@@ -271,13 +323,25 @@
 		padding: 0;
 		margin: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 		gap: 0.5rem;
 	}
 	.thumbs li {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+	}
+	/* Selected-gallery items are draggable for reorder. */
+	.selected .thumbs li {
+		cursor: grab;
+	}
+	.selected .thumbs li.dragging {
+		opacity: 0.4;
+		cursor: grabbing;
+	}
+	.selected .thumbs li.drag-over {
+		outline: 2px dashed var(--color-accent, #0c0);
+		outline-offset: 2px;
 	}
 	.empty {
 		grid-column: 1 / -1;

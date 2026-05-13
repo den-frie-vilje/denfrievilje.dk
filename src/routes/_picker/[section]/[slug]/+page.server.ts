@@ -159,7 +159,7 @@ export const actions: Actions = {
 			const original = keeps[i];
 			const tmp = `__staged_${i}__${original}`;
 			fs.renameSync(path.join(contentDir, original), path.join(contentDir, tmp));
-			stage.push({ from: tmp, baseName: original.replace(/^\d+\./, '') });
+			stage.push({ from: tmp, baseName: original.replace(/^(?:\d+\.)+/, '') });
 		}
 
 		// Stage 2: copy in the new files with a tmp prefix
@@ -169,7 +169,7 @@ export const actions: Actions = {
 			const original = path.basename(src);
 			const tmp = `__new_${i}__${original}`;
 			fs.copyFileSync(src, path.join(contentDir, tmp));
-			addStage.push({ from: tmp, baseName: original.replace(/^\d+\./, '') });
+			addStage.push({ from: tmp, baseName: original.replace(/^(?:\d+\.)+/, '') });
 		}
 
 		// Stage 3: sequential renumber. Selected order = staged order + newly
