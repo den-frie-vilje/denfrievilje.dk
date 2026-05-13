@@ -13,10 +13,11 @@ async function renderBody(body: string, section: string, slug: string): Promise<
 	const renderer = new Renderer();
 	const publicBase = `/content/${section}/${slug}`;
 	const baseImage = renderer.image.bind(renderer);
-	renderer.image = ({ href, title, text }) => {
+	renderer.image = (token) => {
+		const { href } = token;
 		const rewritten =
 			href.startsWith('/') || /^https?:\/\//i.test(href) ? href : `${publicBase}/${href}`;
-		return baseImage({ href: rewritten, title, text });
+		return baseImage({ ...token, href: rewritten });
 	};
 	return marked(body, { renderer });
 }
