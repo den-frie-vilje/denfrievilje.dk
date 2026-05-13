@@ -1,5 +1,7 @@
 ---
 title: Get in touch
+label: Contact
+lead: Studio contact details — phone, email and postal address for Den Frie Vilje and Ole Kristensen in Copenhagen.
 address:
   bureau:
     - Den Frie Vilje ApS

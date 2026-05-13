@@ -25,8 +25,14 @@ dist
 *~
 .DS_Store
 
-# Claude Code session state
-.claude
+# Claude Code session state (transcripts, settings.local.json, worktree
+# clones, skill caches). Launch configs are the exception — they describe
+# project-shared dev servers, not per-developer state, so they ship in
+# git. The pattern is `.claude/*` rather than `.claude` so git still
+# recurses into the directory to evaluate the negation below; a bare
+# directory ignore would short-circuit before reaching it.
+.claude/*
+!.claude/launch.json
 
 # Generated content images
 static/content

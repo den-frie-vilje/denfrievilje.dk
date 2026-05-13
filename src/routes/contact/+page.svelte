@@ -29,16 +29,15 @@
 </script>
 
 <SEO
-	title="Contact"
-	description={data.item.meta.description ??
-		'Get in touch — Ole Kristensen / Den Frie Vilje. Copenhagen-based studio for interactive installations, live performances, and design technology.'}
+	title={data.item.meta.label ?? 'Contact'}
+	description={data.item.meta.description ?? data.item.meta.lead ?? ''}
 	ogImage={data.item.meta.ogImage}
 />
 
 <article class="px-[var(--gutter)]" class:page-dark={bureau}>
    <header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-	   <SectionLabel class="mb-4">Contact</SectionLabel>
-	   <PageTitle>{data.item.meta.title || 'Contact'}</PageTitle>
+	   {#if data.item.meta.label}<SectionLabel class="mb-4">{data.item.meta.label}</SectionLabel>{/if}
+	   {#if data.item.meta.title}<PageTitle>{data.item.meta.title}</PageTitle>{/if}
    </header>
 
    <section class="mx-auto max-w-[var(--max-w)] pb-[clamp(5rem,10vw,10rem)]">

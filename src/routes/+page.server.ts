@@ -10,16 +10,19 @@ function extractYear(date?: string): number {
 export const load: PageServerLoad = async () => {
 	const works = await getContentList('works');
 	const consultancies = await getContentList('consultancies');
+	const research = await getContentList('research');
 
-	const [worksSection, consultanciesSection, aboutSection] = await Promise.all([
+	const [worksSection, consultanciesSection, researchSection, aboutSection] = await Promise.all([
 		getContent('works', ''),
 		getContent('consultancies', ''),
+		getContent('research', ''),
 		getContent('about', '')
 	]);
 
 	// Sort newest first
 	works.sort((a, b) => extractYear(b.meta.date) - extractYear(a.meta.date));
 	consultancies.sort((a, b) => extractYear(b.meta.date) - extractYear(a.meta.date));
+	research.sort((a, b) => extractYear(b.meta.date) - extractYear(a.meta.date));
 
 	// Featured works: those tagged "Featured", sorted newest first
 	const featuredWorks = works.filter((w) => w.meta.tags?.includes('Featured'));
@@ -46,8 +49,10 @@ export const load: PageServerLoad = async () => {
 		heroImages,
 		allWorks: works,
 		consultancies,
+		research,
 		worksSection,
 		consultanciesSection,
+		researchSection,
 		aboutSection
 	};
 };

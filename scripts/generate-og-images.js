@@ -147,6 +147,7 @@ async function main() {
 
 	const works = listSection('works');
 	const consultancies = listSection('consultancies');
+	const research = listSection('research');
 
 	const jobs = [];
 	// Output filenames are brand slugs (matching SITE_OG_* in src/lib/site.ts)
@@ -169,6 +170,12 @@ async function main() {
 		const out = path.join(OG_DIR, 'consultancies', `${item.slug}.png`);
 		if (needsRebuild(out, Math.max(item.sourceMtime, componentMtime))) {
 			jobs.push({ url: `/_og/consultancies/${item.slug}/`, out });
+		}
+	}
+	for (const item of research) {
+		const out = path.join(OG_DIR, 'research', `${item.slug}.png`);
+		if (needsRebuild(out, Math.max(item.sourceMtime, componentMtime))) {
+			jobs.push({ url: `/_og/research/${item.slug}/`, out });
 		}
 	}
 

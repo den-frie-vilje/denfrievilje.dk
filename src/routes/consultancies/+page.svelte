@@ -19,10 +19,8 @@
 		'@type': 'CollectionPage',
 		'@id': pageUrl,
 		url: pageUrl,
-		name: 'Design Technology',
-		description:
-			data.section?.meta.lead ??
-			'Design technology consultancies — bespoke software, interactive systems, and creative engineering for cultural and commercial clients.',
+		name: data.section?.meta.title?.replace(/<[^>]+>/g, '') ?? 'Consultancies',
+		description: data.section?.meta.lead ?? '',
 		mainEntity: buildCreativeWorkItemList(
 			data.items.map((c) => ({ slug: c.slug, name: c.meta.title || c.slug })),
 			{ name: 'Consultancies', baseUrl: `${SITE_URL}/consultancies`, descending: true }
@@ -35,15 +33,15 @@
 </script>
 
 <SEO
-	title="Consultancies"
-	description={data.section?.meta.lead ?? 'Design technology consultancies — bespoke software, interactive systems, and creative engineering for cultural and commercial clients.'}
+	title={data.section?.meta.label ?? 'Consultancies'}
+	description={data.section?.meta.lead ?? ''}
 />
 <JsonLd data={[collectionPage, breadcrumb]} />
 
 <div class="page-dark">
 	<section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">
 		<div class="mx-auto max-w-[var(--max-w)]">
-			<SectionLabel class="mb-2">{data.section?.meta.label ?? 'Consultancies'}</SectionLabel>
+			{#if data.section?.meta.label}<SectionLabel class="mb-2">{data.section.meta.label}</SectionLabel>{/if}
 			<div class="relative">
 				<img
 					src="/images/logos/den%20frie%20vilje%20logo%20knockout.svg"
@@ -51,7 +49,7 @@
 					class="float-right ml-6"
 					style="height: calc(clamp(2.5rem, 5vw, 4rem) * 1.68);"
 				/>
-				<PageTitle>{@html data.section?.meta.title ?? 'Design Technology'}</PageTitle>
+				{#if data.section?.meta.title}<PageTitle>{@html data.section.meta.title}</PageTitle>{/if}
 				{#if data.section?.meta.lead}
 					<p class="mt-4 max-w-[40ch] text-[0.9rem] text-[var(--color-ink-secondary)]">{data.section.meta.lead}</p>
 				{/if}
