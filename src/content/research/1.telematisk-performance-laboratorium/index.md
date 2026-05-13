@@ -10,7 +10,7 @@ tags:
   - Performance
 materials: Mirrors, cameras, projectors, closed-circuit and delayed video systems, light-rooms in the 30 × 60 m black-box of Kanonhallen.
 partners: Boxiganga (Kjell Yngve Petersen, Karin Søndergaard), Kanonhallen, Simon Moe
-photocredits: Boxiganga / Ole Kristensen
+photocredits: Boxiganga / Ole Kristensen / Simon Moe
 publications:
   - title: Telematisk Performance Laboratorium — Folder
     file: telematisk-performance-lab-folder.pdf
@@ -36,11 +36,11 @@ appearances:
     url: https://teaterleksikon.lex.dk/Boxiganga
   - date: June–July 2005
     occasion: PARIP 2005 — Knowledge formation as performance
-    place: University of Leeds
+    place: Bretton Hall, University of Leeds
     url: https://www.bris.ac.uk/parip/parip2005.htm
 ---
 
-The Telematisk Performance Laboratorium was a series of three practice-led research laboratories held during 2004–2005 in the 30 × 60 m black-box of [Kanonhallen](https://teaterleksikon.lex.dk/Boxiganga) in Copenhagen. The project was run by Boxiganga — Kjell Yngve Petersen and Karin Søndergaard, both PhD candidates at the Planetary Collegium, University of Plymouth — with Simon Moe and myself as research assistants from the Communication Studies programme at Roskilde University.
+Telematic Performance Laboratory was a series of three practice-led research laboratories held during 2004–2005 in the 30 × 60 m black-box of Kanonhallen in Copenhagen. The project was run by [Boxiganga](https://teaterleksikon.lex.dk/Boxiganga) — Kjell Yngve Petersen and Karin Søndergaard, both PhD candidates at the Planetary Collegium, University of Plymouth — with Simon Moe and myself as research assistants from the Communication Studies programme at Roskilde University.
 
 The work investigated the relationships between performing and experiencing — between remote, mirrored, virtual and delayed presences — through scenographic installations built from mirrors, cameras, projectors and constructed light-rooms, walked through in a considered sequence by invited participants.
 
