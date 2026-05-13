@@ -1,7 +1,7 @@
 ---
 title: LEDlys
 date: 2010–2017
-lead: Practice-led research into dynamic daylight and adaptive LED light, run between ITU and KADK from 2010 to 2017.
+lead: LEDlys — Integrating Daylight and Adaptive LED Light. Practice-led research at ITU and KADK, 2010 to 2017.
 tags:
   - Research
   - Practice-led
@@ -10,7 +10,38 @@ tags:
   - Architecture
 materials: Tessellated cardboard-and-LED cubes, daylight sensors, adaptive control software (openFrameworks, DMX/OLA), projection and architectural installations.
 partners: Kjell Yngve Petersen (ITU), Karin Søndergaard (KADK), Karina Munkholm Madsen, Christina Augustesen, Jesper Kongshaug, Nina Rask, Spektra LED, CreaSign, Grontmij, Kongshaug & Søn
-photocredits: TBD
+photocredits: Ole Kristensen
+publications:
+  - title: An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument
+    author: Karin Søndergaard, Kjell Yngve Petersen
+    file: an-exploration-into-integrating-daylight.pdf
+    year: 2012
+    type: Research publication
+    language: English
+  - title: Adaptivt Lys
+    author: Kjell Yngve Petersen, Jesper Kongshaug, Karin Søndergaard
+    file: adaptivt-lys.pdf
+    year: 2012
+    type: Research publication
+    language: Danish
+  - title: Pixel Experiments
+    author: Christina Augustesen, Kjell Yngve Petersen, Karin Søndergaard
+    file: pixel-experiments.pdf
+    year: 2012
+    type: Research publication
+    language: English
+  - title: The Experience of Dynamic Lighting
+    author: Kjell Yngve Petersen, Ole Kristensen
+    file: the-experience-of-dynamic-lighting.pdf
+    year: 2017
+    type: Conference paper (DeSForM 2017)
+    language: English
+  - title: Rapport EAL — Energy Optimization through Adaptive Lighting Control
+    author: Kjell Yngve Petersen, Nina Rask
+    file: rapport-eal-pso-347-033.pdf
+    year: 2018
+    type: Elforsk final report (PSO 347-033)
+    language: English
 appearances:
   - date: October 2017
     occasion: DeSForM 2017 — The Experience of Dynamic Lighting
@@ -48,14 +79,6 @@ Kjell Yngve Petersen (ITU, head of Adaptive Environments); Karin Søndergaard (K
 ## My role
 
 Adaptive control software and interface for the Observational Instrument — openFrameworks with bespoke code, DMX/OLA through openFrameworks add-ons. Real-time feedback systems for several installations across both phases. Co-author on the DeSForM 2017 paper.
-
-## Publications
-
-1. Karin Søndergaard & Kjell Yngve Petersen, *An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/exploration_into_integrating_daylig).
-2. Kjell Yngve Petersen, Jesper Kongshaug & Karin Søndergaard, *Adaptivt Lys* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/adaptivtlys_hq).
-3. Christina Augustesen, Kjell Yngve Petersen & Karin Søndergaard, *Pixel Experiments* — [KADK, c. 2012 (issuu)](https://issuu.com/kadk/docs/pixel_experiments).
-4. Kjell Yngve Petersen & Ole Kristensen, *[The Experience of Dynamic Lighting](https://doi.org/10.5772/intechopen.71176)*, in *DeSForM 2017 Proceedings* (IntechOpen, 2017). DOI: 10.5772/intechopen.71176.
-5. Kjell Yngve Petersen & Nina Rask, *Light at Eye Level: Energy Savings and Space for Learning, Focus and Concentration* (Elforsk final report, 2018) — [ITU news, 2018](https://en.itu.dk/about-itu/press/news-from-itu/2018/itu-researcher-receives-award-for-intelligent-lighting-project).
 
 ## Video documentation
 
