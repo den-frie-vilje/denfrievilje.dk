@@ -164,7 +164,7 @@ The thirteen setups developed across the three laboratories are listed below in 
 
 ## Three laboratories
 
-**Laboratory I — November 2004.** A first pass at the vocabulary. A working subset of the configurations above was built and run with a small ensemble, checking that each setup did in fact isolate the phenomenon it was intended to isolate, and setting aside the ones that did not. What Lab I produced was a body of instruments that could be relied on for Lab II.
+**Laboratory I — November 2004.** Exploratory work. A small ensemble inhabited the early constructions, and through that inhabitation the situations were discovered and refined — found in what each setup did to the person standing inside it. What Lab II walked through emerged here.
 
 **Laboratory II — February 2005.** Twelve situations built inside the 30 × 60 m space, arranged in a progression of phenomenological complexity and walked through in sequence over six days. The participants were a deliberately interdisciplinary group of scholars: Dan Zahavi (Center for Subjectivity Research, Copenhagen), Mie Buhl, Ingelise Flensborg and Leif Holm (DPU), Katja Bülow, Erik Pold, Sanne Bjerg, Tilde Knudsen, Katrine Karlsen, Michael Thomsen, Stuart Lynch, Kerstin Anderson, Tina Tarpgaard and Pelle Skovmand — from phenomenology, performance studies, psychology, semiotics, philosophy and architectural practice. Each participant inhabited each setup and was interviewed afterwards; the interview corpus remains the project's richest documentary layer.
 
