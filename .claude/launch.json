@@ -1,0 +1,17 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "dev",
+			"runtimeExecutable": "pkgx",
+			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "dev"],
+			"port": 5173
+		},
+		{
+			"name": "preview",
+			"runtimeExecutable": "pkgx",
+			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "preview"],
+			"port": 4173
+		}
+	]
+}
