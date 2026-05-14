@@ -57,36 +57,14 @@ appearances:
     url: https://en.itu.dk/about-itu/press/news-from-itu/2018/itu-researcher-receives-award-for-intelligent-lighting-project
 ---
 
-<!--
-Scaffold. Loose source material captured below for shaping into prose
-with the user. Treat headings as working sections, not the final
-structure. Tone register: situationism + performativity, no
-consultant-deck phrasing (no "interdisciplinary", "stakeholder",
-"integration of X and Y", "at scale").
--->
+LEDlys ran from 2010 to 2017 across two institutions — the IT University of Copenhagen and the Royal Danish Academy in Copenhagen — and across two phases, one preoccupied with what an architecture could ask of light, and one with what light could give back to the people sitting under it.
 
-## Arc
+The first phase, 2010 to 2014, was built around an observational instrument. Karin Søndergaard and Karina Munkholm Madsen at KADK designed and tessellated a wall-sized array of small cardboard cubes, each cube a self-contained light source with tuneable colour and intensity. Kjell Yngve Petersen led the work from ITU. I wrote the adaptive control software that drove the array — openFrameworks talking DMX through Open Lighting Architecture — and, with that, the wall could behave as anything from a single quiet field to a granular procedural sky. A 2014 ITU video, [*Daylight Adaptation*](https://www.youtube.com/watch?v=iCPGnvG6ChA), follows twelve lighting designers and architects through a session with the instrument.
 
-ITU and KADK, 2010 to 2017. Two phases.
+What the instrument did was hold a particular kind of question. A participant standing in front of it was inhabiting an architectural condition that adjusted itself, second by second, with the room's own daylight. The qualities being studied — speed of change, contrast, where light fell, what was bright when — became legible from inside the situation, not described from outside it. Three KADK publications came out of this phase, all in 2012: *An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument*; *Adaptivt Lys*; and *Pixel Experiments*, the last of which was Christina Augustesen's investigation into how a wall of LED pixels might compose itself like a picture rather than a wash.
 
-- **2010–2014** — the observational-instrument phase. Tessellated cardboard-and-LED cubes built into a wall-sized array, run by adaptive control software written at ITU. Outputs: the *Adaptive Light* and *Pixel Experiments* publications, and the Observational Instrument itself, in use at KADK.
-- **2015–2017** — *Energy Optimization through Adaptive Lighting Control* (the Elforsk-funded phase, March 2015 to June 2017). The work moved out of the laboratory into schools and offices, asking what happens when adaptive lighting is in a place people sit in for hours at a time. Outputs: the *Light at Eye Level* report, the Digital Weather installation at Vandalorum, the DeSForM 2017 paper *The Experience of Dynamic Lighting*, and Elforsk's Best Research Project award in 2018.
+The second phase, 2015 to 2017, was the Elforsk-funded follow-on, *Energy Optimization through Adaptive Lighting Control* (PSO 347-033). The work moved out of the laboratory into actual rooms — schools, offices, the kind of places where you sit under fluorescent ceiling fixtures for six hours and don't think about them. Petersen and Nina Rask led, with industry partners Spektra LED, CreaSign, Grontmij and Kongshaug & Søn. The argument the final report makes is that light at eye level — pendants over the work surface, rather than ceilings flooding everything — saves a third of the energy and gives back something architectural in the same move: a defined, inhabited zone of light around what you're doing. The project won Elforsk's Best Research Project award in 2018.
 
-## Team
+The other thing that came out of the late phase was [Digital Weather](/works/digital-weather/), an installation Petersen and I made for Vandalorum in 2017. Six dynamic light volumes traced the changing weather over Värnamo for the duration of the show, taken straight from a feed and rendered as colour and intensity in the gallery.
 
-Kjell Yngve Petersen (ITU, head of Adaptive Environments); Karin Søndergaard (KADK); Karina Munkholm Madsen (KADK architect, instrument designer); Ole Kristensen (ITU, software). Later phase added Christina Augustesen, Jesper Kongshaug and Nina Rask. Industry partners through Elforsk: Spektra LED, CreaSign, Grontmij, Kongshaug & Søn.
-
-## My role
-
-Adaptive control software and interface for the Observational Instrument — openFrameworks with bespoke code, DMX/OLA through openFrameworks add-ons. Real-time feedback systems for several installations across both phases. Co-author on the DeSForM 2017 paper.
-
-## Video documentation
-
-- *[Daylight Adaptation](https://www.youtube.com/watch?v=iCPGnvG6ChA)* (ITU, December 2014). Twelve lighting designers and architects work through the Observational Instrument under the eye of Petersen and Søndergaard.
-
-## Outcomes
-
-- Observational Instrument (also called White Cube / White Box). Tessellated wall-mounted cardboard-and-LED cubes; software in openFrameworks.
-- Digital Weather, Vandalorum 2017 — already on the site under `/works/digital-weather/`. To be linked from here via `research: ledlys` in the work's frontmatter.
-- Pixel Experiments installations.
-- Light at Eye Level deployments in schools and offices.
+The DeSForM 2017 paper *The Experience of Dynamic Lighting*, written with Petersen, is the closest I've come to setting the work down — it tries to articulate what dynamic light does to spatial experience, which is also what the seven years tried to do.
