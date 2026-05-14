@@ -19,6 +19,10 @@ const THUMB_QUALITY = 75;
 // elements can serve WebP to capable browsers and fall back to JPEG.
 const WEBP_QUALITY = 80;
 const IMAGE_RE = /\.(jpg|jpeg|png|gif|webp)$/i;
+// Subfolder images (used by inline markdown refs only, not the gallery) may
+// also be vector. SVGs aren't run through Sharp — they're copied verbatim and
+// rendered by the browser at any size.
+const SUBFOLDER_IMAGE_RE = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
 const DOCUMENT_RE = /\.(pdf|svg|doc|docx|txt|rtf|odt|epub)$/i;
 const THUMB_RE = /^(thumb|00\.thumb)\.(jpg|jpeg|png|gif|webp)$/i;
 
@@ -103,7 +107,7 @@ function copySubfolderImages(srcDir, destDir) {
 		const subDest = path.join(destDir, name);
 		fs.mkdirSync(subDest, { recursive: true });
 		for (const f of fs.readdirSync(subSrc)) {
-			if (!IMAGE_RE.test(f) && !DOCUMENT_RE.test(f)) continue;
+			if (!SUBFOLDER_IMAGE_RE.test(f) && !DOCUMENT_RE.test(f)) continue;
 			const srcPath = path.join(subSrc, f);
 			const destPath = path.join(subDest, f);
 			const srcStat = fs.statSync(srcPath);

@@ -81,7 +81,7 @@
 <div class="page-dark">
 	<article class="px-[var(--gutter)]">
 		<header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-			<a href="/consultancies" class="mb-6 inline-block font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline transition-[gap] hover:gap-3">← Consultancies</a>
+			<a href="/consultancies" class="mb-6 block w-fit font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline"><span class="back-arrow">←&nbsp;</span>Consultancies</a>
 			<PageTitle>{data.item.meta.title}</PageTitle>
 			<div class="mt-4 flex flex-wrap items-center gap-3 text-[0.78rem] text-[var(--color-ink-secondary)]">
 				{#if data.item.meta.client}
