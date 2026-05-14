@@ -64,6 +64,12 @@
 			{ name: 'Consultancies', baseUrl: `${SITE_URL}/consultancies`, descending: true }
 		)
 	);
+	const researchList = $derived(
+		buildCreativeWorkItemList(
+			data.research.slice(0, 4).map((r) => ({ slug: r.slug, name: r.meta.title || r.slug })),
+			{ name: 'Research', baseUrl: `${SITE_URL}/research`, descending: true }
+		)
+	);
 </script>
 
 <SEO />
@@ -72,7 +78,8 @@
 		...(personJsonLd ? [personJsonLd] : []),
 		ORGANIZATION_JSONLD,
 		featuredWorksList,
-		consultanciesList
+		consultanciesList,
+		researchList
 	]}
 />
 
@@ -90,10 +97,16 @@
 	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
 		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
 			<div>
-				<SectionLabel class="mb-2">{data.worksSection?.meta.teaser_label ?? 'Selected Works'}</SectionLabel>
-				<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.worksSection?.meta.title ?? 'Projects &amp; Installations'}</h2>
+				{#if data.worksSection?.meta.teaser_label ?? data.worksSection?.meta.label}
+					<SectionLabel class="mb-2">{data.worksSection?.meta.teaser_label ?? data.worksSection?.meta.label}</SectionLabel>
+				{/if}
+				{#if data.worksSection?.meta.title}
+					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.worksSection.meta.title}</h2>
+				{/if}
 			</div>
-			<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.worksSection?.meta.teaser_lead ?? 'Interactive installations, live performances, and commissioned work.'}</p>
+			{#if data.worksSection?.meta.teaser_lead ?? data.worksSection?.meta.lead}
+				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.worksSection?.meta.teaser_lead ?? data.worksSection?.meta.lead}</p>
+			{/if}
 		</div>
 
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_0.7fr]">
@@ -158,10 +171,16 @@
 	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
 		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
 			<div>
-				<SectionLabel class="mb-2">{data.consultanciesSection?.meta.label ?? 'Consultancies'}</SectionLabel>
-				<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.consultanciesSection?.meta.title ?? 'Design Technology'}</h2>
+				{#if data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label}
+					<SectionLabel class="mb-2">{data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label}</SectionLabel>
+				{/if}
+				{#if data.consultanciesSection?.meta.title}
+					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.consultanciesSection.meta.title}</h2>
+				{/if}
 			</div>
-			<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.consultanciesSection?.meta.lead ?? ''}</p>
+			{#if data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead}
+				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead}</p>
+			{/if}
 		</div>
 
 		<div class="flex flex-col">
@@ -196,12 +215,64 @@
 </section>
 {/snippet}
 
+{#snippet researchSection()}
+<!-- Research -->
+<section class="px-[var(--gutter)] py-[clamp(5rem,10vw,10rem)]">
+	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
+		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
+			<div>
+				{#if data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label}
+					<SectionLabel class="mb-2">{data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label}</SectionLabel>
+				{/if}
+				{#if data.researchSection?.meta.title}
+					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.researchSection.meta.title}</h2>
+				{/if}
+			</div>
+			{#if data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead}
+				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead}</p>
+			{/if}
+		</div>
+
+		<div class="flex flex-col">
+			{#each data.research.slice(0, 4) as item (item.slug)}
+				<a href="/research/{item.slug}" class="group grid grid-cols-[1fr_auto] items-center gap-6 border-b border-[var(--color-border)] px-0 py-5 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2 md:grid-cols-[5rem_1fr_auto]">
+					{#if item.images?.thumb}
+						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="5rem" class="hidden h-14 w-20 shrink-0 overflow-hidden md:block" />
+					{/if}
+					<div>
+						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{item.meta.title}</h3>
+						{#if item.meta.lead}
+							<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{item.meta.lead}</p>
+						{/if}
+					</div>
+					<div class="flex shrink-0 items-center gap-6 text-[0.75rem] text-[var(--color-ink-secondary)]">
+						{#if item.publications.length > 0}
+							<span>{item.publications.length} publication{item.publications.length === 1 ? '' : 's'}</span>
+						{/if}
+						{#if item.meta.date}
+							<span>{item.meta.date}</span>
+						{/if}
+						<span class="text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1">→</span>
+					</div>
+				</a>
+			{/each}
+		</div>
+
+		<div class="mt-12">
+			<CtaLink href="/research">View all research →</CtaLink>
+		</div>
+	</div>
+</section>
+{/snippet}
+
 {#if bureau}
 	{@render consultanciesSection()}
 	{@render worksSection()}
+	{@render researchSection()}
 {:else}
 	{@render worksSection()}
 	{@render consultanciesSection()}
+	{@render researchSection()}
 {/if}
 
 <!-- About -->
@@ -211,9 +282,11 @@
 		<div class="grid grid-cols-1 items-start gap-8 md:grid-cols-[3px_1fr]">
 			<div class="hidden h-full min-h-16 bg-[var(--color-accent)] md:block"></div>
 			<div>
-				<p class="max-w-[45ch] text-[clamp(1.1rem,2vw,1.4rem)] leading-relaxed text-[var(--color-ink)]">
-					{data.aboutSection?.meta.teaser ?? 'Ole Kristensen is a visual artist, programmer and scenographer — developing and appropriating new technology, creating works with software at the core.'}
-				</p>
+				{#if data.aboutSection?.meta.teaser}
+					<p class="max-w-[45ch] text-[clamp(1.1rem,2vw,1.4rem)] leading-relaxed text-[var(--color-ink)]">
+						{data.aboutSection.meta.teaser}
+					</p>
+				{/if}
 				<CtaLink href="/about" class="mt-8">Read more →</CtaLink>
 			</div>
 		</div>

@@ -19,7 +19,11 @@
 	// _og/* routes are render targets for the Puppeteer-based OG image
 	// generator. They must be served chrome-less (no header, footer, or
 	// floating palette toggle) so the screenshot captures only the OG layout.
-	const isOgRoute = $derived(page.url.pathname.startsWith('/_og/'));
+	// The dev-only _picker tree also opts out of site chrome — it's an
+	// editing surface, not a public page.
+	const isChromeless = $derived(
+		page.url.pathname.startsWith('/_og/') || page.url.pathname.startsWith('/_picker/')
+	);
 
 	// Toggle is exposed in dev (always) or in any build whose Dockerfile
 	// passed PUBLIC_SHOW_PALETTE_TOGGLE=true (staging). When exposed,
@@ -61,7 +65,7 @@
 	}
 </script>
 
-{#if isOgRoute}
+{#if isChromeless}
 	{@render children()}
 {:else}
 	<div class="min-h-screen flex flex-col">

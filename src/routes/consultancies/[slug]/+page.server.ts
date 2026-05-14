@@ -9,8 +9,11 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(404, 'Consultancy not found');
 	}
 
+	const research = item.meta.research ? await getContent('research', item.meta.research) : null;
+
 	return {
 		item,
-		slug: params.slug
+		slug: params.slug,
+		research
 	};
 };

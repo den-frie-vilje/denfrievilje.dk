@@ -4,18 +4,20 @@ import type { RequestHandler } from './$types';
 
 export const prerender = true;
 
-const STATIC_PATHS = ['/', '/works/', '/consultancies/', '/about/', '/contact/'];
+const STATIC_PATHS = ['/', '/works/', '/consultancies/', '/research/', '/about/', '/contact/'];
 
 export const GET: RequestHandler = async () => {
-	const [works, consultancies] = await Promise.all([
+	const [works, consultancies, research] = await Promise.all([
 		getContentList('works'),
-		getContentList('consultancies')
+		getContentList('consultancies'),
+		getContentList('research')
 	]);
 
 	const urls = [
 		...STATIC_PATHS,
 		...works.map((w) => `/works/${w.slug}/`),
-		...consultancies.map((c) => `/consultancies/${c.slug}/`)
+		...consultancies.map((c) => `/consultancies/${c.slug}/`),
+		...research.map((r) => `/research/${r.slug}/`)
 	];
 
 	const body = `<?xml version="1.0" encoding="UTF-8"?>

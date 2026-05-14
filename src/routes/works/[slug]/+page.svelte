@@ -110,7 +110,7 @@
 <div class="page-light">
 <article class="px-[var(--gutter)]">
 	<header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-		<a href="/works" class="mb-6 inline-block font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline transition-[gap] hover:gap-3">← Works</a>
+		<a href="/works" class="mb-6 block w-fit font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline"><span class="back-arrow">←&nbsp;</span>Works</a>
 		<PageTitle>{data.item.meta.title}</PageTitle>
 		{#if data.item.meta.lead}
 			<p class="mt-4 max-w-[50ch] text-[1.1rem] leading-relaxed text-[var(--color-ink-secondary)]">{data.item.meta.lead}</p>
@@ -153,9 +153,17 @@
 				{@html data.item.html}
 			</div>
 
-			{#if data.item.meta.materials || data.item.meta.partners || data.item.meta.client}
+			{#if data.item.meta.materials || data.item.meta.partners || data.item.meta.client || data.item.meta.technologies || data.item.meta.github || data.research}
 				<aside class="border-t border-[var(--color-border)] pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
 					       <div class="space-y-6">
+						       {#if data.research}
+							       <div>
+								       <SectionLabel tag="h4" class="mb-1">Part of research</SectionLabel>
+									       <p class="text-[0.85rem] leading-relaxed">
+										       <a href="/research/{data.research.slug}" class="text-[var(--color-accent)] underline underline-offset-2">{data.research.meta.title || data.research.slug}</a>
+									       </p>
+							       </div>
+						       {/if}
 						       {#if data.item.meta.materials}
 							       <div>
 							       <SectionLabel tag="h4" class="mb-1">Materials &amp; Equipment</SectionLabel>
@@ -208,12 +216,12 @@
 						href={appearance.url}
 						target="_blank"
 						rel="noopener"
-						class="group flex items-center justify-between border-b border-[var(--color-border)] py-3 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2"
+						class="group flex flex-col gap-1 border-b border-[var(--color-border)] py-3 no-underline first:border-t sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:transition-[padding-left] sm:duration-300 sm:hover:pl-2"
 					>
 						<span class="font-heading text-[0.9rem] font-medium text-[var(--color-ink)]">{appearance.occasion}</span>
-						<div class="flex items-center gap-4 text-[0.78rem] text-[var(--color-ink-secondary)]">
-							<span>{appearance.place}</span>
-							<span>{appearance.date}</span>
+						<div class="flex shrink-0 flex-col items-end gap-0 text-right text-[0.78rem] text-[var(--color-ink-secondary)] sm:flex-row sm:items-center sm:gap-4 sm:text-left">
+							<span class="order-2 sm:order-1">{appearance.place}</span>
+							<span class="order-1 sm:order-2">{appearance.date}</span>
 						</div>
 					</a>
 				{/each}

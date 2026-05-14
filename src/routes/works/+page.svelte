@@ -21,10 +21,8 @@
 		'@type': 'CollectionPage',
 		'@id': pageUrl,
 		url: pageUrl,
-		name: 'Projects & Installations',
-		description:
-			data.section?.meta.lead ??
-			'Interactive installations, live performances and software-driven projects.',
+		name: data.section?.meta.title?.replace(/<[^>]+>/g, '') ?? 'Works',
+		description: data.section?.meta.lead ?? '',
 		mainEntity: buildCreativeWorkItemList(
 			allWorks.map((w) => ({ slug: w.slug, name: w.meta.title || w.slug })),
 			{ name: 'Works', baseUrl: `${SITE_URL}/works`, descending: true }
@@ -37,16 +35,16 @@
 </script>
 
 <SEO
-	title="Works"
-	description={data.section?.meta.lead ?? 'Selected works — interactive installations, live performances, and software-driven projects by Ole Kristensen.'}
+	title={data.section?.meta.label ?? 'Works'}
+	description={data.section?.meta.lead ?? ''}
 />
 <JsonLd data={[collectionPage, breadcrumb]} />
 
 <div class="page-light">
 <section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">
 	<div class="mx-auto max-w-[var(--max-w)]">
-		<SectionLabel class="mb-2">{data.section?.meta.label ?? 'Works'}</SectionLabel>
-		<PageTitle>{@html data.section?.meta.title ?? 'Projects &amp; Installations'}</PageTitle>
+		{#if data.section?.meta.label}<SectionLabel class="mb-6 !text-[0.72rem]">{data.section.meta.label}</SectionLabel>{/if}
+		{#if data.section?.meta.title}<PageTitle>{@html data.section.meta.title}</PageTitle>{/if}
 		{#if data.section?.meta.lead}
 			<p class="mt-4 max-w-[40ch] text-[var(--color-ink-secondary)]">{data.section.meta.lead}</p>
 		{/if}

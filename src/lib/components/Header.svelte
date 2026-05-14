@@ -55,6 +55,7 @@
 		<ul class="hidden items-center gap-7 md:flex">
 			<li><a href="/works" class="font-heading text-[0.78rem] font-normal tracking-wide text-[var(--color-ink-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)]">Works</a></li>
 			<li><a href="/consultancies" class="font-heading text-[0.78rem] font-normal tracking-wide text-[var(--color-ink-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)]">Consultancies</a></li>
+			<li><a href="/research" class="font-heading text-[0.78rem] font-normal tracking-wide text-[var(--color-ink-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)]">Research</a></li>
 			<li><a href="/about" class="font-heading text-[0.78rem] font-normal tracking-wide text-[var(--color-ink-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)]">About</a></li>
 			<li><a href="/contact" class="font-heading text-[0.78rem] font-normal tracking-wide text-[var(--color-ink-secondary)] no-underline transition-colors duration-200 hover:text-[var(--color-accent)]">Contact</a></li>
 		</ul>
@@ -65,9 +66,9 @@
 			aria-label="Toggle menu"
 			onclick={() => menuOpen = !menuOpen}
 		>
-			<span class="block h-[1.5px] w-5 bg-[var(--color-ink)] transition-transform duration-300 {menuOpen ? 'translate-y-[5px] rotate-45' : ''}"></span>
+			<span class="block h-[1.5px] w-5 bg-[var(--color-ink)] transition-transform duration-300" style={menuOpen ? 'transform: translateY(7.5px) rotate(45deg);' : ''}></span>
 			<span class="block h-[1.5px] w-5 bg-[var(--color-ink)] transition-opacity duration-300 {menuOpen ? 'opacity-0' : ''}"></span>
-			<span class="block h-[1.5px] w-5 bg-[var(--color-ink)] transition-transform duration-300 {menuOpen ? '-translate-y-[5px] -rotate-45' : ''}"></span>
+			<span class="block h-[1.5px] w-5 bg-[var(--color-ink)] transition-transform duration-300" style={menuOpen ? 'transform: translateY(-7.5px) rotate(-45deg);' : ''}></span>
 		</button>
 	</div>
 </nav>
@@ -97,6 +98,7 @@
 >
 	<a href="/works" onclick={() => menuOpen = false} class="font-heading text-2xl font-medium text-[var(--color-ink)] no-underline transition-colors hover:text-[var(--color-accent)]">Works</a>
 	<a href="/consultancies" onclick={() => menuOpen = false} class="font-heading text-2xl font-medium text-[var(--color-ink)] no-underline transition-colors hover:text-[var(--color-accent)]">Consultancies</a>
+	<a href="/research" onclick={() => menuOpen = false} class="font-heading text-2xl font-medium text-[var(--color-ink)] no-underline transition-colors hover:text-[var(--color-accent)]">Research</a>
 	<a href="/about" onclick={() => menuOpen = false} class="font-heading text-2xl font-medium text-[var(--color-ink)] no-underline transition-colors hover:text-[var(--color-accent)]">About</a>
 	<a href="/contact" onclick={() => menuOpen = false} class="font-heading text-2xl font-medium text-[var(--color-ink)] no-underline transition-colors hover:text-[var(--color-accent)]">Contact</a>
 </div>

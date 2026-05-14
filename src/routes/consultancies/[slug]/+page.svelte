@@ -81,7 +81,7 @@
 <div class="page-dark">
 	<article class="px-[var(--gutter)]">
 		<header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-			<a href="/consultancies" class="mb-6 inline-block font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline transition-[gap] hover:gap-3">← Consultancies</a>
+			<a href="/consultancies" class="mb-6 block w-fit font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline"><span class="back-arrow">←&nbsp;</span>Consultancies</a>
 			<PageTitle>{data.item.meta.title}</PageTitle>
 			<div class="mt-4 flex flex-wrap items-center gap-3 text-[0.78rem] text-[var(--color-ink-secondary)]">
 				{#if data.item.meta.client}
@@ -119,10 +119,24 @@
 					{@html data.item.html}
 				</div>
 
-				{#if data.item.meta.client}
+				{#if data.item.meta.client || data.research}
 					<aside class="border-t border-[var(--color-border)] pt-6 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0">
-						<SectionLabel tag="h4" class="mb-1">Client</SectionLabel>
-						<p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">{data.item.meta.client}</p>
+						<div class="space-y-6">
+							{#if data.research}
+								<div>
+									<SectionLabel tag="h4" class="mb-1">Part of research</SectionLabel>
+									<p class="text-[0.85rem] leading-relaxed">
+										<a href="/research/{data.research.slug}" class="text-[var(--color-accent)] underline underline-offset-2">{data.research.meta.title || data.research.slug}</a>
+									</p>
+								</div>
+							{/if}
+							{#if data.item.meta.client}
+								<div>
+									<SectionLabel tag="h4" class="mb-1">Client</SectionLabel>
+									<p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">{data.item.meta.client}</p>
+								</div>
+							{/if}
+						</div>
 					</aside>
 				{/if}
 			</div>
