@@ -43,7 +43,7 @@
 <div class="page-light">
 <section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">
 	<div class="mx-auto max-w-[var(--max-w)]">
-		{#if data.section?.meta.label}<SectionLabel class="mb-2">{data.section.meta.label}</SectionLabel>{/if}
+		{#if data.section?.meta.label}<SectionLabel class="mb-6 !text-[0.72rem]">{data.section.meta.label}</SectionLabel>{/if}
 		{#if data.section?.meta.title}<PageTitle>{@html data.section.meta.title}</PageTitle>{/if}
 		{#if data.section?.meta.lead}
 			<p class="mt-4 max-w-[40ch] text-[var(--color-ink-secondary)]">{data.section.meta.lead}</p>

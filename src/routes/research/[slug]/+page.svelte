@@ -120,7 +120,7 @@
 <div class="page-light">
 <article class="px-[var(--gutter)]">
 	<header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-		<a href="/research" class="mb-6 inline-block font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline transition-[gap] hover:gap-3">← Research</a>
+		<a href="/research" class="mb-6 block w-fit font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline"><span class="back-arrow">←&nbsp;</span>Research</a>
 		<PageTitle>{data.item.meta.title}</PageTitle>
 		{#if data.item.meta.lead}
 			<p class="mt-4 max-w-[50ch] text-[1.1rem] leading-relaxed text-[var(--color-ink-secondary)]">{data.item.meta.lead}</p>
@@ -254,9 +254,17 @@
 						{#if data.item.meta.github}
 							<div>
 								<SectionLabel tag="h4" class="mb-1">Source Code</SectionLabel>
-								<p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">
-									<a href={`https://github.com/${data.item.meta.github.user}/${data.item.meta.github.repo}`} target="_blank" rel="noopener" class="text-[var(--color-accent)] underline">{data.item.meta.github.user}/{data.item.meta.github.repo}</a>
-								</p>
+								{#if data.item.meta.github.repos?.length}
+									<ul class="space-y-0.5 text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">
+										{#each data.item.meta.github.repos as repo}
+											<li><a href={`https://github.com/${data.item.meta.github.user}/${repo}`} target="_blank" rel="noopener" class="text-[var(--color-accent)] underline">{data.item.meta.github.user}/{repo}</a></li>
+										{/each}
+									</ul>
+								{:else if data.item.meta.github.repo}
+									<p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">
+										<a href={`https://github.com/${data.item.meta.github.user}/${data.item.meta.github.repo}`} target="_blank" rel="noopener" class="text-[var(--color-accent)] underline">{data.item.meta.github.user}/{data.item.meta.github.repo}</a>
+									</p>
+								{/if}
 							</div>
 						{/if}
 					</div>
@@ -275,12 +283,12 @@
 						href={appearance.url}
 						target="_blank"
 						rel="noopener"
-						class="group flex items-center justify-between border-b border-[var(--color-border)] py-3 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2"
+						class="group flex flex-col gap-1 border-b border-[var(--color-border)] py-3 no-underline first:border-t sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:transition-[padding-left] sm:duration-300 sm:hover:pl-2"
 					>
 						<span class="font-heading text-[0.9rem] font-medium text-[var(--color-ink)]">{appearance.occasion}</span>
-						<div class="flex items-center gap-4 text-[0.78rem] text-[var(--color-ink-secondary)]">
-							<span>{appearance.place}</span>
-							<span>{appearance.date}</span>
+						<div class="flex shrink-0 flex-col items-end gap-0 text-right text-[0.78rem] text-[var(--color-ink-secondary)] sm:flex-row sm:items-center sm:gap-4 sm:text-left">
+							<span class="order-2 sm:order-1">{appearance.place}</span>
+							<span class="order-1 sm:order-2">{appearance.date}</span>
 						</div>
 					</a>
 				{/each}
