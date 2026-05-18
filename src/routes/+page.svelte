@@ -185,9 +185,9 @@
 
 		<div class="flex flex-col">
 			{#each data.consultancies.slice(0, 4) as consultancy (consultancy.slug)}
-				<a href="/consultancies/{consultancy.slug}" class="group grid grid-cols-[1fr_auto] items-center gap-6 border-b border-[var(--color-border)] px-0 py-5 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2 md:grid-cols-[5rem_1fr_auto]">
+				<a href="/consultancies/{consultancy.slug}" class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2">
 					{#if consultancy.images?.thumb}
-					<DuotoneImage src={consultancy.images.thumb} srcset={consultancy.images.thumbSrcset} srcsetWebp={consultancy.images.thumbSrcsetWebp} sizes="5rem" class="hidden h-14 w-20 shrink-0 overflow-hidden md:block" />
+					<DuotoneImage src={consultancy.images.thumb} srcset={consultancy.images.thumbSrcset} srcsetWebp={consultancy.images.thumbSrcsetWebp} sizes="(max-width: 768px) 100vw, 5rem" class="aspect-[3/2] w-full overflow-hidden md:aspect-auto md:h-14 md:w-20 md:shrink-0" />
 					{/if}
 					<div>
 						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{consultancy.meta.title}</h3>
@@ -195,14 +195,14 @@
 							<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{consultancy.meta.lead}</p>
 						{/if}
 					</div>
-					<div class="flex shrink-0 items-center gap-6 text-[0.75rem] text-[var(--color-ink-secondary)]">
+					<div class="flex flex-col items-start gap-1 text-[0.75rem] text-[var(--color-ink-secondary)] md:shrink-0 md:flex-row md:items-center md:gap-6">
 						{#if consultancy.meta.client}
 							<span>{consultancy.meta.client}</span>
 						{/if}
 						{#if consultancy.meta.date}
 							<span>{consultancy.meta.date}</span>
 						{/if}
-						<span class="text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1">→</span>
+						<span class="hidden text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1 md:inline">→</span>
 					</div>
 				</a>
 			{/each}
@@ -235,9 +235,9 @@
 
 		<div class="flex flex-col">
 			{#each data.research.slice(0, 4) as item (item.slug)}
-				<a href="/research/{item.slug}" class="group grid grid-cols-[1fr_auto] items-center gap-6 border-b border-[var(--color-border)] px-0 py-5 no-underline transition-[padding-left] duration-300 first:border-t hover:pl-2 md:grid-cols-[5rem_1fr_auto]">
+				<a href="/research/{item.slug}" class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2">
 					{#if item.images?.thumb}
-						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="5rem" class="hidden h-14 w-20 shrink-0 overflow-hidden md:block" />
+						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="(max-width: 768px) 100vw, 5rem" class="aspect-[3/2] w-full overflow-hidden md:aspect-auto md:h-14 md:w-20 md:shrink-0" />
 					{/if}
 					<div>
 						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{item.meta.title}</h3>
@@ -245,14 +245,14 @@
 							<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{item.meta.lead}</p>
 						{/if}
 					</div>
-					<div class="flex shrink-0 items-center gap-6 text-[0.75rem] text-[var(--color-ink-secondary)]">
+					<div class="flex flex-col items-start gap-1 text-[0.75rem] text-[var(--color-ink-secondary)] md:shrink-0 md:flex-row md:items-center md:gap-6">
 						{#if item.publications.length > 0}
 							<span>{item.publications.length} publication{item.publications.length === 1 ? '' : 's'}</span>
 						{/if}
 						{#if item.meta.date}
 							<span>{item.meta.date}</span>
 						{/if}
-						<span class="text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1">→</span>
+						<span class="hidden text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1 md:inline">→</span>
 					</div>
 				</a>
 			{/each}
