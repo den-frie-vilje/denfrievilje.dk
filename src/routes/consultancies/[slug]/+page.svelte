@@ -4,6 +4,7 @@
 	import { getContext } from 'svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
+	import PageHeader from '$lib/components/PageHeader.svelte';
 	import CtaLink from '$lib/components/CtaLink.svelte';
 	import Gallery from '$lib/components/Gallery.svelte';
 	import SEO from '$lib/components/SEO.svelte';
@@ -80,9 +81,12 @@
 
 <div class="page-dark">
 	<article class="px-[var(--gutter)]">
-		<header class="mx-auto max-w-[var(--max-w)] py-[clamp(3rem,6vw,6rem)]">
-			<a href="/consultancies" class="mb-6 block w-fit font-heading text-[0.72rem] font-medium uppercase tracking-[0.12em] text-[var(--color-accent)] no-underline"><span class="back-arrow">←&nbsp;</span>Consultancies</a>
-			<PageTitle>{data.item.meta.title}</PageTitle>
+		<PageHeader
+			wrap={false}
+			backHref="/consultancies"
+			backLabel="Consultancies"
+			title={data.item.meta.title || data.slug}
+		>
 			<div class="mt-4 flex flex-wrap items-center gap-3 text-[0.78rem] text-[var(--color-ink-secondary)]">
 				{#if data.item.meta.client}
 					<span>{data.item.meta.client}</span>
@@ -92,7 +96,7 @@
 					<span>{data.item.meta.date}</span>
 				{/if}
 			</div>
-		</header>
+		</PageHeader>
 
 		<!-- Videos -->
 		{#if data.item.meta.videos?.length}

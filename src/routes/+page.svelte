@@ -4,6 +4,8 @@
 	import CtaLink from '$lib/components/CtaLink.svelte';
 	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
+	import EntryRow from '$lib/components/EntryRow.svelte';
+	import TeaserSectionHeader from '$lib/components/TeaserSectionHeader.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import {
@@ -95,19 +97,11 @@
 <!-- Works -->
 <section class="px-[var(--gutter)] py-[clamp(5rem,10vw,10rem)]">
 	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
-		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
-			<div>
-				{#if data.worksSection?.meta.teaser_label ?? data.worksSection?.meta.label}
-					<SectionLabel class="mb-2">{data.worksSection?.meta.teaser_label ?? data.worksSection?.meta.label}</SectionLabel>
-				{/if}
-				{#if data.worksSection?.meta.title}
-					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.worksSection.meta.title}</h2>
-				{/if}
-			</div>
-			{#if data.worksSection?.meta.teaser_lead ?? data.worksSection?.meta.lead}
-				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.worksSection?.meta.teaser_lead ?? data.worksSection?.meta.lead}</p>
-			{/if}
-		</div>
+		<TeaserSectionHeader
+			eyebrow={data.worksSection?.meta.teaser_label ?? data.worksSection?.meta.label ?? null}
+			title={data.worksSection?.meta.title ?? 'Works'}
+			lead={data.worksSection?.meta.teaser_lead ?? data.worksSection?.meta.lead ?? null}
+		/>
 
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-[1.3fr_0.7fr]">
 			{#each data.featured as work, i (work.slug)}
@@ -169,42 +163,21 @@
 <!-- Consultancies -->
 <section class="px-[var(--gutter)] py-[clamp(5rem,10vw,10rem)]">
 	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
-		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
-			<div>
-				{#if data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label}
-					<SectionLabel class="mb-2">{data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label}</SectionLabel>
-				{/if}
-				{#if data.consultanciesSection?.meta.title}
-					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.consultanciesSection.meta.title}</h2>
-				{/if}
-			</div>
-			{#if data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead}
-				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead}</p>
-			{/if}
-		</div>
+		<TeaserSectionHeader
+			eyebrow={data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label ?? null}
+			title={data.consultanciesSection?.meta.title ?? 'Consultancies'}
+			lead={data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead ?? null}
+		/>
 
 		<div class="flex flex-col">
 			{#each data.consultancies.slice(0, 4) as consultancy (consultancy.slug)}
-				<a href="/consultancies/{consultancy.slug}" class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2">
-					{#if consultancy.images?.thumb}
-					<DuotoneImage src={consultancy.images.thumb} srcset={consultancy.images.thumbSrcset} srcsetWebp={consultancy.images.thumbSrcsetWebp} sizes="(max-width: 768px) 100vw, 5rem" class="aspect-[3/2] w-full overflow-hidden md:aspect-auto md:h-14 md:w-20 md:shrink-0" />
-					{/if}
-					<div>
-						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{consultancy.meta.title}</h3>
-						{#if consultancy.meta.lead}
-							<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{consultancy.meta.lead}</p>
-						{/if}
-					</div>
-					<div class="flex flex-col items-start gap-1 text-[0.75rem] text-[var(--color-ink-secondary)] md:shrink-0 md:flex-row md:items-center md:gap-6">
-						{#if consultancy.meta.client}
-							<span>{consultancy.meta.client}</span>
-						{/if}
-						{#if consultancy.meta.date}
-							<span>{consultancy.meta.date}</span>
-						{/if}
-						<span class="hidden text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1 md:inline">→</span>
-					</div>
-				</a>
+				<EntryRow
+					href="/consultancies/{consultancy.slug}"
+					title={consultancy.meta.title || consultancy.slug}
+					lead={consultancy.meta.lead}
+					thumb={consultancy.images?.thumb ? { src: consultancy.images.thumb, srcset: consultancy.images.thumbSrcset, srcsetWebp: consultancy.images.thumbSrcsetWebp } : null}
+					metaParts={[consultancy.meta.client, consultancy.meta.date]}
+				/>
 			{/each}
 		</div>
 
@@ -219,42 +192,24 @@
 <!-- Research -->
 <section class="px-[var(--gutter)] py-[clamp(5rem,10vw,10rem)]">
 	<div class="animate-fade-up mx-auto max-w-[var(--max-w)]">
-		<div class="mb-[clamp(2rem,4vw,4rem)] flex flex-col items-start justify-between gap-4 border-b border-[var(--color-border)] pb-6 md:flex-row md:items-end">
-			<div>
-				{#if data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label}
-					<SectionLabel class="mb-2">{data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label}</SectionLabel>
-				{/if}
-				{#if data.researchSection?.meta.title}
-					<h2 class="font-heading text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-none tracking-tight">{@html data.researchSection.meta.title}</h2>
-				{/if}
-			</div>
-			{#if data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead}
-				<p class="text-[0.9rem] text-[var(--color-ink-secondary)] md:max-w-[35ch] md:text-right">{data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead}</p>
-			{/if}
-		</div>
+		<TeaserSectionHeader
+			eyebrow={data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label ?? null}
+			title={data.researchSection?.meta.title ?? 'Research'}
+			lead={data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead ?? null}
+		/>
 
 		<div class="flex flex-col">
 			{#each data.research.slice(0, 4) as item (item.slug)}
-				<a href="/research/{item.slug}" class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2">
-					{#if item.images?.thumb}
-						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="(max-width: 768px) 100vw, 5rem" class="aspect-[3/2] w-full overflow-hidden md:aspect-auto md:h-14 md:w-20 md:shrink-0" />
-					{/if}
-					<div>
-						<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{item.meta.title}</h3>
-						{#if item.meta.lead}
-							<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{item.meta.lead}</p>
-						{/if}
-					</div>
-					<div class="flex flex-col items-start gap-1 text-[0.75rem] text-[var(--color-ink-secondary)] md:shrink-0 md:flex-row md:items-center md:gap-6">
-						{#if item.publications.length > 0}
-							<span>{item.publications.length} publication{item.publications.length === 1 ? '' : 's'}</span>
-						{/if}
-						{#if item.meta.date}
-							<span>{item.meta.date}</span>
-						{/if}
-						<span class="hidden text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1 md:inline">→</span>
-					</div>
-				</a>
+				<EntryRow
+					href="/research/{item.slug}"
+					title={item.meta.title || item.slug}
+					lead={item.meta.lead}
+					thumb={item.images?.thumb ? { src: item.images.thumb, srcset: item.images.thumbSrcset, srcsetWebp: item.images.thumbSrcsetWebp } : null}
+					metaParts={[
+						item.publications.length > 0 ? `${item.publications.length} publication${item.publications.length === 1 ? '' : 's'}` : null,
+						item.meta.date
+					]}
+				/>
 			{/each}
 		</div>
 
