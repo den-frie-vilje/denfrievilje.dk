@@ -30,7 +30,10 @@ export interface ContentMeta {
 	materials?: string;
 	partners?: string;
 	client?: string;
-	github?: Record<string, string>;
+	// GitHub source-code references. Either a single `repo` (for one-repo
+	// projects) or `repos` (an array, rendered as a list). `user` is the
+	// owner/org and applies to all repos.
+	github?: { user: string; repo?: string; repos?: string[] };
 	photocredits?: string;
 	technologies?: string[];
 	appearances?: Array<{ date: string; occasion: string; place: string; url: string }>;

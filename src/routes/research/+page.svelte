@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
+	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
 	import SEO from '$lib/components/SEO.svelte';
@@ -38,15 +39,14 @@
 <JsonLd data={[collectionPage, breadcrumb]} />
 
 <div class="page-light">
-<section class="px-[var(--gutter)] py-[clamp(3rem,6vw,6rem)]">
-	<div class="mx-auto max-w-[var(--max-w)]">
-		{#if data.section?.meta.label}<SectionLabel class="mb-6 !text-[0.72rem]">{data.section.meta.label}</SectionLabel>{/if}
-		{#if data.section?.meta.title}<PageTitle>{@html data.section.meta.title}</PageTitle>{/if}
-		{#if data.section?.meta.lead}
-			<p class="mt-4 max-w-[40ch] text-[var(--color-ink-secondary)]">{data.section.meta.lead}</p>
-		{/if}
-	</div>
-</section>
+{#if data.section?.meta.title}
+	<PageHeader
+		tag="section"
+		eyebrow={data.section.meta.label ?? null}
+		title={data.section.meta.title}
+		lead={data.section.meta.lead ?? null}
+	/>
+{/if}
 
 <section class="px-[var(--gutter)] pb-[clamp(5rem,10vw,10rem)]">
 	<div class="mx-auto max-w-[var(--max-w)]">

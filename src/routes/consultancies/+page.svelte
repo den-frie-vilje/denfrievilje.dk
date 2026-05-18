@@ -3,7 +3,7 @@
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import { getContext } from 'svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
-	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
+	import EntryRow from '$lib/components/EntryRow.svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import JsonLd from '$lib/components/JsonLd.svelte';
 	import { SITE_URL } from '$lib/site';
@@ -64,26 +64,13 @@
 		<div class="mx-auto max-w-[var(--max-w)]">
 			<div class="flex flex-col">
 				{#each data.items as item (item.slug)}
-					<a href="/consultancies/{item.slug}" class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2">
-						{#if item.images.thumb}
-						<DuotoneImage src={item.images.thumb} srcset={item.images.thumbSrcset} srcsetWebp={item.images.thumbSrcsetWebp} sizes="(max-width: 768px) 100vw, 5rem" class="aspect-[3/2] w-full overflow-hidden md:aspect-auto md:h-14 md:w-20 md:shrink-0" />
-						{/if}
-						<div>
-							<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{item.meta.title || item.slug}</h3>
-							{#if item.meta.lead}
-								<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{item.meta.lead}</p>
-							{/if}
-						</div>
-						<div class="flex flex-col items-start gap-1 text-[0.75rem] text-[var(--color-ink-secondary)] md:shrink-0 md:flex-row md:items-center md:gap-6">
-							{#if item.meta.client}
-								<span>{item.meta.client}</span>
-							{/if}
-							{#if item.meta.date}
-								<span>{item.meta.date}</span>
-							{/if}
-							<span class="hidden text-[1.1rem] text-[var(--color-accent)] transition-transform duration-300 group-hover:translate-x-1 md:inline">→</span>
-						</div>
-					</a>
+					<EntryRow
+						href="/consultancies/{item.slug}"
+						title={item.meta.title || item.slug}
+						lead={item.meta.lead}
+						thumb={item.images.thumb ? { src: item.images.thumb, srcset: item.images.thumbSrcset, srcsetWebp: item.images.thumbSrcsetWebp } : null}
+						metaParts={[item.meta.client, item.meta.date]}
+					/>
 				{/each}
 			</div>
 		</div>
