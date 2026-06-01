@@ -10,7 +10,7 @@ tags:
   - Generative
 materials: Node.js, angularjs, ExtendScript, After Effects, Mac Pro.
 partners: DR Design, Johan Bichel Lindegaard
-client: Danmarks Radio - Danish Broadcasting Corporation
+client: DR - Danish Broadcasting Corporation
 photocredits: Copyright 2018 Danish Broadcasting Corporations.
 videos:
   - id: '283919118'

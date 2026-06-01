@@ -1,6 +1,7 @@
 <script lang="ts">
    import type { PageData } from './$types';
    import VoronoiGlass from '$lib/components/VoronoiGlass.svelte';
+   import LSystemTree from '$lib/components/LSystemTree.svelte';
    import { getContext } from 'svelte';
    import SectionLabel from '$lib/components/SectionLabel.svelte';
    import PageTitle from '$lib/components/PageTitle.svelte';
@@ -64,12 +65,12 @@
 	   <PageTitle>{data.item.meta.title || 'About'}</PageTitle>
    </header>
 
-   <section class="mx-auto max-w-[var(--max-w)] pb-[clamp(5rem,10vw,10rem)]">
-	   <div class="flex flex-col md:flex-row gap-12">
-		   <div class="prose max-w-[65ch] w-full md:w-2/3">
+   <section class="about-section mx-auto max-w-[var(--max-w)] pb-0">
+	   <div class="about-grid">
+		   <div class="area-prose prose max-w-[65ch]">
 			   {@html data.item.html}
 		   </div>
-		   <aside class="w-full md:w-1/4 flex flex-col items-start mt-8 md:mt-0 md:ml-8">
+		   <aside class="area-aside flex flex-col items-start">
 			   <div class="w-full mb-8 aspect-[4/5] max-w-xs md:max-w-xs md:w-full">
 				   <VoronoiGlass {images} cellCount={24} />
 			   </div>
@@ -98,7 +99,7 @@
 					   <ul class="space-y-3 text-[0.85rem] leading-relaxed">
 						   {#each data.item.meta.selectedWork as item}
 							   <li>
-								   <a href={item.url} class="text-[var(--color-accent)] underline underline-offset-2">{item.title}</a>{#if item.year}<span class="text-[var(--color-ink-secondary)]"> ({item.year})</span>{/if}
+								   <a href={item.url} class="text-[var(--color-accent)] underline underline-offset-2">{item.title}</a>{#if item.year}<span class="text-[var(--color-ink-secondary)]">&nbsp;({item.year})</span>{/if}
 								   <p class="text-[var(--color-ink-secondary)]">{item.body}</p>
 							   </li>
 						   {/each}
@@ -123,11 +124,52 @@
 			   <div class="w-full">
 				   <SectionLabel tag="h3" class="mb-3">Downloads</SectionLabel>
 				   <div class="flex flex-col">
+					   <a href="/content/about/ole-kristensen-cv-engineer.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Engineer CV (PDF)</a>
 					   <a href="/content/about/ole-kristensen-cv.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Artist CV (PDF)</a>
 					   <a href="/content/about/ole-kristensen-work-examples.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Work Examples (PDF)</a>
 				   </div>
 			   </div>
 		   </aside>
+		   <div class="area-tree">
+			   <LSystemTree />
+		   </div>
 	   </div>
    </section>
 </article>
+
+<style>
+	/* CSS Grid layout so the tree can occupy a different cell per breakpoint:
+	   md+   prose in top-left, aside spans both rows on the right, tree below
+	         the prose in the bottom-left cell.
+	   sm    single column, stacked prose → aside → tree, so the tree is the
+	         last thing on the page and rests against the footer rule. */
+	.about-grid {
+		display: grid;
+		row-gap: 3rem;
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			'prose'
+			'aside'
+			'tree';
+	}
+	@media (min-width: 768px) {
+		.about-grid {
+			grid-template-columns: 2fr 1fr;
+			column-gap: 3rem;
+		}
+		.about-grid {
+			grid-template-areas:
+				'prose aside'
+				'tree aside';
+		}
+	}
+	.area-prose {
+		grid-area: prose;
+	}
+	.area-aside {
+		grid-area: aside;
+	}
+	.area-tree {
+		grid-area: tree;
+	}
+</style>

@@ -167,9 +167,10 @@
 			eyebrow={data.consultanciesSection?.meta.teaser_label ?? data.consultanciesSection?.meta.label ?? null}
 			title={data.consultanciesSection?.meta.title ?? 'Consultancies'}
 			lead={data.consultanciesSection?.meta.teaser_lead ?? data.consultanciesSection?.meta.lead ?? null}
+			tight
 		/>
 
-		<div class="flex flex-col">
+		<div class="flex flex-col [&>*:first-child]:border-t-0">
 			{#each data.consultancies.slice(0, 4) as consultancy (consultancy.slug)}
 				<EntryRow
 					href="/consultancies/{consultancy.slug}"
@@ -196,9 +197,10 @@
 			eyebrow={data.researchSection?.meta.teaser_label ?? data.researchSection?.meta.label ?? null}
 			title={data.researchSection?.meta.title ?? 'Research'}
 			lead={data.researchSection?.meta.teaser_lead ?? data.researchSection?.meta.lead ?? null}
+			tight
 		/>
 
-		<div class="flex flex-col">
+		<div class="flex flex-col [&>*:first-child]:border-t-0">
 			{#each data.research.slice(0, 4) as item (item.slug)}
 				<EntryRow
 					href="/research/{item.slug}"

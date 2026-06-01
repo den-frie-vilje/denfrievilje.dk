@@ -1,7 +1,7 @@
 ---
 title: EAL
 date: 2015–2017
-lead: Energy Optimization through Adaptive Lighting Control. The Elforsk-funded follow-on to LEDlys, focused on networked physical control of architectural light, 2015 to 2017.
+lead: Energy Optimization through Adaptive Lighting Control. The Elforsk-funded follow-on to LEDlys, focused on networked physical control of architectural light.
 tags:
   - Research
   - Practice-led

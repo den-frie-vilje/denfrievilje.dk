@@ -27,7 +27,7 @@ appearances:
   - date: April 2009
     occasion: Premiere
     place: Dansehallerne, Copenhagen
-    url: http://www.recoil-performance.org/productions/timemap-3
+    url: ''
 videos:
   - id: '6209620'
     title: Trailer by Søren Meisner

@@ -21,6 +21,7 @@ stack:
   - GitHub Actions
   - GitLab CI
   - C++ / openFrameworks
+  - p5.js
   - OpenCV
   - Python
   - Adobe After Effects
@@ -41,12 +42,16 @@ practice:
 selectedWork:
   - title: AGIS
     url: /consultancies/tv2-agis/
-    year: 2022–2025
-    body: TV 2 Danmark's in-house broadcast graphics platform — packaging, rendering and QC for every trailer on air.
+    year: '2025'
+    body: TV 2 Danmark's in-house broadcast graphics platform for every trailer on air.
   - title: Nyhedshjul
     url: /consultancies/dr-nyhedshjul/
     year: '2021'
-    body: DR's giant circular newsroom ticker and video mosaic.
+    body: DR's centrepiece wrap-around circular newsroom display.
+  - title: Digital Weather
+    url: /works/digital-weather/
+    year: '2017'
+    body: Daylight and adaptive LED composed as one material.
   - title: Living Room
     url: /works/living-room/
     year: '2012'
@@ -105,7 +110,6 @@ person:
   pastAffiliation:
     - name: Recoil Performance Group
       role: Software Artist / Scenographer
-      url: http://recoil-performance.org/
     - name: Polar and Space, Danish Technical University
       role: Artistic Consultant
       url: https://www.dtu.dk
@@ -136,25 +140,31 @@ person:
     - Dutch \u2014 working
 ---
 
-I'm a designer who codes like an engineer, an engineer who thinks like a designer, and an artist whose work has always been at the intersection. The practice is generative on every side — I design when I code, I make architectural decisions about the design, I bring engineering rigour to artistic work and an artist's interest in behaviour and aesthetics to the engineering. The roles share the same conversation rather than taking turns, because in my work they have to.
+I'm a designer who codes like an engineer, an engineer who thinks like a designer, and an artist whose work has always been at the intersection. The practice is generative on every side — I design when I code, I make architectural decisions about the design, I bring engineering rigour to artistic work and an artist's interest in behaviour and aesthetics to the engineering. The roles share the same conversation rather than taking turns.
 
-## Consultant
-
-I work as an independent consultant, typically taking on hands-on, full-stack product-ownership roles inside a client's cross-functional delivery team for the duration of each project, under the name [Den Frie Vilje](/consultancies/).
-
-Years inside Danish broadcast taught me the same lesson the theatre had taught me earlier: the hard problem is never the design or the code. It's the seam between them — and the seam needs someone fluent in both, sitting inside the design process from the start, pushing back when a design system threatens to explode and mapping where its contradictions hide.
-
-## Researcher
-
-Through the 2010s I worked on adaptive lighting with a small research group at the IT University of Copenhagen and the Royal Danish Academy, while running ITU's Intermedia Lab — teaching and mentoring students in *digital aesthetics* and expressive code, with an eye towards the time domain. Across half a decade of installations and papers, the research kept arguing for a way of thinking about systems where what they do over time matters more than what any single state looks like.
-
-> It is a great pleasure to create something that can react, adapt, and generate new forms from itself or its surroundings. My main interest lies in this creation of dynamic aesthetic phenomena. When an artwork is running software the challenge is to make the behavioural aspects of the piece constitute its aesthetic qualities.
+> It is a great pleasure to create something that can react, adapt, and generate new forms from itself or its surroundings. My main interest lies in this creation of dynamic aesthetic phenomena. When writing design as software the challenge is to make the behavioural aspects of the piece constitute its aesthetic qualities.
 >
 > — ole kristensen
 
+## Consultant
+
+I work as an independent consultant, typically taking on hands-on, full-stack product-ownership roles inside a client's cross-functional delivery team for the duration of each project, under the name [Den Frie Vilje](/consultancies/). Engagements usually run 12–18 months, embedded inside a 5–10 person hybrid design and engineering team, with the brief to architect and ship a system the client's permanent team can keep running.
+
+At [TV 2 Denmark](/consultancies/tv2-agis/) that brief survived a midstream shift in the client's IT strategy: because the architecture was deliberately loosely coupled, the stack moved between hosting environments and infrastructure choices without a rewrite. The portability was the point of the design, and it got used.
+
+## Engineer
+
+Years inside Danish broadcast alongside Johan Bichel Lindegaard taught me the same lesson the theatre had taught me earlier: the hard problem is never the design or the code. It's the seam between them — and the seam needs someone fluent in both, sitting inside the design process from the start, pushing back when a design system threatens to explode and mapping where its contradictions hide.
+
+When I was part of the core team for the [DR Rebrand](/consultancies/dr-rebrand-2020/), I continuously sketched and implemented parametric variants in dialogue with the designers. Consolidating and versioning design assets and feeding technical feasibility and complexity analysis back into a refinement process that involved most departments of the broadcaster.
+
+## Researcher
+
+Through the 2010s I worked on adaptive lighting with Kjell Yngve Petersen at the IT University of Copenhagen and Karin Søndergaard at the Royal Danish Academy, while running ITU's Intermedia Lab — teaching and mentoring students in *digital aesthetics* and expressive code, with an eye towards the time domain. Creating a space where students like [Andreas Refsgaard](https://andreasrefsgaard.dk/) could discover their personal creative expression in coding technology. Across half a decade of installations and papers, [the research](/research/) and teaching kept arguing for a way of thinking about systems where what they do over time as a collective matters more than what any single state of an object that runs code looks like. Articulated most directly in "[Software Sketches for Experiencing LED Light](/research/ledlys/)".
+
 ## Artist
 
-That conviction first emerged on stage. I came out of Roskilde University's Interactive Media programme in 2000 already building bespoke realtime systems for theatre and dance, inside production teams of choreographers, directors and dancers, under hard premiere deadlines. The long collaboration with [Recoil Performance Group](http://recoil-performance.org/) twice received Denmark's national theatre award. What I learned there, and everything since has confirmed, is that the behaviour of a software-driven piece is itself a material to be designed — composed as deliberately as a colour palette or a layout.
+That conviction first emerged on stage. I came out of Roskilde University's Interactive Media programme in 2000 already building bespoke realtime systems for theatre and dance, inside production teams of choreographers, directors and dancers, under hard premiere deadlines. The long collaboration with Tina Tarpgaard's Recoil Performance Group twice received Denmark's national theatre award — first for [Frost](/works/frost/) (2009), where Jonas Jongejan and I carefully tuned Kalman-filtered infrared blob-tracking to express anticipation and hesitancy. The piece taught me that visual temporal aesthetics are a compositional necessity when working with the realtime-system latency of modern dance, and laid the foundation of my work on adaptive lighting. What I learned there, and everything since has confirmed, is that the behaviour of a software-driven piece is itself a material to be designed — composed as deliberately as a colour palette or a layout.
 
 In 2014 the [Danish Arts Council](http://www.kunst.dk/kunstomraader/scenekunst/nyheder/37-legater-er-blevet-uddelt-til-et-dynamisk-og-levende-scenekunstmiljoe/) awarded me a two-year working grant for that practice, with the following motivation:
 

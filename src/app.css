@@ -32,10 +32,10 @@ body.bureau {
 	--color-surface: oklch(0.3 0.012 270);
 	--color-ink: oklch(0.93 0.005 260);
 	--color-ink-secondary: oklch(0.68 0.008 265);
-	--color-accent: oklch(0.91 0.35 100);
-	--color-accent-hover: oklch(0.95 0.38 100);
-	--color-accent-subtle: oklch(0.35 0.04 100);
-	--color-accent-duotone: oklch(0.91 0.35 100 / 0.3);
+	--color-accent: oklch(0.75 0.3 150);
+	--color-accent-hover: oklch(0.7 0.35 150);
+	--color-accent-subtle: oklch(0.35 0.04 150);
+	--color-accent-duotone: oklch(0.75 0.3 150 / 0.3);
 	--color-border: oklch(0.37 0.01 270);
 	background: var(--color-surface);
 	color: var(--color-ink);
@@ -48,7 +48,7 @@ body.bureau footer {
 	--color-surface: oklch(0.3 0.012 270);
 	--color-ink: oklch(0.93 0.005 260);
 	--color-ink-secondary: oklch(0.68 0.008 265);
-	--color-accent: oklch(0.91 0.35 100);
+	--color-accent: oklch(0.75 0.3 150);
 	--color-border: oklch(0.37 0.01 270);
 }
 
@@ -57,10 +57,10 @@ body.bureau footer {
 	--color-surface: oklch(0.3 0.012 270);
 	--color-ink: oklch(0.93 0.005 260);
 	--color-ink-secondary: oklch(0.68 0.008 265);
-	--color-accent: oklch(0.91 0.35 100);
-	--color-accent-hover: oklch(0.95 0.38 100);
-	--color-accent-subtle: oklch(0.35 0.04 100);
-	--color-accent-duotone: oklch(0.91 0.35 100 / 0.3);
+	--color-accent: oklch(0.75 0.3 150);
+	--color-accent-hover: oklch(0.7 0.35 150);
+	--color-accent-subtle: oklch(0.35 0.04 150);
+	--color-accent-duotone: oklch(0.75 0.3 150 / 0.3);
 	--color-border: oklch(0.37 0.01 270);
 	background: var(--color-surface);
 	color: var(--color-ink);
@@ -71,7 +71,7 @@ body:has(.page-dark) footer {
 	--color-surface: oklch(0.3 0.012 270);
 	--color-ink: oklch(0.93 0.005 260);
 	--color-ink-secondary: oklch(0.68 0.008 265);
-	--color-accent: oklch(0.91 0.35 100);
+	--color-accent: oklch(0.75 0.3 150);
 	--color-border: oklch(0.37 0.01 270);
 }
 
