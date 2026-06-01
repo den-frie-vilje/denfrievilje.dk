@@ -1,8 +1,8 @@
 ---
 title: Hello
 label: About
-lead: I am a visual artist. I write software and build electronics. I work with interactive installations, visual art and mad science. I work in academic research and teach in art schools. I am based in Copenhagen, Denmark.
-teaser: "Ole Kristensen is a visual artist, programmer and scenographer \u2014 developing and appropriating new technology, creating works with software at the core."
+lead: "I'm a senior software engineer with a design-technology focus \u2014 a designer who codes like an engineer and an engineer who thinks like a designer. My practice runs across three connected domains: software art and bespoke realtime systems for the stage, practice-led research on adaptive light at ITU and KADK, and design-driven full-stack engineering for clients with high production tolerances. Former lab manager at ITU's Intermedia Lab. Working as Den Frie Vilje, based in Copenhagen."
+teaser: "Ole Kristensen \u2014 a designer who codes like an engineer and an engineer who thinks like a designer. Two decades of practice across software art, adaptive-systems research and full-stack engineering, working as Den Frie Vilje. Based in Copenhagen."
 person:
   givenName: Ole
   familyName: Kristensen
@@ -95,26 +95,20 @@ person:
     - Dutch \u2014 working
 ---
 
-Ole Kristensen is a visual artist, programmer and scenographer. At the intersection of art and science he develops and appropriates new technology, creating works with software at the core.
+I'm a designer who codes like an engineer, an engineer who thinks like a designer, and an artist whose work has always been at the intersection. The practice is generative on every side — I design when I code, I make architectural decisions about the design, I bring engineering rigour to artistic work and an artist's interest in behaviour and aesthetics to the engineering. The roles share the same conversation rather than taking turns, because in my work they have to.
 
-His work ranges from stage performances and modern dance to large scale interactive installations. In his work he focuses on the behavioural aspects of interactivíty, adaptivity, and generativity.
+I work as an independent consultant, typically taking on hands-on product-ownership roles inside a client's cross-functional delivery team for the duration of each project, under the name [Den Frie Vilje](/consultancies/).
 
-He is driven by a playful urge to connect electronics, gadgets, visuals and moving objects in seemingly impossible combinations. Through his visual arts practice he has gained knowledge in diverse fields within electronics and programming.
+Years inside Danish broadcast sharpened my practice. Working alongside in-house design teams at the country's national broadcasters across multiple on-air design cycles, often to live broadcast deadlines, taught me again and again that the hard problem is rarely the design or the engineering on its own — it's the translation between them at production tolerance, and that translation has to be done by someone fluent in both — someone who sits inside the design process from the start, pushing back when the combinatorial variant space becomes overwhelming, mapping contradictions and opportunities across the design system, and resolving them in the implementation itself.
 
-In 2014 he was awarded a 2 year work grant from the <a href="http://www.kunst.dk/kunstomraader/scenekunst/nyheder/37-legater-er-blevet-uddelt-til-et-dynamisk-og-levende-scenekunstmiljoe/">Danish Arts Council</a> with the following motivation:
+The translation question had been a research question first. Through the 2010s I worked on adaptive lighting with a small research group at the IT University of Copenhagen and the Royal Danish Academy, while running ITU's Intermedia Lab — teaching and mentoring students in *digital aesthetics* and expressive code, with an eye towards the time domain. Across half a decade of installations and papers, the research kept arguing for a way of thinking about systems where what they do over time matters more than what any single state looks like.
+
+> It is a great pleasure to create something that can react, adapt, and generate new forms from itself or its surroundings. My main interest lies in this creation of dynamic aesthetic phenomena. When an artwork is running software the challenge is to make the behavioural aspects of the piece constitute its aesthetic qualities.
+>
+> — ole kristensen
+
+That conviction first emerged on stage. I came out of Roskilde University's Interactive Media programme in 2000 already building bespoke realtime systems for theatre and dance, inside production teams of choreographers, directors and dancers, under hard premiere deadlines. The long collaboration with [Recoil Performance Group](http://recoil-performance.org/) twice received Denmark's national theatre award. What I learned there, and everything since has confirmed, is that the behaviour of a software-driven piece is itself a material to be designed — composed as deliberately as a colour palette or a layout.
+
+In 2014 the [Danish Arts Council](http://www.kunst.dk/kunstomraader/scenekunst/nyheder/37-legater-er-blevet-uddelt-til-et-dynamisk-og-levende-scenekunstmiljoe/) awarded me a two-year working grant for that practice, with the following motivation:
 
 > [He] has a unique and original approach to all forms of time-based and digital media, placing him among the most interesting software artists in the world. Ole Kristensen is awarded a two-year work scholarship so he can concentrate on the creative study of digital, programmed and cross-aesthetic arts, and enjoy peace to navigate through the many artistic expressions that turn out.
-
-He is working in the dance company <a href="http://recoil-performance.org/">Recoil Performance Group</a> and the performance group <a href="http://in-transit.org">IN-TRANSIT</a>.
-
-He has been researching, teaching and giving workshops at the <a href="http://scenekunstskolen.dk/">Danish National School of Performing Arts</a>, <a href="http://kadk.dk">The Royal Danish Academy of Fine Arts Schools of Architecture, Design and Conservation (KADK)</a>, and <a href="http://itu.dk">The IT University of Copenhagen</a>.
-
-His work in Recoil Performance Group has twice received the <a href="http://www.aaretsreumert.dk">National Danish Theatre Award</a> for best Dance Performance.
-
-Selected exhibitions and performances include Click Festival (Elsinore), Renew Festival (Copenhagen), New Media Days (Norrköping), ZKM (Karlsruhe), Dansehallerne (Copenhagen), Interarte Festival (Rio de Janiero), Nikolaj Kunsthal / Copenhagen Contemporary Art Center, Roskilde Festival.
-
-He was already working artisticly when he finished a BSc in Computer Science and Communications at Roskilde University in 2000. His projects had transformed into large scale immersive installations in the university's television studio. From there on he continued into visual arts, installation and performance via guest studies at the Art and Technology master at Chalmers University in Gothenburg and the Halfmachine festivals in Christiania.
-
-> It is a great pleasure to create something that can react, adapt, and generate new forms from itself or it's surroundings. My main interest lies in this creation of dynamic aestetic phenomena. When an artwork is running software the challenge is to make the behavioural aspects of the piece constitute it's aestetic qualities.
->
-> – ole kristensen
