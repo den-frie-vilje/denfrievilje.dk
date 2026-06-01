@@ -92,6 +92,20 @@
 				   </div>
 			   {/if}
 
+			   {#if data.item.meta.selectedWork?.length}
+				   <div class="mb-8 w-full">
+					   <SectionLabel tag="h3" class="mb-3">Selected work</SectionLabel>
+					   <ul class="space-y-3 text-[0.85rem] leading-relaxed">
+						   {#each data.item.meta.selectedWork as item}
+							   <li>
+								   <a href={item.url} class="text-[var(--color-accent)] underline underline-offset-2">{item.title}</a>{#if item.year}<span class="text-[var(--color-ink-secondary)]"> ({item.year})</span>{/if}
+								   <p class="text-[var(--color-ink-secondary)]">{item.body}</p>
+							   </li>
+						   {/each}
+					   </ul>
+				   </div>
+			   {/if}
+
 			   {#if data.item.meta.currently?.length}
 				   <div class="mb-8 w-full">
 					   <SectionLabel tag="h3" class="mb-3">Currently</SectionLabel>

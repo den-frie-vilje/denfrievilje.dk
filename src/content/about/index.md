@@ -7,6 +7,9 @@ stack:
   - TypeScript
   - SvelteKit
   - React
+  - Storybook
+  - Vitest
+  - Playwright
   - Node.js
   - MongoDB
   - Kubernetes
@@ -15,6 +18,8 @@ stack:
   - ArgoCD
   - Docker
   - Ansible
+  - GitHub Actions
+  - GitLab CI
   - C++ / openFrameworks
   - OpenCV
   - Python
@@ -33,6 +38,19 @@ practice:
   - Interactive installations
   - Practice-led research
   - Teaching & mentoring
+selectedWork:
+  - title: AGIS
+    url: /consultancies/tv2-agis/
+    year: 2022–2025
+    body: TV 2 Danmark's in-house broadcast graphics platform — packaging, rendering and QC for every trailer on air.
+  - title: Nyhedshjul
+    url: /consultancies/dr-nyhedshjul/
+    year: '2021'
+    body: DR's giant circular newsroom ticker and video mosaic.
+  - title: Living Room
+    url: /works/living-room/
+    year: '2012'
+    body: Reumert-winning interactive scenography with Recoil Performance Group.
 currently:
   - label: Open to
     value: Senior IC / Tech Lead / Staff
@@ -120,15 +138,21 @@ person:
 
 I'm a designer who codes like an engineer, an engineer who thinks like a designer, and an artist whose work has always been at the intersection. The practice is generative on every side — I design when I code, I make architectural decisions about the design, I bring engineering rigour to artistic work and an artist's interest in behaviour and aesthetics to the engineering. The roles share the same conversation rather than taking turns, because in my work they have to.
 
-I work as an independent consultant, typically taking on hands-on product-ownership roles inside a client's cross-functional delivery team for the duration of each project, under the name [Den Frie Vilje](/consultancies/).
+## Consultant
 
-Years inside Danish broadcast sharpened my practice. Working alongside in-house design teams at the country's national broadcasters across multiple on-air design cycles, often to live broadcast deadlines, taught me again and again that the hard problem is rarely the design or the engineering on its own — it's the translation between them at production tolerance, and that translation has to be done by someone fluent in both — someone who sits inside the design process from the start, pushing back when the combinatorial variant space becomes overwhelming, mapping contradictions and opportunities across the design system, and resolving them in the implementation itself.
+I work as an independent consultant, typically taking on hands-on, full-stack product-ownership roles inside a client's cross-functional delivery team for the duration of each project, under the name [Den Frie Vilje](/consultancies/).
 
-The translation question had been a research question first. Through the 2010s I worked on adaptive lighting with a small research group at the IT University of Copenhagen and the Royal Danish Academy, while running ITU's Intermedia Lab — teaching and mentoring students in *digital aesthetics* and expressive code, with an eye towards the time domain. Across half a decade of installations and papers, the research kept arguing for a way of thinking about systems where what they do over time matters more than what any single state looks like.
+Years inside Danish broadcast taught me the same lesson the theatre had taught me earlier: the hard problem is never the design or the code. It's the seam between them — and the seam needs someone fluent in both, sitting inside the design process from the start, pushing back when a design system threatens to explode and mapping where its contradictions hide.
+
+## Researcher
+
+Through the 2010s I worked on adaptive lighting with a small research group at the IT University of Copenhagen and the Royal Danish Academy, while running ITU's Intermedia Lab — teaching and mentoring students in *digital aesthetics* and expressive code, with an eye towards the time domain. Across half a decade of installations and papers, the research kept arguing for a way of thinking about systems where what they do over time matters more than what any single state looks like.
 
 > It is a great pleasure to create something that can react, adapt, and generate new forms from itself or its surroundings. My main interest lies in this creation of dynamic aesthetic phenomena. When an artwork is running software the challenge is to make the behavioural aspects of the piece constitute its aesthetic qualities.
 >
 > — ole kristensen
+
+## Artist
 
 That conviction first emerged on stage. I came out of Roskilde University's Interactive Media programme in 2000 already building bespoke realtime systems for theatre and dance, inside production teams of choreographers, directors and dancers, under hard premiere deadlines. The long collaboration with [Recoil Performance Group](http://recoil-performance.org/) twice received Denmark's national theatre award. What I learned there, and everything since has confirmed, is that the behaviour of a software-driven piece is itself a material to be designed — composed as deliberately as a colour palette or a layout.
 

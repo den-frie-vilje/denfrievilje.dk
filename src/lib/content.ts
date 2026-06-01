@@ -42,12 +42,16 @@ export interface ContentMeta {
 	// About-page sidebar lists. `stack` is the technology keyword chips a
 	// recruiter scans for; `practice` is the cross-audience competency chips
 	// (kind-of-work, not framework names); `currently` is a labelled
-	// definition list of role-shape signals for active job-seeking. Together
-	// `stack + practice` are also used to derive the schema.org `knowsAbout`
-	// for the Person JSON-LD — see the splice in getContent below.
+	// definition list of role-shape signals for active job-seeking;
+	// `selectedWork` is a curated list of flagship projects with one-line
+	// descriptions — what the body prose deliberately doesn't enumerate.
+	// Together `stack + practice` are also used to derive the schema.org
+	// `knowsAbout` for the Person JSON-LD — see the splice in getContent
+	// below.
 	stack?: string[];
 	practice?: string[];
 	currently?: Array<{ label: string; value: string }>;
+	selectedWork?: Array<{ title: string; url: string; year?: string; body: string }>;
 
 	// Curated publications co-located with the content folder. Each entry
 	// points at a file in the same content/<section>/<slug>/ directory; the
