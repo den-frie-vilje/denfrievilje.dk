@@ -171,5 +171,10 @@
 	}
 	.area-tree {
 		grid-area: tree;
+		/* Grid items default to min-width: auto (= min-content). The canvas
+		   inside has an intrinsic width, which would otherwise force the
+		   grid track to stay at least as wide as the canvas — preventing
+		   the column from shrinking when the viewport gets smaller. */
+		min-width: 0;
 	}
 </style>

@@ -60,6 +60,7 @@
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let p5Instance: any = null;
 	let probe: HTMLSpanElement | null = null;
+	let resizeObserver: ResizeObserver | null = null;
 
 	onMount(async () => {
 		const p5Module = await import('p5');
@@ -137,7 +138,10 @@
 			const SHRINK_AT_0 = 0.65;
 			const SHRINK_AT_1 = 0.78;
 			const STOP_LEN = 4; // safety floor, depth caps before this trips
-			const MAX_DEPTH = 7; // recursion-depth cap (keeps tree bounded)
+			// MAX_DEPTH is set in setup()/windowResized() based on canvas
+			// width — smaller viewports get a shallower cap so the tree
+			// stays performant and visually balanced on mobile.
+			let MAX_DEPTH = 7;
 			const LEAF_DEPTH_MIN = 2; // no leaves on the inner 2 levels
 			const MAX_BRANCH_ALPHA = 255; // full opacity — overlaps stay clean
 			const STARTING_LEN_FRAC = 0.26;
@@ -216,11 +220,25 @@
 			};
 
 			// — Canvas sizing —
+			// Height is proportional to width but with different aspect
+			// ratios at different breakpoints. Smaller viewports get a
+			// shorter canvas so the tree doesn't dominate the page; the
+			// tree's own startingLen scales with h, so the silhouette
+			// adapts naturally.
 			const sized = () => {
 				const w = container.clientWidth;
-				const h = Math.max(360, Math.min(620, Math.round(w * 0.6)));
+				let h: number;
+				if (w < 400) h = Math.max(220, Math.round(w * 0.72));
+				else if (w < 768) h = Math.round(w * 0.6);
+				else h = Math.min(620, Math.round(w * 0.55));
 				return { w, h };
 			};
+
+			// Tree complexity scales with canvas width — narrow canvases
+			// use a shallower recursion cap so the cascade reaches the
+			// same proportional depth without rendering hundreds of
+			// branches at sub-pixel sizes.
+			const depthForWidth = (w: number) => (w < 480 ? 5 : w < 768 ? 6 : 7);
 
 			p.setup = () => {
 				const { w, h } = sized();
@@ -228,6 +246,7 @@
 				p.pixelDensity(window.devicePixelRatio || 1);
 				p.noiseSeed(Math.floor(Math.random() * 1_000_000));
 				startingLen = h * STARTING_LEN_FRAC;
+				MAX_DEPTH = depthForWidth(w);
 				refreshColors();
 				// touch-action: pan-y lets the browser keep handling
 				// vertical scroll on mobile, while horizontal touch
@@ -240,6 +259,7 @@
 				const { w, h } = sized();
 				p.resizeCanvas(w, h);
 				startingLen = h * STARTING_LEN_FRAC;
+				MAX_DEPTH = depthForWidth(w);
 			};
 
 			p.mouseMoved = () => {
@@ -1372,9 +1392,26 @@
 		};
 
 		p5Instance = new P5(sketch, container);
+
+		// Observe the container element directly so canvas resize fires on
+		// CSS Grid breakpoint changes (where the column width can shift
+		// without the WINDOW size changing). p5's own windowResized only
+		// listens on window.resize.
+		if (typeof ResizeObserver !== 'undefined') {
+			resizeObserver = new ResizeObserver(() => {
+				if (p5Instance && typeof p5Instance.windowResized === 'function') {
+					p5Instance.windowResized();
+				}
+			});
+			resizeObserver.observe(container);
+		}
 	});
 
 	onDestroy(() => {
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+			resizeObserver = null;
+		}
 		if (p5Instance) {
 			p5Instance.remove();
 			p5Instance = null;
@@ -1386,4 +1423,4 @@
 	});
 </script>
 
-<div bind:this={container} class="w-full"></div>
+<div bind:this={container} class="w-full min-w-0 overflow-hidden"></div>
