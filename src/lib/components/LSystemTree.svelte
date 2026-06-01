@@ -291,7 +291,17 @@
 						p.mouseY >= 0 &&
 						p.mouseY <= p.height;
 					if (mouseInside) {
-						const newT = p.map(p.mouseX, 0, p.width, 0, MAX_T);
+						// Map only the inner 80 % of the canvas to t ∈ [0, 1].
+						// The outer 10 % on each side clamps to the endpoints
+						// so the user can comfortably reach t=0 and t=1
+						// without having to drag exactly to the edge.
+						const innerLo = p.width * 0.1;
+						const innerHi = p.width * 0.9;
+						const newT = p.constrain(
+							p.map(p.mouseX, innerLo, innerHi, 0, MAX_T),
+							0,
+							MAX_T
+						);
 						// Track direction so we can resume the autocycle in
 						// the same direction on leave. A tiny deadband
 						// ignores frame-to-frame jitter for stationary
