@@ -1,7 +1,7 @@
 ---
 title: DR Nyhedshjul
 date: Sep 2021
-lead: Giant circular news ticker and video mosaic for DR's Newsroom.
+lead: Centrepiece wrap-around circular display for DR's Newsroom.
 tags:
   - Broadcast
   - Installation

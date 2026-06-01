@@ -1,7 +1,7 @@
 ---
 title: LEDlys
 date: 2010–2017
-lead: Integrating Daylight and Adaptive LED Light. Practice-led research at ITU and KADK, 2010 to 2017.
+lead: Integrating Daylight and Adaptive LED Light. Practice-led research at ITU and KADK.
 tags:
   - Research
   - Practice-led

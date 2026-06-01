@@ -1,6 +1,6 @@
 ---
 title: TV 2 AGIS
-date: 2023 — ongoing
+date: 2023 — 2025
 lead: An in-house system for packaging, rendering, and quality-controlling every trailer that goes to air on TV 2 Denmark.
 tags:
   - Rendering

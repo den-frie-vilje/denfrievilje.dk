@@ -26,7 +26,7 @@
 
 <a
 	{href}
-	class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2"
+	class="group flex flex-col gap-3 border-b border-[var(--color-border)] py-5 no-underline first:border-t md:grid md:grid-cols-[5rem_1fr_auto] md:items-start md:gap-6 md:transition-[padding-left] md:duration-300 md:hover:pl-2"
 >
 	{#if thumb?.src}
 		<DuotoneImage
@@ -38,7 +38,7 @@
 		/>
 	{/if}
 	<div>
-		<h3 class="mb-0.5 font-heading text-[1.1rem] font-medium tracking-tight">{title}</h3>
+		<h3 class="mb-1 font-heading text-[1.1rem] font-medium leading-none tracking-tight">{title}</h3>
 		{#if lead}
 			<p class="max-w-[40ch] text-[0.82rem] text-[var(--color-ink-secondary)]">{lead}</p>
 		{/if}

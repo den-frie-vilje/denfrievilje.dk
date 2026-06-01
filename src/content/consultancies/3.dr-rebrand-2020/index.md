@@ -10,7 +10,7 @@ tags:
   - Generative
 materials: Node.js, Gitlab, Ansible, Angularjs, ExtendScript, Adobe After Effects, Adobe Premiere, Jamf, Mac Pro.
 partners: DR Design, Johan Bichel Lindegaard
-client: Danmarks Radio - Danish Broadcasting Corporation
+client: DR - Danish Broadcasting Corporation
 photocredits: Copyright 2020 Danish Broadcasting Corporations.
 videos:
   - id: '448879180'
