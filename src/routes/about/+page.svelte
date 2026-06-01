@@ -70,12 +70,49 @@
 			   {@html data.item.html}
 		   </div>
 		   <aside class="w-full md:w-1/4 flex flex-col items-start mt-8 md:mt-0 md:ml-8">
-			   <div class="w-full mb-6 aspect-[4/5] max-w-xs md:max-w-xs md:w-full">
+			   <div class="w-full mb-8 aspect-[4/5] max-w-xs md:max-w-xs md:w-full">
 				   <VoronoiGlass {images} cellCount={24} />
 			   </div>
-			   <h2 class="font-heading text-lg font-semibold mb-4">Downloads</h2>
-			   <a href="/content/about/ole-kristensen-cv.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Artist CV (PDF)</a>
-			   <a href="/content/about/ole-kristensen-work-examples.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Work Examples (PDF)</a>
+
+			   {#if data.item.meta.stack?.length}
+				   <div class="mb-8 w-full">
+					   <SectionLabel tag="h3" class="mb-3">Stack</SectionLabel>
+					   <p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">
+						   {data.item.meta.stack.join(' · ')}
+					   </p>
+				   </div>
+			   {/if}
+
+			   {#if data.item.meta.practice?.length}
+				   <div class="mb-8 w-full">
+					   <SectionLabel tag="h3" class="mb-3">Practice</SectionLabel>
+					   <p class="text-[0.85rem] leading-relaxed text-[var(--color-ink-secondary)]">
+						   {data.item.meta.practice.join(' · ')}
+					   </p>
+				   </div>
+			   {/if}
+
+			   {#if data.item.meta.currently?.length}
+				   <div class="mb-8 w-full">
+					   <SectionLabel tag="h3" class="mb-3">Currently</SectionLabel>
+					   <dl class="space-y-2 text-[0.85rem]">
+						   {#each data.item.meta.currently as { label, value }}
+							   <div>
+								   <dt class="text-[0.7rem] uppercase tracking-wider text-[var(--color-ink-secondary)]">{label}</dt>
+								   <dd>{value}</dd>
+							   </div>
+						   {/each}
+					   </dl>
+				   </div>
+			   {/if}
+
+			   <div class="w-full">
+				   <SectionLabel tag="h3" class="mb-3">Downloads</SectionLabel>
+				   <div class="flex flex-col">
+					   <a href="/content/about/ole-kristensen-cv.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Artist CV (PDF)</a>
+					   <a href="/content/about/ole-kristensen-work-examples.pdf" class="mb-2 text-[var(--color-accent)] underline" download>Work Examples (PDF)</a>
+				   </div>
+			   </div>
 		   </aside>
 	   </div>
    </section>

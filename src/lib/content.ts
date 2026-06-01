@@ -39,6 +39,16 @@ export interface ContentMeta {
 	appearances?: Array<{ date: string; occasion: string; place: string; url: string }>;
 	videos?: Array<{ id: string; title: string }>;
 
+	// About-page sidebar lists. `stack` is the technology keyword chips a
+	// recruiter scans for; `practice` is the cross-audience competency chips
+	// (kind-of-work, not framework names); `currently` is a labelled
+	// definition list of role-shape signals for active job-seeking. Together
+	// `stack + practice` are also used to derive the schema.org `knowsAbout`
+	// for the Person JSON-LD — see the splice in getContent below.
+	stack?: string[];
+	practice?: string[];
+	currently?: Array<{ label: string; value: string }>;
+
 	// Curated publications co-located with the content folder. Each entry
 	// points at a file in the same content/<section>/<slug>/ directory; the
 	// build-time image script copies the file into static/content/... and
@@ -330,6 +340,14 @@ export async function getContent(section: string, slug: string): Promise<Content
 		const content = fs.readFileSync(mdPath, 'utf8');
 		const { meta, body } = parseFrontmatter(content);
 		const html = await renderBody(body, section, extractSlug(section));
+
+		// Consolidate the top-level sidebar lists into the Person JSON-LD's
+		// `knowsAbout`. Single source of truth: edit `stack` / `practice` in
+		// frontmatter, and both the rendered sidebar pills and the structured
+		// data stay in sync. No-op when neither list is present.
+		if (meta.person && (meta.stack?.length || meta.practice?.length)) {
+			meta.person.knowsAbout = [...(meta.stack ?? []), ...(meta.practice ?? [])];
+		}
 
 		return {
 			meta,

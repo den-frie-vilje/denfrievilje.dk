@@ -3,6 +3,45 @@ title: Hello
 label: About
 lead: "I'm a senior software engineer with a design-technology focus \u2014 a designer who codes like an engineer and an engineer who thinks like a designer. My practice runs across three connected domains: software art and bespoke realtime systems for the stage, practice-led research on adaptive light at ITU and KADK, and design-driven full-stack engineering for clients with high production tolerances. Former lab manager at ITU's Intermedia Lab. Working as Den Frie Vilje, based in Copenhagen."
 teaser: "Ole Kristensen \u2014 a designer who codes like an engineer and an engineer who thinks like a designer. Two decades of practice across software art, adaptive-systems research and full-stack engineering, working as Den Frie Vilje. Based in Copenhagen."
+stack:
+  - TypeScript
+  - SvelteKit
+  - React
+  - Node.js
+  - MongoDB
+  - Kubernetes
+  - Helm
+  - FluxCD
+  - ArgoCD
+  - Docker
+  - Ansible
+  - C++ / openFrameworks
+  - OpenCV
+  - Python
+  - Adobe After Effects
+  - ExtendScript
+  - Web Audio
+  - DMX
+practice:
+  - Senior full-stack engineering
+  - Design-technology consulting
+  - Realtime systems
+  - Broadcast graphics infrastructure
+  - Generative design
+  - Adaptive lighting design
+  - Software art
+  - Interactive installations
+  - Practice-led research
+  - Teaching & mentoring
+currently:
+  - label: Open to
+    value: Senior IC / Tech Lead / Staff
+  - label: Engagement
+    value: Contract or full-time
+  - label: Location
+    value: Copenhagen / EU / remote-friendly
+  - label: Sectors
+    value: Creative tools, XR, Generative AI, Broadcast, Design systems, Public sector, Open source
 person:
   givenName: Ole
   familyName: Kristensen
@@ -73,22 +112,6 @@ person:
       organization: Society for the Beautification of Copenhagen
       year: 2006
       forWork: Christiania's Own Development Plan
-  knowsAbout:
-    - Full-stack engineering
-    - Front-end engineering
-    - UI/UX
-    - Design
-    - Software art
-    - Interactive installations
-    - Stage scenography
-    - Motion branding
-    - Broadcast television
-    - Lighting control
-    - Generative AI
-    - Physical computing
-    - Cloud Native / Kubernetes
-    - Museum interactives
-    - Arctic / cross-cultural fieldwork
   knowsLanguage:
     - Danish \u2014 native
     - English \u2014 full professional
