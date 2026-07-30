@@ -20,7 +20,12 @@ on:
 
 jobs:
   deploy:
-    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main
+    # Pinned to the nas-sites release tag v1, not @main. This reusable
+    # workflow builds and cosign-signs the image we deploy, so a floating
+    # branch reference means the signing pipeline can change under us with
+    # no review here. With a tag, an upstream change reaches this site only
+    # as a deliberate, reviewable bump of this line. Site canon SC-5.
+    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1
     with:
       environment: staging
       dockerfile: deploy/Dockerfile
