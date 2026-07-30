@@ -10,6 +10,15 @@ node_modules
 test
 docs
 build
+# Exclude env files in general (local .env / *.local may hold secrets), but
+# re-include the committed PUBLIC_*-only mode files: the build inside the
+# image loads .env.staging or .env.production via `vite build --mode`, and
+# `svelte-kit sync` reads .env.development so `pnpm check` sees the same
+# $env/static/public declarations as local dev. Without the re-includes the
+# build fails loudly on the missing PUBLIC_ALLOW_INDEXING declaration.
 .env*
+!.env.development
+!.env.staging
+!.env.production
 *.log
 .DS_Store

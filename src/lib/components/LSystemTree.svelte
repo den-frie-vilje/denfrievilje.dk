@@ -284,12 +284,23 @@
 					p.clear();
 					refreshColors();
 
+					// Read interaction position — prefer an active touch
+					// (p5's p.touches array) over p.mouseX/Y, because on
+					// mobile p5 v2 doesn't always sync the touch position
+					// into mouseX before draw() runs.
+					let interactX = p.mouseX;
+					let interactY = p.mouseY;
+					if (p.touches && p.touches.length > 0) {
+						interactX = p.touches[0].x;
+						interactY = p.touches[0].y;
+					}
+
 					const mouseInside =
 						mouseHasInteracted &&
-						p.mouseX >= 0 &&
-						p.mouseX <= p.width &&
-						p.mouseY >= 0 &&
-						p.mouseY <= p.height;
+						interactX >= 0 &&
+						interactX <= p.width &&
+						interactY >= 0 &&
+						interactY <= p.height;
 					if (mouseInside) {
 						// Map only the inner 80 % of the canvas to t ∈ [0, 1].
 						// The outer 10 % on each side clamps to the endpoints
@@ -298,7 +309,7 @@
 						const innerLo = p.width * 0.1;
 						const innerHi = p.width * 0.9;
 						const newT = p.constrain(
-							p.map(p.mouseX, innerLo, innerHi, 0, MAX_T),
+							p.map(interactX, innerLo, innerHi, 0, MAX_T),
 							0,
 							MAX_T
 						);
