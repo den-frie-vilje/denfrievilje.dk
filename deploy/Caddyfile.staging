@@ -20,6 +20,14 @@
     reverse_proxy site:8080
     encode gzip zstd
 
+    # Staging must never enter a search index. The staging image already
+    # bakes a Disallow-all robots.txt (PUBLIC_ALLOW_INDEXING=false in
+    # .env.staging); that baked file is the primary strap because it
+    # deploys atomically with the image. This header is the backstop on
+    # every response, covering the window where a wrongly built image
+    # lands on the staging origin.
+    header X-Robots-Tag "noindex, nofollow"
+
     log {
         output stdout
         format json

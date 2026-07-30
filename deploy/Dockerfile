@@ -73,15 +73,25 @@ COPY . .
 # PUBLIC_SITE_HOST / PUBLIC_DOMAIN_MODE default to the bureau identity here
 # so the `pnpm check` step (which runs before `pnpm build`) sees a valid
 # value for the `$env/static/public` imports in src/lib/site.ts. The
-# per-mode build scripts (`pnpm build:artist`, `pnpm build:bureau`) override
-# both via inline env at invocation, so each output tree still bakes in its
-# own canonical URL, og:url, sitemap host, and JSON-LD url.
+# per-identity build scripts (`pnpm build:artist`, `pnpm build:bureau`)
+# override both via inline env at invocation, so each output tree still
+# bakes in its own canonical URL, og:url, sitemap host, and JSON-LD url.
+#
+# VITE_MODE selects the Vite mode file for the build: the deploy workflows
+# pass staging or production, and the build scripts run
+# `vite build --mode ${VITE_MODE:-production}`, loading the committed
+# .env.staging or .env.production. That is how the staging image bakes the
+# Disallow-all robots.txt (PUBLIC_ALLOW_INDEXING=false) while production
+# bakes the indexable one. Identity selection is orthogonal: mode files
+# never set PUBLIC_SITE_HOST or PUBLIC_DOMAIN_MODE, and inline process env
+# wins over mode files in any case.
 ARG VITE_MODE=production
 ARG PUBLIC_GIT_SHA=
 ARG PUBLIC_BUILD_TIME=
 ARG PUBLIC_SHOW_PALETTE_TOGGLE=false
 ARG PUBLIC_SITE_HOST=denfrievilje.dk
 ARG PUBLIC_DOMAIN_MODE=bureau
+ENV VITE_MODE=$VITE_MODE
 ENV PUBLIC_GIT_SHA=$PUBLIC_GIT_SHA
 ENV PUBLIC_BUILD_TIME=$PUBLIC_BUILD_TIME
 ENV PUBLIC_SHOW_PALETTE_TOGGLE=$PUBLIC_SHOW_PALETTE_TOGGLE
