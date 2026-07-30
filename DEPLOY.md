@@ -16,7 +16,7 @@ This site is unusual in the den-frie-vilje stack: **one image, two apexes**. The
 
 | Role                | Hostname                                       | TLS                              | Purpose |
 | ------------------- | ---------------------------------------------- | -------------------------------- | --- |
-| Staging origin      | `denfrievilje-dk.stage.denfrievilje.dk`        | `*.stage.denfrievilje.dk` wildcard | Editor / dev preview. `X-Robots-Tag: noindex, nofollow`. |
+| Staging origin      | `denfrievilje-dk.stage.denfrievilje.dk`        | `*.stage.denfrievilje.dk` wildcard | Editor / dev preview. Never indexed: baked Disallow-all robots.txt plus an `X-Robots-Tag` backstop header (see [Search engine isolation](#search-engine-isolation-for-staging)). |
 | Production origin   | `denfrievilje-dk.prod.denfrievilje.dk`         | `*.prod.denfrievilje.dk` wildcard | Internal canonical NAS origin. |
 | Public apex (bureau) | `denfrievilje.dk`                             | Cloudflare                       | Public bureau identity. |
 | Public www          | `www.denfrievilje.dk`                          | Cloudflare                       | 301 → apex by Caddy. |
@@ -24,6 +24,20 @@ This site is unusual in the den-frie-vilje stack: **one image, two apexes**. The
 | Public www          | `www.ole.kristensen.name`                      | Cloudflare                       | 301 → apex by Caddy. |
 
 Both apex hostnames are CF-orange-clouded against the production origin. CF terminates TLS at the edge; the cert at the NAS only needs to cover `*.prod.denfrievilje.dk`.
+
+## Search engine isolation for staging
+
+The staging origin serves duplicates of production content and must never enter a search index. Two mechanisms enforce this, both in this repository:
+
+- **Baked robots.txt (primary).** `src/routes/robots.txt/+server.ts` is prerendered per build mode. Staging images build with `VITE_MODE=staging` (workflow build-arg → `deploy/Dockerfile` `ENV` → `vite build --mode staging` in the build scripts), which loads `.env.staging` with `PUBLIC_ALLOW_INDEXING=false` and bakes `Disallow: /` with no sitemap advert into both identity trees. Production builds load `.env.production` (`PUBLIC_ALLOW_INDEXING=true`) and bake `Allow: /` plus the per-identity sitemap advert. The route fails closed: anything other than the literal `true` bakes the disallow variant. The baked file is the primary strap because it deploys atomically with the image.
+- **`X-Robots-Tag: noindex, nofollow` header (backstop).** `deploy/Caddyfile.staging` sets it on every staging response, covering the window where a wrongly built image lands on the staging origin. Production sets no such header.
+
+Verify after a staging deploy:
+
+```sh
+curl -s https://denfrievilje-dk.stage.denfrievilje.dk/robots.txt          # expect Disallow: /
+curl -sI https://denfrievilje-dk.stage.denfrievilje.dk/ | grep -i x-robots-tag
+```
 
 ## Architecture
 
@@ -50,16 +64,21 @@ deploy/
 ├── compose.staging.yml    # caddy + site (PUBLIC_SHOW_PALETTE_TOGGLE=true)
 ├── compose.production.yml # caddy + site (PUBLIC_SHOW_PALETTE_TOGGLE=false)
 ├── compose.local.yml      # local-dev override (binds to laptop port, builds local image)
-├── Caddyfile.staging      # single-host reverse proxy
+├── Caddyfile.staging      # single-host reverse proxy; X-Robots-Tag noindex backstop
 ├── Caddyfile.production   # per-apex www→apex 301; no cross-apex redirect
 ├── nginx.conf             # SPA fallback + cache headers
 ├── staging.env.example    # CADDY_PORT shape
 └── production.env.example # CADDY_PORT shape
 
+.env.development           # dev/test-mode public env (bureau identity, toggle, noindex)
+.env.staging               # staging-mode public env: PUBLIC_ALLOW_INDEXING=false
+.env.production            # production-mode public env: PUBLIC_ALLOW_INDEXING=true
+
 src/
 ├── app.html               # %sveltekit.env.PUBLIC_GIT_SHA% baked into <meta x-build-sha>
 ├── routes/+layout.ts      # prerender = true; trailingSlash = 'always'
-└── routes/+layout.svelte  # bureau detection by hostname; toggle gated on PUBLIC_SHOW_PALETTE_TOGGLE
+├── routes/+layout.svelte  # bureau detection by hostname; toggle gated on PUBLIC_SHOW_PALETTE_TOGGLE
+└── routes/robots.txt/     # prerendered per mode: staging Disallow-all, production Allow
 
 .github/workflows/
 ├── deploy-staging.yml     # thin caller of nas-sites/build-and-sign.yml
