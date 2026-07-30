@@ -75,7 +75,7 @@ deploy/
 .env.production            # production-mode public env: PUBLIC_ALLOW_INDEXING=true
 
 src/
-├── app.html               # %sveltekit.env.PUBLIC_GIT_SHA% baked into <meta x-build-sha>
+├── app.html               # PUBLIC_GIT_SHA baked into <meta name="git-sha"> (SC-4)
 ├── routes/+layout.ts      # prerender = true; trailingSlash = 'always'
 ├── routes/+layout.svelte  # bureau detection by hostname; toggle gated on PUBLIC_SHOW_PALETTE_TOGGLE
 └── routes/robots.txt/     # prerendered per mode: staging Disallow-all, production Allow
@@ -171,13 +171,19 @@ done
 
 ### Wrong palette on a fresh page load
 
-Browser localStorage from a previous staging session may persist. Production builds set `PUBLIC_SHOW_PALETTE_TOGGLE=false`, which makes `+layout.svelte` ignore localStorage and trust the hostname check only — so this should not happen in production. If you see it, check that the production image was actually built with `PUBLIC_SHOW_PALETTE_TOGGLE=false` (`<meta name="x-build-sha">` should NOT show toggle markup in the page source).
+Browser localStorage from a previous staging session may persist. Production builds set `PUBLIC_SHOW_PALETTE_TOGGLE=false`, which makes `+layout.svelte` ignore localStorage and trust the hostname check only — so this should not happen in production. If you see it, check that the production image was actually built with `PUBLIC_SHOW_PALETTE_TOGGLE=false`: read `<meta name="git-sha">` to establish which commit is actually live, then confirm the toggle markup is absent from the page source.
 
 ### Verify build SHA matches what's deployed
 
-Every prerendered page has `<meta name="x-build-sha" content="...">` and `<meta name="x-build-time" content="...">`. Compare against `git rev-parse main`:
+Every prerendered page in both identity trees has `<meta name="git-sha" content="...">` and `<meta name="build-time" content="...">`. Deploys are pull-only, so CI never confirms the rollout and the served page is the only trustworthy statement of which commit is live. Compare against `git rev-parse main`:
 
 ```sh
-curl -s https://denfrievilje.dk/ | grep -oE 'x-build-sha[^>]*content="[^"]*"'
+curl -s https://denfrievilje.dk/ | grep -oE 'git-sha[^>]*content="[^"]*"'
 git rev-parse main
+```
+
+Query the origin host rather than the apex when you need the answer now; the apex is behind Cloudflare and may serve a cached page:
+
+```sh
+curl -s https://denfrievilje-dk.prod.denfrievilje.dk/ | grep -oE 'git-sha[^>]*content="[^"]*"'
 ```

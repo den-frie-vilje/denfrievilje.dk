@@ -27,8 +27,8 @@ jobs:
       image-name: ghcr.io/den-frie-vilje/denfrievilje
       platforms: ${{ inputs.multiarch && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
       # Vite bakes these into the client bundle / app.html at build time.
-      # PUBLIC_GIT_SHA also doubles as the verify-pattern source — the
-      # post-sign poll greps the rendered <meta name="x-build-sha"> for
+      # PUBLIC_GIT_SHA also doubles as the verify-pattern source: the
+      # post-sign poll greps the rendered <meta name="git-sha"> for
       # the new SHA.
       #
       # PUBLIC_SHOW_PALETTE_TOGGLE=true exposes the floating bureau/artist
@@ -41,6 +41,6 @@ jobs:
         PUBLIC_BUILD_TIME=${{ github.event.head_commit.timestamp }}
       # Origin URL (not CF apex) so the verify poll bypasses any CDN
       # caching. The reusable workflow's default verify-pattern is the
-      # first 8 chars of github.sha, which app.html now embeds in
-      # <meta name="x-build-sha">.
+      # first 8 chars of github.sha, which app.html embeds in
+      # <meta name="git-sha">.
       verify-url: https://denfrievilje-dk.stage.denfrievilje.dk/

@@ -43,5 +43,5 @@ jobs:
       # Origin URL (not CF-fronted apex) so the verify poll bypasses
       # Cloudflare cache. The reusable workflow's default verify-pattern
       # is the first 8 chars of github.sha, which app.html embeds in
-      # <meta name="x-build-sha">.
+      # <meta name="git-sha">.
       verify-url: https://denfrievilje-dk.prod.denfrievilje.dk/
