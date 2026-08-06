@@ -20,15 +20,20 @@ on:
 
 jobs:
   deploy:
-    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main
+    # Pinned to the nas-sites release tag v1, not @main. This reusable
+    # workflow builds and cosign-signs the image we deploy, so a floating
+    # branch reference means the signing pipeline can change under us with
+    # no review here. With a tag, an upstream change reaches this site only
+    # as a deliberate, reviewable bump of this line. Site canon SC-5.
+    uses: den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1
     with:
       environment: staging
       dockerfile: deploy/Dockerfile
       image-name: ghcr.io/den-frie-vilje/denfrievilje
       platforms: ${{ inputs.multiarch && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
       # Vite bakes these into the client bundle / app.html at build time.
-      # PUBLIC_GIT_SHA also doubles as the verify-pattern source — the
-      # post-sign poll greps the rendered <meta name="x-build-sha"> for
+      # PUBLIC_GIT_SHA also doubles as the verify-pattern source: the
+      # post-sign poll greps the rendered <meta name="git-sha"> for
       # the new SHA.
       #
       # PUBLIC_SHOW_PALETTE_TOGGLE=true exposes the floating bureau/artist
@@ -41,6 +46,6 @@ jobs:
         PUBLIC_BUILD_TIME=${{ github.event.head_commit.timestamp }}
       # Origin URL (not CF apex) so the verify poll bypasses any CDN
       # caching. The reusable workflow's default verify-pattern is the
-      # first 8 chars of github.sha, which app.html now embeds in
-      # <meta name="x-build-sha">.
+      # first 8 chars of github.sha, which app.html embeds in
+      # <meta name="git-sha">.
       verify-url: https://denfrievilje-dk.stage.denfrievilje.dk/

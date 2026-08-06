@@ -224,7 +224,7 @@ For per-site URL pattern, GitHub OAuth setup (n/a here — no editor), DSM Web S
 
 ## CI/CD (GitHub Actions)
 
-Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main`](https://github.com/den-frie-vilje/nas-sites/blob/main/.github/workflows/build-and-sign.yml).
+Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1`](https://github.com/den-frie-vilje/nas-sites/blob/v1/.github/workflows/build-and-sign.yml), pinned to a release tag rather than a branch: the reusable workflow signs the images we deploy, so upstream changes should reach this site as a reviewable bump of the tag, not silently.
 
 | File                                       | Triggers           | Steps                                                                   |
 | ------------------------------------------ | ------------------ | ----------------------------------------------------------------------- |
