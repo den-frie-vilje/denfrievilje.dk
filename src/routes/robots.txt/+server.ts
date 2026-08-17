@@ -35,9 +35,10 @@ Allow: /
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `
-		: `# Staging or development build, not intended for search engines.
+		: `# Staging or development build. Crawlable ON PURPOSE, so that the
+# noindex on every response is actually read. Nothing here may enter an index.
 User-agent: *
-Disallow: /
+Allow: /
 `;
 	return new Response(body, {
 		headers: { 'Content-Type': 'text/plain; charset=utf-8' }

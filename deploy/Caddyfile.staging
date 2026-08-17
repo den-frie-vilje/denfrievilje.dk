@@ -26,7 +26,7 @@
     # deploys atomically with the image. This header is the backstop on
     # every response, covering the window where a wrongly built image
     # lands on the staging origin.
-    header X-Robots-Tag "noindex, nofollow"
+    header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
 
     log {
         output stdout
