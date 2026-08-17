@@ -89,7 +89,7 @@ docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --bu
 
 ## CI/CD (GitHub Actions)
 
-Both workflows are thin callers of `den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@main`.
+Both workflows are thin callers of `den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1`, pinned to a release tag rather than a branch: the reusable workflow signs the images we deploy, so upstream changes should reach this site as a reviewable bump of the tag, not silently.
 
 | Workflow              | File                                       | Triggers                                              |
 | --------------------- | ------------------------------------------ | ----------------------------------------------------- |

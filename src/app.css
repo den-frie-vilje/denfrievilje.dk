@@ -1,9 +1,18 @@
 @import 'tailwindcss';
 
+/* Self-hosted typefaces, per SC-9. Fontsource's own CSS, so the
+   unicode-range subsetting and font-display: swap match what the Google
+   stylesheet gave us. Axes: wght, opsz for DM Sans, plus the italics. */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/dm-sans/opsz.css';
+@import '@fontsource-variable/dm-sans/opsz-italic.css';
+@import '@fontsource-variable/lora/wght.css';
+@import '@fontsource-variable/lora/wght-italic.css';
+
 @theme {
-	--font-heading: 'Space Grotesk', sans-serif;
-	--font-body: 'DM Sans', sans-serif;
-	--font-serif: 'Lora', serif;
+	--font-heading: 'Space Grotesk Variable', 'Space Grotesk', sans-serif;
+	--font-body: 'DM Sans Variable', 'DM Sans', sans-serif;
+	--font-serif: 'Lora Variable', 'Lora', serif;
 	--color-surface: oklch(0.98 0.003 100);
 	--color-ink: oklch(0.12 0.01 260);
 	--color-ink-secondary: oklch(0.5 0.01 260);

@@ -4,19 +4,19 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" type="image/svg+xml" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!-- Build provenance — populated by deploy/Dockerfile build args via
+		<!-- Build provenance, populated by deploy/Dockerfile build args via
 		     SvelteKit's app.html env interpolation. Empty string in dev. The
 		     post-deploy verify step in build-and-sign.yml polls for the
-		     first 8 chars of x-build-sha to confirm the agent rolled out
-		     this exact commit. -->
-		<meta name="x-build-sha" content="%sveltekit.env.PUBLIC_GIT_SHA%" />
-		<meta name="x-build-time" content="%sveltekit.env.PUBLIC_BUILD_TIME%" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
-			rel="stylesheet"
-		/>
+		     first 8 chars of the git-sha value to confirm the agent rolled
+		     out this exact commit.
+
+		     The meta names are the fleet-wide convention (site canon SC-4),
+		     so one probe reads every site. Deploys are pull-only: CI never
+		     confirms the rollout, so the served page is the only trustworthy
+		     statement of which commit is live. Both identity trees are built
+		     from this file, so both carry the pair. -->
+		<meta name="git-sha" content="%sveltekit.env.PUBLIC_GIT_SHA%" />
+		<meta name="build-time" content="%sveltekit.env.PUBLIC_BUILD_TIME%" />
 		%sveltekit.head%
 	</head>
 	<!-- Body class comes from PUBLIC_DOMAIN_MODE so the right palette applies
