@@ -91,10 +91,10 @@ docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --bu
 
 Both workflows are thin callers of `den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1`, pinned to a release tag rather than a branch: the reusable workflow signs the images we deploy, so upstream changes should reach this site as a reviewable bump of the tag, not silently.
 
-| Workflow              | File                                       | Triggers                                              |
-| --------------------- | ------------------------------------------ | ----------------------------------------------------- |
-| Deploy to staging     | `.github/workflows/deploy-staging.yml`     | Push to `staging` — build, cosign-sign, push to GHCR  |
-| Deploy to production  | `.github/workflows/deploy-production.yml`  | Push to `main` — same flow, no reviewer gate          |
+| Workflow             | File                                      | Triggers                                             |
+| -------------------- | ----------------------------------------- | ---------------------------------------------------- |
+| Deploy to staging    | `.github/workflows/deploy-staging.yml`    | Push to `staging` — build, cosign-sign, push to GHCR |
+| Deploy to production | `.github/workflows/deploy-production.yml` | Push to `main` — same flow, no reviewer gate         |
 
 The NAS-side agent on Woody reconciles every ~5 min: pulls, cosign-verifies, `docker compose up -d --wait`, optionally purges Cloudflare cache (multi-zone, both apexes).
 

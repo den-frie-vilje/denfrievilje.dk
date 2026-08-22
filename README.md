@@ -107,10 +107,10 @@ docker compose -f deploy/compose.staging.yml -f deploy/compose.local.yml up --bu
 
 GitHub Actions workflows in `.github/workflows/`:
 
-| Workflow                  | Trigger             | What it does                                                                          |
-| ------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
-| `deploy-staging.yml`      | Push to `staging`   | Build → cosign-sign → push to GHCR; agent reconciles staging container within ~5 min  |
-| `deploy-production.yml`   | Push to `main`      | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles production       |
+| Workflow                | Trigger           | What it does                                                                         |
+| ----------------------- | ----------------- | ------------------------------------------------------------------------------------ |
+| `deploy-staging.yml`    | Push to `staging` | Build → cosign-sign → push to GHCR; agent reconciles staging container within ~5 min |
+| `deploy-production.yml` | Push to `main`    | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles production      |
 
 Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1`](https://github.com/den-frie-vilje/nas-sites/blob/v1/.github/workflows/build-and-sign.yml), pinned to a release tag rather than a branch so a change to the workflow that signs our images arrives as a reviewable bump. No reviewer gate — the cryptographic gate is the cosign keyless signature itself, verified by the NAS agent before deploy.
 

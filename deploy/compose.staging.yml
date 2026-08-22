@@ -30,7 +30,7 @@ services:
     ports:
       # Loopback only — DSM reverse-proxies the staging hostname to this
       # port on 127.0.0.1. Port comes from staging.env.
-      - "127.0.0.1:${CADDY_PORT:-18082}:80"
+      - '127.0.0.1:${CADDY_PORT:-18082}:80'
     volumes:
       - ./Caddyfile.staging:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -49,7 +49,7 @@ services:
     # container is actually serving — which is the signal to fire the
     # CF cache purge that follows in the agent.
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:8080/']
       interval: 10s
       timeout: 3s
       retries: 3

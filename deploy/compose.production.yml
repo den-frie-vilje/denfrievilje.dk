@@ -32,7 +32,7 @@ services:
     ports:
       # Loopback only — DSM reverse-proxies all production hostnames for
       # this site to this port on 127.0.0.1. Port from production.env.
-      - "127.0.0.1:${CADDY_PORT:-18083}:80"
+      - '127.0.0.1:${CADDY_PORT:-18083}:80'
     volumes:
       - ./Caddyfile.production:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -49,7 +49,7 @@ services:
     # blocks on this so the agent's CF cache purge fires only after the
     # new container is actually serving traffic.
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:8080/']
       interval: 10s
       timeout: 3s
       retries: 3

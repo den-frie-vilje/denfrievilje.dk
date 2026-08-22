@@ -59,9 +59,9 @@ The project grew directly out of earlier work in performance, especially [Frost]
 
 ## The premise
 
-Daylight fluctuates dramatically yet remains inconspicuous to the people who inhabit it. We background daylight, but we hold on to the cues it possesses — the time of day, the passing of clouds, the seasons, the changing weather. The premise of the project was that this everyday backgrounding could inform how we formulate the fluctuations of interior LED light: an aesthetic awareness of *backgrounding* and *foregrounding*, of when artificial light remains context, when it moves into attention, when it starts pointing to itself, and when it has become a dominant noise.
+Daylight fluctuates dramatically yet remains inconspicuous to the people who inhabit it. We background daylight, but we hold on to the cues it possesses — the time of day, the passing of clouds, the seasons, the changing weather. The premise of the project was that this everyday backgrounding could inform how we formulate the fluctuations of interior LED light: an aesthetic awareness of _backgrounding_ and _foregrounding_, of when artificial light remains context, when it moves into attention, when it starts pointing to itself, and when it has become a dominant noise.
 
-If colour temperature and luminous intensity describe the *what* of a light emitter, fluctuations describe the *how*. The project's instruments and software sketches were ways of working in the *how*.
+If colour temperature and luminous intensity describe the _what_ of a light emitter, fluctuations describe the _how_. The project's instruments and software sketches were ways of working in the _how_.
 
 ## Three setups
 
@@ -101,13 +101,13 @@ What this makes available is a particular kind of slowness. At the low end of th
 
 ## Pixel Experiments
 
-Christina Augustesen's *Pixel Experiments* investigated how arrangements of LED pixels might diverge from the industry's evenly distributed rectilinear default — light emitters placed more like sand grains on a beach than points in a grid. Drawing again on Jim Campbell, it explored the border between sparseness and blur, and how the cumulative shadows of clustered emitters give a different quality of blur — escaping the linear steps that evenly spaced grid arrays draw into their shadows.
+Christina Augustesen's _Pixel Experiments_ investigated how arrangements of LED pixels might diverge from the industry's evenly distributed rectilinear default — light emitters placed more like sand grains on a beach than points in a grid. Drawing again on Jim Campbell, it explored the border between sparseness and blur, and how the cumulative shadows of clustered emitters give a different quality of blur — escaping the linear steps that evenly spaced grid arrays draw into their shadows.
 
 ## Out in the world
 
-Three KADK publications came out of the first phase, all published in 2015: *An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument*; *Adaptivt Lys*; and *Pixel Experiments*. Fourteen architectural lighting designers came through the installation in 2014 across a guided sequence of observations, each spending an hour with the instrument; the 2014 ITU video [*Daylight Adaptation*](https://www.youtube.com/watch?v=iCPGnvG6ChA) follows one of those sessions.
+Three KADK publications came out of the first phase, all published in 2015: _An Exploration into Integrating Daylight and Artificial Light via an Observational Instrument_; _Adaptivt Lys_; and _Pixel Experiments_. Fourteen architectural lighting designers came through the installation in 2014 across a guided sequence of observations, each spending an hour with the instrument; the 2014 ITU video [_Daylight Adaptation_](https://www.youtube.com/watch?v=iCPGnvG6ChA) follows one of those sessions.
 
-The Digital Weather as a public-facing piece arrived at Vandalorum in 2017 as [Digital Weather](/works/digital-weather/), shown at *Ljus är en rättighet*. The same instrument concept, the same software, made portable for the gallery and given a touchscreen so visitors could compose their own weather across the cube tessellation in the space. The DeSForM 2017 paper *The Experience of Dynamic Lighting*, written with Petersen, sets the design and the reasoning down in detail.
+The Digital Weather as a public-facing piece arrived at Vandalorum in 2017 as [Digital Weather](/works/digital-weather/), shown at _Ljus är en rättighet_. The same instrument concept, the same software, made portable for the gallery and given a touchscreen so visitors could compose their own weather across the cube tessellation in the space. The DeSForM 2017 paper _The Experience of Dynamic Lighting_, written with Petersen, sets the design and the reasoning down in detail.
 
 ## The Elforsk follow-on
 
