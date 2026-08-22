@@ -115,3 +115,9 @@ This document records the key architectural and design decisions made during the
 **Decision**: Routes mirror the content directory structure — `/works/`, `/consultancies/`, `/about/`, `/contact/` — with collection pages grouping items by year.
 
 **Rationale**: Intuitive URL structure that maps directly to the filesystem. Year grouping on collection pages provides temporal context without requiring a separate archive system.
+
+### External Interactive Embeds via `embeds` Frontmatter
+
+**Decision**: An interactive piece that lives on its own domain — first case: the [longing.gl](https://longing.gl/player/) full-year timelapse player on the _Longing – Fast Forward_ entry — is embedded with an `<iframe>` pointing at the live deployment, declared as `embeds: [{ url, title }]` in frontmatter and rendered by `EmbedFrame.svelte`. It is not vendored into this repo as a component or package.
+
+**Rationale**: The player is a 1,500-line single SvelteKit route in its own repo, built around three full-viewport `<video>` buffers, `hls.js`, and a Vimeo-API source adapter with a build-time token. Importing it would mean a second copy of that bundle and that token in this site, and two places to keep in step every time the player changes. The live site already serves it behind Cloudflare with relative asset paths and no frame-blocking headers, so an iframe gives a single source of truth for free. `EmbedFrame.svelte` deliberately mirrors `VimeoPlayer.svelte` (same figure/aspect wrapper, same `allow` list) so the two read as one family on a detail page; the block renders before `videos` because the embed is the primary artefact and the Vimeo cuts document it. Host-side switches belong in the URL — the player grew a `?embed` mode (hides its own title and the mobile-app overlays) for exactly this use.

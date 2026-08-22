@@ -21,6 +21,14 @@ github:
   user: olekristensen
   repo: LongingFastForward
 photocredits: Ole Kristensen
+embeds:
+  # `embed` = compact chrome (ring + play only). `v` is a cache-buster for the
+  # player HTML, which longing.gl serves with an 8 h max-age — bump it after a
+  # player publish so browsers holding the old page (and its since-deleted
+  # hashed chunks) refetch.
+  - url: https://longing.gl/player/?embed&v=20260822
+    title: The full-year timelapse, live from longing.gl — drag the ring to travel through the year
+
 videos:
   - id: '122337270'
     title: Short edit from the 11 hour timelapse

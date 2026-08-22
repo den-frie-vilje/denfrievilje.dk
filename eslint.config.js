@@ -22,7 +22,12 @@ export default ts.config(
 			// Static adapter — all routes prerendered, no need for resolve()
 			'svelte/no-navigation-without-resolve': 'off',
 			// Simple array iterations throughout — keys not needed for static content
-			'svelte/require-each-key': 'off'
+			'svelte/require-each-key': 'off',
+			// A string literal in a mustache is only "useless" when a plain attribute
+			// could say the same thing; one with escapes (e.g. the \n in the OG
+			// title) cannot be expressed as an attribute, so keep those. Option per
+			// eslint-plugin-svelte's no-useless-mustaches docs.
+			'svelte/no-useless-mustaches': ['error', { ignoreStringEscape: true }]
 		}
 	},
 	{
@@ -36,6 +41,8 @@ export default ts.config(
 	{
 		ignores: [
 			'build/',
+			'build-*/',
+			'.claude/',
 			'.svelte-kit/',
 			'dist/',
 			'.agents/',

@@ -8,5 +8,8 @@
 </script>
 
 <svelte:head>
+	<!-- The escaped slash is deliberate: this string is emitted verbatim into the
+	     page, and a bare </script> inside a script element would end it early. -->
+	<!-- eslint-disable-next-line no-useless-escape -->
 	{@html `<script type="application/ld+json">${json}<\/script>`}
 </svelte:head>

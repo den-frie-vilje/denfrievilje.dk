@@ -422,7 +422,6 @@
 					// depth=0.
 					branch(startingLen, 1, -1, -1, 0, 0, 0, 0, 0);
 				} catch (err) {
-					// eslint-disable-next-line no-console
 					console.error('LSystemTree draw error:', err);
 				}
 			};

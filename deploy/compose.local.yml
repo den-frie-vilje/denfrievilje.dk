@@ -29,8 +29,8 @@ services:
     # it — without this, compose concatenates and the second bind collides
     # with the first ("address already in use"). Needs Compose 2.24+.
     ports: !override
-      - "8080:80"
-    restart: "no"
+      - '8080:80'
+    restart: 'no'
 
   site:
     # Build locally. The `image:` tag from compose.staging.yml is what the
@@ -41,6 +41,6 @@ services:
       dockerfile: deploy/Dockerfile
       args:
         VITE_MODE: staging
-        PUBLIC_SHOW_PALETTE_TOGGLE: "true"
+        PUBLIC_SHOW_PALETTE_TOGGLE: 'true'
     pull_policy: build
-    restart: "no"
+    restart: 'no'

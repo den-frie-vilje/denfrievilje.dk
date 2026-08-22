@@ -5,13 +5,32 @@
 			"name": "dev",
 			"runtimeExecutable": "pkgx",
 			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "dev"],
-			"port": 5173
+			"port": 5173,
+			"autoPort": true
+		},
+		{
+			"name": "longing-dev",
+			"runtimeExecutable": "pkgx",
+			"runtimeArgs": [
+				"+nodejs.org@25",
+				"+pnpm.io@10",
+				"pnpm",
+				"-C",
+				"../longing.gl",
+				"run",
+				"dev",
+				"--port",
+				"5174"
+			],
+			"port": 5174,
+			"autoPort": false
 		},
 		{
 			"name": "preview",
 			"runtimeExecutable": "pkgx",
 			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "preview"],
-			"port": 4173
+			"port": 4173,
+			"autoPort": true
 		}
 	]
 }

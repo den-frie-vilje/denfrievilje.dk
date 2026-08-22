@@ -2,7 +2,6 @@
    import type { PageData } from './$types';
    import VoronoiGlass from '$lib/components/VoronoiGlass.svelte';
    import LSystemTree from '$lib/components/LSystemTree.svelte';
-   import { getContext } from 'svelte';
    import SectionLabel from '$lib/components/SectionLabel.svelte';
    import PageTitle from '$lib/components/PageTitle.svelte';
    import type { ImageSrcSet } from '$lib/components/VoronoiGlass.svelte';
@@ -19,8 +18,6 @@
    import { buildPersonJsonLd } from '$lib/person';
 
    let { data }: { data: PageData } = $props();
-   const getBureau = getContext<() => boolean>('bureau');
-   let bureau = $derived(getBureau ? getBureau() : false);
 
    // Single image srcset for VoronoiGlass
    const images: ImageSrcSet[] = [

@@ -14,14 +14,14 @@ This file is the per-site overlay: the URL pattern, dual-apex specifics, the Git
 
 This site is unusual in the den-frie-vilje stack: **one image, two apexes**. The same SvelteKit prerendered tree serves both `denfrievilje.dk` (bureau palette, neon yellow) and `ole.kristensen.name` (artist palette, neon green) — JS detects `window.location.hostname` and applies the bureau body class client-side.
 
-| Role                | Hostname                                       | TLS                              | Purpose |
-| ------------------- | ---------------------------------------------- | -------------------------------- | --- |
-| Staging origin      | `denfrievilje-dk.stage.denfrievilje.dk`        | `*.stage.denfrievilje.dk` wildcard | Editor / dev preview. Never indexed: baked Disallow-all robots.txt plus an `X-Robots-Tag` backstop header (see [Search engine isolation](#search-engine-isolation-for-staging)). |
-| Production origin   | `denfrievilje-dk.prod.denfrievilje.dk`         | `*.prod.denfrievilje.dk` wildcard | Internal canonical NAS origin. |
-| Public apex (bureau) | `denfrievilje.dk`                             | Cloudflare                       | Public bureau identity. |
-| Public www          | `www.denfrievilje.dk`                          | Cloudflare                       | 301 → apex by Caddy. |
-| Public apex (artist) | `ole.kristensen.name`                         | Cloudflare                       | Public artist identity. |
-| Public www          | `www.ole.kristensen.name`                      | Cloudflare                       | 301 → apex by Caddy. |
+| Role                 | Hostname                                | TLS                                | Purpose                                                                                                                                                                          |
+| -------------------- | --------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Staging origin       | `denfrievilje-dk.stage.denfrievilje.dk` | `*.stage.denfrievilje.dk` wildcard | Editor / dev preview. Never indexed: baked Disallow-all robots.txt plus an `X-Robots-Tag` backstop header (see [Search engine isolation](#search-engine-isolation-for-staging)). |
+| Production origin    | `denfrievilje-dk.prod.denfrievilje.dk`  | `*.prod.denfrievilje.dk` wildcard  | Internal canonical NAS origin.                                                                                                                                                   |
+| Public apex (bureau) | `denfrievilje.dk`                       | Cloudflare                         | Public bureau identity.                                                                                                                                                          |
+| Public www           | `www.denfrievilje.dk`                   | Cloudflare                         | 301 → apex by Caddy.                                                                                                                                                             |
+| Public apex (artist) | `ole.kristensen.name`                   | Cloudflare                         | Public artist identity.                                                                                                                                                          |
+| Public www           | `www.ole.kristensen.name`               | Cloudflare                         | 301 → apex by Caddy.                                                                                                                                                             |
 
 Both apex hostnames are CF-orange-clouded against the production origin. CF terminates TLS at the edge; the cert at the NAS only needs to cover `*.prod.denfrievilje.dk`.
 
@@ -129,20 +129,20 @@ pkgx pnpm dev          # http://localhost:5173 — Vite dev server, palette togg
 
 Per-site state on Woody at `/volume1/docker/denfrievilje.dk/`:
 
-| Path                                              | Owner          | Purpose |
-| ------------------------------------------------- | -------------- | --- |
-| `/volume1/docker/denfrievilje.dk/repo/`           | `deploy:users` | git clone of this repo (agent does fetch + reset) |
-| `/volume1/docker/denfrievilje.dk/staging/staging.env` | `root:docker 0640` | `CADDY_PORT=18082` |
-| `/volume1/docker/denfrievilje.dk/production/production.env` | `root:docker 0640` | `CADDY_PORT=18083` |
-| `/volume1/docker/nas-sites/sites.d/denfrievilje.dk.staging.env` | `root:docker 0640` | DOMAIN/ENV/REPO/BRANCH/COMPOSE_FILE_REL; CF empty for staging |
+| Path                                                               | Owner              | Purpose                                                                                             |
+| ------------------------------------------------------------------ | ------------------ | --------------------------------------------------------------------------------------------------- |
+| `/volume1/docker/denfrievilje.dk/repo/`                            | `deploy:users`     | git clone of this repo (agent does fetch + reset)                                                   |
+| `/volume1/docker/denfrievilje.dk/staging/staging.env`              | `root:docker 0640` | `CADDY_PORT=18082`                                                                                  |
+| `/volume1/docker/denfrievilje.dk/production/production.env`        | `root:docker 0640` | `CADDY_PORT=18083`                                                                                  |
+| `/volume1/docker/nas-sites/sites.d/denfrievilje.dk.staging.env`    | `root:docker 0640` | DOMAIN/ENV/REPO/BRANCH/COMPOSE_FILE_REL; CF empty for staging                                       |
 | `/volume1/docker/nas-sites/sites.d/denfrievilje.dk.production.env` | `root:docker 0640` | Same plus `CF_API_TOKEN` + `CF_ZONE_IDS=<denfrievilje.dk>,<ole.kristensen.name>` (multi-zone purge) |
 
 DSM Web Station vhosts:
 
-| Vhost hostname(s)                                   | Cert                          | Backend            |
-| --------------------------------------------------- | ----------------------------- | ------------------ |
-| `denfrievilje-dk.stage.denfrievilje.dk`             | `*.stage.denfrievilje.dk`     | `127.0.0.1:18082`  |
-| `denfrievilje-dk.prod.denfrievilje.dk` + `denfrievilje.dk` + `www.denfrievilje.dk` + `ole.kristensen.name` + `www.ole.kristensen.name` | `*.prod.denfrievilje.dk` (CF terminates the public-apex hostnames; Web Station cert is for the .prod. SAN) | `127.0.0.1:18083`  |
+| Vhost hostname(s)                                                                                                                      | Cert                                                                                                       | Backend           |
+| -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------- |
+| `denfrievilje-dk.stage.denfrievilje.dk`                                                                                                | `*.stage.denfrievilje.dk`                                                                                  | `127.0.0.1:18082` |
+| `denfrievilje-dk.prod.denfrievilje.dk` + `denfrievilje.dk` + `www.denfrievilje.dk` + `ole.kristensen.name` + `www.ole.kristensen.name` | `*.prod.denfrievilje.dk` (CF terminates the public-apex hostnames; Web Station cert is for the .prod. SAN) | `127.0.0.1:18083` |
 
 ---
 

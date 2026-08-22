@@ -21,6 +21,9 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.39.3
+        version: 9.39.3
       '@fontsource-variable/dm-sans':
         specifier: 5.3.0
         version: 5.3.0

@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import VimeoPlayer from '$lib/components/VimeoPlayer.svelte';
-	import { getContext } from 'svelte';
+	import EmbedFrame from '$lib/components/EmbedFrame.svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import AppearanceRow from '$lib/components/AppearanceRow.svelte';
 	import SourceCodeLinks from '$lib/components/SourceCodeLinks.svelte';
@@ -22,8 +21,6 @@
 	} from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
-	const getBureau = getContext<() => boolean>('bureau');
-	let bureau = $derived(getBureau ? getBureau() : false);
 
 	const pageUrl = $derived(`${SITE_URL}/works/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);
@@ -132,6 +129,17 @@
 			{/if}
 		</div>
 	</PageHeader>
+
+	<!-- External embeds (iframe) — primary artefact, so they lead -->
+	{#if data.item.meta.embeds?.length}
+		<section class="mx-auto max-w-[var(--max-w)] pb-12">
+			<div class="grid gap-6">
+				{#each data.item.meta.embeds as embed (embed.url)}
+					<EmbedFrame url={embed.url} title={embed.title} />
+				{/each}
+			</div>
+		</section>
+	{/if}
 
 	<!-- Videos -->
 	{#if data.item.meta.videos?.length}

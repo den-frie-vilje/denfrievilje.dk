@@ -1,9 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import VimeoPlayer from '$lib/components/VimeoPlayer.svelte';
-	import { getContext } from 'svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import CtaLink from '$lib/components/CtaLink.svelte';
 	import Gallery from '$lib/components/Gallery.svelte';
@@ -14,8 +12,6 @@
 	import { PERSON_REF, buildBreadcrumb, buildVideoObject } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
-	const getBureau = getContext<() => boolean>('bureau');
-	let bureau = $derived(getBureau ? getBureau() : false);
 
 	const pageUrl = $derived(`${SITE_URL}/consultancies/${data.slug}/`);
 	const heroImage = $derived(data.item.images.gallery[0] ?? data.item.images.thumb ?? null);

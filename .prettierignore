@@ -25,3 +25,6 @@ Thumbs.db
 
 # Agents
 .agents
+# Generated / build output
+pnpm-lock.yaml
+build-*

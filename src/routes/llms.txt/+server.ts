@@ -40,7 +40,16 @@ function sectionSummary(section: Content | null): string {
 }
 
 export const GET: RequestHandler = async () => {
-	const [works, consultancies, research, aboutSection, contactSection, worksSection, consultanciesSection, researchSection] = await Promise.all([
+	const [
+		works,
+		consultancies,
+		research,
+		aboutSection,
+		contactSection,
+		worksSection,
+		consultanciesSection,
+		researchSection
+	] = await Promise.all([
 		getContentList('works'),
 		getContentList('consultancies'),
 		getContentList('research'),

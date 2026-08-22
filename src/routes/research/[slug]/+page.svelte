@@ -2,7 +2,6 @@
 	import type { PageData } from './$types';
 	import VimeoPlayer from '$lib/components/VimeoPlayer.svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import AppearanceRow from '$lib/components/AppearanceRow.svelte';
 	import SourceCodeLinks from '$lib/components/SourceCodeLinks.svelte';

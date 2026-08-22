@@ -226,10 +226,10 @@ For per-site URL pattern, GitHub OAuth setup (n/a here — no editor), DSM Web S
 
 Both workflows are thin callers of [`den-frie-vilje/nas-sites/.github/workflows/build-and-sign.yml@v1`](https://github.com/den-frie-vilje/nas-sites/blob/v1/.github/workflows/build-and-sign.yml), pinned to a release tag rather than a branch: the reusable workflow signs the images we deploy, so upstream changes should reach this site as a reviewable bump of the tag, not silently.
 
-| File                                       | Triggers           | Steps                                                                   |
-| ------------------------------------------ | ------------------ | ----------------------------------------------------------------------- |
-| `.github/workflows/deploy-staging.yml`     | Push to `staging`  | Build → cosign-sign → push to GHCR; agent reconciles staging container  |
-| `.github/workflows/deploy-production.yml`  | Push to `main`     | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles prod |
+| File                                      | Triggers          | Steps                                                                     |
+| ----------------------------------------- | ----------------- | ------------------------------------------------------------------------- |
+| `.github/workflows/deploy-staging.yml`    | Push to `staging` | Build → cosign-sign → push to GHCR; agent reconciles staging container    |
+| `.github/workflows/deploy-production.yml` | Push to `main`    | Same flow, with `PUBLIC_SHOW_PALETTE_TOGGLE=false`; agent reconciles prod |
 
 No reviewer gate — the cryptographic gate is the cosign keyless signature itself, verified by the NAS agent before deploy.
 

@@ -136,10 +136,16 @@ export const actions: Actions = {
 		// `keep` is a newline-separated, *ordered* list of existing-file names
 		// to retain. Anything currently in contentDir not listed in `keep` is
 		// removed. The combined survivors are then sequentially renumbered.
-		const adds = addRaw.split('\n').map((s) => s.trim()).filter(Boolean);
+		const adds = addRaw
+			.split('\n')
+			.map((s) => s.trim())
+			.filter(Boolean);
 		for (const a of adds) safeResolve(a);
 
-		const keeps = keepRaw.split('\n').map((s) => s.trim()).filter(Boolean);
+		const keeps = keepRaw
+			.split('\n')
+			.map((s) => s.trim())
+			.filter(Boolean);
 
 		const current = listImagesIn(contentDir).map((f) => f.name);
 		const thumb = current.find((n) => THUMB_RE.test(n)); // preserve 00.thumb.jpg
