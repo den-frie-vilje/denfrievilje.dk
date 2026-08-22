@@ -2,7 +2,6 @@
 	import Hero from '$lib/components/Hero.svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import CtaLink from '$lib/components/CtaLink.svelte';
-	import DuotoneImage from '$lib/components/DuotoneImage.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
 	import EntryRow from '$lib/components/EntryRow.svelte';
 	import TeaserSectionHeader from '$lib/components/TeaserSectionHeader.svelte';

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import { getContext } from 'svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import EntryRow from '$lib/components/EntryRow.svelte';
 	import SEO from '$lib/components/SEO.svelte';
@@ -10,8 +9,6 @@
 	import { buildBreadcrumb, buildCreativeWorkItemList } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
-	const getBureau = getContext<() => boolean>('bureau');
-	let bureau = $derived(getBureau ? getBureau() : false);
 
 	const pageUrl = `${SITE_URL}/consultancies/`;
 	const collectionPage = $derived.by(() => ({

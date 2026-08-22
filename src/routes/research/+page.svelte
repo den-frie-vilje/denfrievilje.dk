@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';

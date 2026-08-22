@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { applyAction, enhance } from '$app/forms';
 
@@ -85,10 +85,6 @@
 	function onDragEnd() {
 		dragFrom = null;
 		dragOver = null;
-	}
-
-	function openSource(p: string) {
-		goto(`?source=${encodeURIComponent(p)}`, { keepFocus: true, noScroll: false });
 	}
 
 	function thumbUrl(filePath: string, size = 640) {

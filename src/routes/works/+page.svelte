@@ -1,8 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import SectionLabel from '$lib/components/SectionLabel.svelte';
-	import { getContext } from 'svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import ResponsiveImage from '$lib/components/ResponsiveImage.svelte';
@@ -12,8 +9,6 @@
 	import { buildBreadcrumb, buildCreativeWorkItemList } from '$lib/schema-helpers';
 
 	let { data }: { data: PageData } = $props();
-	const getBureau = getContext<() => boolean>('bureau');
-	let bureau = $derived(getBureau ? getBureau() : false);
 
 	const pageUrl = `${SITE_URL}/works/`;
 	const allWorks = $derived(data.grouped.flatMap((g) => g.items));
