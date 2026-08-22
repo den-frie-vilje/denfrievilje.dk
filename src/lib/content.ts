@@ -38,6 +38,12 @@ export interface ContentMeta {
 	technologies?: string[];
 	appearances?: Array<{ date: string; occasion: string; place: string; url: string }>;
 	videos?: Array<{ id: string; title: string }>;
+	// External interactive embeds, rendered in an iframe on the detail page
+	// (e.g. the live longing.gl player). `url` is the full iframe src — put any
+	// host-side switches (like `?embed`) in the URL itself. Rendered BEFORE
+	// `videos`: an embed is the primary artefact, the Vimeo entries are the
+	// documentation of it. Mirrors VimeoPlayer.svelte via EmbedFrame.svelte.
+	embeds?: Array<{ url: string; title?: string }>;
 
 	// About-page sidebar lists. `stack` is the technology keyword chips a
 	// recruiter scans for; `practice` is the cross-audience competency chips

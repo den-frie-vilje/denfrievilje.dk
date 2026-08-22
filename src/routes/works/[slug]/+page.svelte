@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import VimeoPlayer from '$lib/components/VimeoPlayer.svelte';
+	import EmbedFrame from '$lib/components/EmbedFrame.svelte';
 	import { getContext } from 'svelte';
 	import SectionLabel from '$lib/components/SectionLabel.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
@@ -132,6 +133,17 @@
 			{/if}
 		</div>
 	</PageHeader>
+
+	<!-- External embeds (iframe) — primary artefact, so they lead -->
+	{#if data.item.meta.embeds?.length}
+		<section class="mx-auto max-w-[var(--max-w)] pb-12">
+			<div class="grid gap-6">
+				{#each data.item.meta.embeds as embed (embed.url)}
+					<EmbedFrame url={embed.url} title={embed.title} />
+				{/each}
+			</div>
+		</section>
+	{/if}
 
 	<!-- Videos -->
 	{#if data.item.meta.videos?.length}

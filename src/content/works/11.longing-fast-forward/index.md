@@ -21,6 +21,10 @@ github:
   user: olekristensen
   repo: LongingFastForward
 photocredits: Ole Kristensen
+embeds:
+  - url: https://longing.gl/player/?embed
+    title: The full-year timelapse, live from longing.gl — drag the ring to travel through the year
+
 videos:
   - id: '122337270'
     title: Short edit from the 11 hour timelapse
