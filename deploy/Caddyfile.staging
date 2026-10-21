@@ -17,6 +17,11 @@
 }
 
 :80 {
+    # Plain HTTP → HTTPS, as on production: DSM marks the scheme in
+    # X-Forwarded-Proto and an HTTP rule for the name ends here.
+    @plain header X-Forwarded-Proto http
+    redir @plain https://{host}{uri} 301
+
     reverse_proxy site:8080
     encode gzip zstd
 
