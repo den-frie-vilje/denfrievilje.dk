@@ -47,8 +47,8 @@ describe('E2E dev server checks', () => {
 			'/',
 			'/about',
 			'/contact',
-			'/works/1.body-navigation',
-			'/consultancies/1.dr1-airlook'
+			'/works/body-navigation',
+			'/consultancies/dr1-airlook'
 		];
 
 		for (const path of urls) {
