@@ -37,6 +37,13 @@
         @www_okn host www.ole.kristensen.name
         redir @www_okn https://ole.kristensen.name{uri} 301
 
+        # Plain HTTP → HTTPS. DSM's reverse proxy marks the scheme in
+        # X-Forwarded-Proto; an HTTP rule in DSM for the name, pointing
+        # at this same port, ends here. After canonicalization, so a
+        # non-canonical http name reaches the https canonical in one hop.
+        @plain header X-Forwarded-Proto http
+        redir @plain https://{host}{uri} 301
+
         # Once public DNS is CNAMEd to .prod.denfrievilje.dk, uncomment to
         # 301 the internal origin to its public counterpart so the .prod
         # hostname doesn't appear in user-visible URLs.
