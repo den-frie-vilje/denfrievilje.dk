@@ -84,7 +84,7 @@ src/
 ├── deploy-staging.yml     # thin caller of nas-sites/build-and-sign.yml
 └── deploy-production.yml  # same — no reviewer gate, no content-only fast-path
 
-pkgx.yml                   # nodejs.org: ^25, pnpm.io: ^10 — single source of truth
+pkgx.yml                   # nodejs.org: ^26, pnpm.io: ^10 — single source of truth
 ```
 
 ---

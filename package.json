@@ -4,7 +4,7 @@
 	"description": "Den Frie Vilje Website",
 	"type": "module",
 	"engines": {
-		"node": "~25",
+		"node": "~26",
 		"pnpm": "~10"
 	},
 	"scripts": {
@@ -39,7 +39,7 @@
 		"js-yaml": "^4.1.1",
 		"pdf-to-img": "^6.0.0",
 		"prettier": "^3.0.0",
-		"puppeteer": "^24.43.0",
+		"puppeteer": "^25.15.0",
 		"sharp": "^0.34.5",
 		"sirv": "^2.0.0",
 		"svelte": "^5.0.0",
@@ -61,7 +61,7 @@
 	},
 	"dependencies": {
 		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^25.3.3",
+		"@types/node": "^26.6.5",
 		"marked": "^17.0.3",
 		"p5": "^2.3.0"
 	}
