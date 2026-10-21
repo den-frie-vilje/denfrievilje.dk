@@ -14,7 +14,7 @@
 #
 # Version pinning lives in pkgx.yml — single source of truth across laptop
 # dev and CI. The upstream pkgx Docker examples use inline pins per RUN
-# (`pkgx +nodejs.org@25 +pnpm.io@10 pnpm …`) which we deliberately reject
+# (`pkgx +nodejs.org@26 +pnpm.io@10 pnpm …`) which we deliberately reject
 # here: that pattern duplicates the version pins across pkgx.yml AND every
 # RUN line, and a Node-or-pnpm bump becomes a multi-file refactor.
 #
@@ -36,14 +36,17 @@ SHELL ["/bin/bash", "-c"]
 # launches Puppeteer's headless Chrome at build time to screenshot the SEO
 # render routes. The pkgx base image is glibc-based but doesn't ship the
 # X11/GTK/asound stack Chromium dlopens at startup. Without these the build
-# fails with `libglib-2.0.so.0: cannot open shared object file`.
+# fails with `libglib-2.0.so.0: cannot open shared object file`. unzip is for
+# @puppeteer/browsers, which extracts the Chrome zip with the native unzip
+# first and only falls back to yauzl, whose 2.x line hangs on Node 26
+# (nodejs/node#63487).
 #
 # This stays in the builder stage — the runtime nginx image is unchanged.
 # Layer caches until the package list changes; subsequent rebuilds are
 # instant on apt unless the list is edited.
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates fonts-liberation \
+        ca-certificates fonts-liberation unzip \
         libasound2 libatk-bridge2.0-0 libatk1.0-0 libcairo2 libcups2 \
         libdbus-1-3 libdrm2 libexpat1 libgbm1 libglib2.0-0 libgtk-3-0 \
         libnspr4 libnss3 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 \
