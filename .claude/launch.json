@@ -4,7 +4,7 @@
 		{
 			"name": "dev",
 			"runtimeExecutable": "pkgx",
-			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "dev"],
+			"runtimeArgs": ["+nodejs.org@26", "+pnpm.io@10", "pnpm", "dev"],
 			"port": 5173,
 			"autoPort": true
 		},
@@ -12,7 +12,7 @@
 			"name": "longing-dev",
 			"runtimeExecutable": "pkgx",
 			"runtimeArgs": [
-				"+nodejs.org@25",
+				"+nodejs.org@26",
 				"+pnpm.io@10",
 				"pnpm",
 				"-C",
@@ -28,7 +28,7 @@
 		{
 			"name": "preview",
 			"runtimeExecutable": "pkgx",
-			"runtimeArgs": ["+nodejs.org@25", "+pnpm.io@10", "pnpm", "preview"],
+			"runtimeArgs": ["+nodejs.org@26", "+pnpm.io@10", "pnpm", "preview"],
 			"port": 4173,
 			"autoPort": true
 		}
